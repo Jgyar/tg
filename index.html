@@ -65,7 +65,8 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .msg-file { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(128,128,128,.15); border-radius: 8px; margin: 4px 0; text-decoration: none; color: inherit; }
 .msg-sticker { font-size: 72px; line-height: 1; padding: 4px; user-select: none; }
 .msg-voice { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 180px; }
-.voice-play { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 14px; flex-shrink: 0; }
+.voice-play { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.voice-play:active { background: #1a5fa8; }
 .voice-wave { flex: 1; height: 24px; display: flex; align-items: center; gap: 2px; }
 .voice-wave span { width: 3px; background: var(--accent); border-radius: 2px; opacity: .5; }
 .voice-wave span.on { opacity: 1; }
@@ -94,7 +95,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 
 .sticker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 300px; overflow-y: auto; }
 .sticker-grid span { font-size: 36px; cursor: pointer; padding: 6px; text-align: center; border-radius: 8px; }
-.sticker-grid span:active { background: var(--bg3); }
 
 .attach-panel { display: flex; gap: 8px; padding: 8px 12px; background: var(--bg); border-top: 1px solid var(--border); flex-wrap: wrap; }
 .attach-panel button { padding: 10px 16px; border: none; border-radius: 10px; background: var(--bg3); color: var(--text); cursor: pointer; font-size: 14px; font-weight: 500; }
@@ -120,7 +120,8 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .game-info h4 { font-size: 15px; margin-bottom: 3px; }
 .game-info p { font-size: 12px; color: var(--text2); }
 .game-score { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 10px 16px; background: var(--bg3); border-radius: 10px; font-weight: 600; font-size: 14px; flex-wrap: wrap; gap: 8px; }
-.game-btn { padding: 8px 18px; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; font-size: 14px; }
+.game-btn { padding: 10px 20px; border: none; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; font-size: 15px; }
+.game-btn:active { opacity: .8; }
 
 .sol-table { background: #2a6b3f; border-radius: 12px; padding: 10px; min-height: 400px; overflow-x: auto; }
 .sol-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -143,13 +144,54 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .ttt-cell { aspect-ratio: 1; background: var(--bg3); border: none; border-radius: 10px; font-size: 48px; font-weight: 700; cursor: pointer; color: var(--text); }
 .ttt-cell.x { color: #3390ec; } .ttt-cell.o { color: #e53935; }
 
+/* Snake */
 .snake-canvas { background: #111; border-radius: 10px; display: block; margin: 0 auto; max-width: 100%; height: auto; touch-action: none; }
-.dpad { display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 60px); gap: 6px; justify-content: center; margin: 16px auto 0; }
-.dpad button { background: var(--bg3); border: none; border-radius: 12px; font-size: 24px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
-.dpad button:active { background: var(--accent); color: #fff; }
-.dpad .empty { background: transparent; pointer-events: none; }
+/* Big D-pad для телефона */
+.dpad-big { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px; 
+  justify-content: center; 
+  margin: 12px auto 0;
+  max-width: 280px;
+  aspect-ratio: 1;
+}
+.dpad-big button {
+  background: var(--bg3);
+  border: none;
+  border-radius: 16px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: transform .05s, background .1s;
+  box-shadow: 0 2px 4px rgba(0,0,0,.15);
+}
+.dpad-big button:active { 
+  background: var(--accent); 
+  color: #fff; 
+  transform: scale(.92);
+}
+.dpad-big .empty { 
+  background: transparent; 
+  box-shadow: none;
+  pointer-events: none; 
+}
+.dpad-big .center {
+  background: var(--bg2);
+  font-size: 16px;
+  color: var(--text2);
+}
 
-.g2048-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; justify-content: center; background: #bbada0; padding: 8px; border-radius: 10px; max-width: 360px; margin: 0 auto; touch-action: none; }
+/* 2048 */
+.g2048-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; justify-content: center; background: #bbada0; padding: 8px; border-radius: 10px; max-width: 340px; margin: 0 auto; touch-action: none; }
 .g2048-cell { aspect-ratio: 1; background: #cdc1b4; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #776e65; }
 .v2 { background: #eee4da !important; } .v4 { background: #ede0c8 !important; } .v8 { background: #f2b179 !important; color: #fff !important; }
 .v16 { background: #f59563 !important; color: #fff !important; } .v32 { background: #f67c5f !important; color: #fff !important; }
@@ -160,6 +202,15 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .recording-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #ffebee; color: #c62828; border-radius: 20px; flex: 1; font-size: 14px; font-weight: 500; }
 [data-theme="dark"] .recording-bar { background: #4a2020; color: #ff8a80; }
 .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: #e53935; animation: pulse 1s infinite; }
+
+/* Кнопка паузы */
+.pause-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,.7);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; color: #fff; font-size: 24px; font-weight: 600;
+  z-index: 5;
+}
+.game-wrap { position: relative; max-width: 100%; margin: 0 auto; width: fit-content; }
 
 @media (max-width: 700px) {
   .sidebar { width: 100%; position: absolute; z-index: 10; height: 100vh; height: 100dvh; }
@@ -238,8 +289,8 @@ const GAMES=[
   {id:'solitaire',icon:'🃏',title:'Косынка',desc:'Классический пасьянс'},
   {id:'mines',icon:'💣',title:'Сапёр',desc:'Долгий тап — флаг'},
   {id:'ttt',icon:'⭕',title:'Крестики-нолики',desc:'Против ИИ'},
-  {id:'snake',icon:'🐍',title:'Змейка',desc:'Свайпы или D-pad'},
-  {id:'2048',icon:'🧠',title:'2048',desc:'Свайпы или кнопки'}
+  {id:'snake',icon:'🐍',title:'Змейка',desc:'Свайпы + D-pad'},
+  {id:'2048',icon:'🧠',title:'2048',desc:'Свайпы + D-pad'}
 ];
 
 let settings = JSON.parse(localStorage.getItem('tg_settings') || 'null') || {
@@ -256,6 +307,12 @@ function applySettings(){
   document.documentElement.style.setProperty('--chat-bg-size', settings.wallpaper==='dots'?'24px 24px':'auto');
 }
 applySettings();
+
+function vibrate(ms=15){
+  if (settings.vibration && navigator.vibrate) {
+    try { navigator.vibrate(ms); } catch(e){}
+  }
+}
 
 // ============ AUTH ============
 let authMode='login';
@@ -602,6 +659,7 @@ window.sendMessage = async () => {
   const text=inp.value.trim();
   if(!text||!activeChat) return;
   inp.value='';
+  vibrate(10);
   await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,text,type:'text'});
 };
 
@@ -616,6 +674,7 @@ window.deleteMsg = async id => {if(!confirm('Удалить?'))return;await supa
 window.toggleReaction = async (msgId,emoji) => {
   const m=chatMessages.find(x=>x.id===msgId);
   if(!m) return;
+  vibrate(10);
   const reacts={...(m.reactions||{})};
   const arr=reacts[emoji]?[...reacts[emoji]]:[];
   const idx=arr.indexOf(currentUser.id);
@@ -662,6 +721,7 @@ window.openStickers = () => {
 
 window.sendSticker = async emoji => {
   closePopup();
+  vibrate(15);
   await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,type:'sticker',text:emoji});
 };
 
@@ -693,13 +753,81 @@ window.viewImage = id => {
   document.body.appendChild(p);
 };
 
+// ============ FIXED VOICE PLAYER ============
 window.playVoice = id => {
-  const m=chatMessages.find(x=>x.id===id);
-  if(!m) return;
-  const audio=new Audio(m.data);audio.play();
-  const btn=document.getElementById('play_'+id);
-  if(btn) btn.textContent='⏸';
-  audio.onended=()=>{if(btn)btn.textContent='▶';};
+  console.log('=== playVoice вызван с id:', id);
+  console.log('chatMessages:', chatMessages.length, 'сообщений');
+  
+  const m = chatMessages.find(x => String(x.id) === String(id));
+  if (!m) {
+    alert('Сообщение не найдено. Перезайди в чат.');
+    return;
+  }
+  console.log('Сообщение найдено, data длина:', m.data ? m.data.length : 'null');
+  
+  if (!m.data) {
+    alert('Нет данных голосового');
+    return;
+  }
+  
+  const btn = document.getElementById('play_' + id);
+  const wave = document.getElementById('wave_' + id);
+  
+  // Остановить предыдущее
+  if (window.currentAudio) {
+    try { window.currentAudio.pause(); } catch(e){}
+    window.currentAudio = null;
+  }
+  
+  try {
+    const audio = new Audio(m.data);
+    audio.volume = 1.0;
+    window.currentAudio = audio;
+    
+    audio.onplay = () => {
+      console.log('▶ Playback started');
+      if (btn) btn.textContent = '⏸';
+      vibrate(10);
+    };
+    
+    audio.onended = () => {
+      console.log('⏹ Playback ended');
+      if (btn) btn.textContent = '▶';
+      if (wave) Array.from(wave.children).forEach(s => s.classList.remove('on'));
+    };
+    
+    audio.onerror = (e) => {
+      console.error('❌ Audio error:', e, audio.error);
+      const errCode = audio.error ? audio.error.code : '?';
+      const errMsg = audio.error ? audio.error.message : 'неизвестно';
+      alert('Ошибка воспроизведения (код ' + errCode + '): ' + errMsg + 
+        '\n\nВозможно, формат не поддерживается. Попробуй другую запись или перезагрузи страницу.');
+      if (btn) btn.textContent = '▶';
+    };
+    
+    audio.ontimeupdate = () => {
+      if (!wave) return;
+      const pct = audio.currentTime / (audio.duration || 1);
+      const activeBars = Math.floor(pct * wave.children.length);
+      Array.from(wave.children).forEach((s,i) => s.classList.toggle('on', i < activeBars));
+    };
+    
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => console.log('✅ play() resolved'))
+        .catch(err => {
+          console.error('❌ play() rejected:', err);
+          alert('Не могу воспроизвести: ' + err.message + 
+            '\n\nЕсли звук не работает — проверь громкость телефона.');
+          if (btn) btn.textContent = '▶';
+        });
+    }
+  } catch(e) {
+    console.error('❌ Exception:', e);
+    alert('Ошибка: ' + e.message);
+    if (btn) btn.textContent = '▶';
+  }
 };
 
 // ============ VOICE ============
@@ -709,17 +837,29 @@ window.toggleVoiceRecord = async () => {
   if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();return;}
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    mediaRecorder=new MediaRecorder(stream);
+    // Определить поддерживаемый формат
+    let mimeType = 'audio/webm';
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+      else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
+      else mimeType = '';
+    }
+    console.log('Запись в формате:', mimeType || 'по умолчанию');
+    
+    mediaRecorder = mimeType ? new MediaRecorder(stream, {mimeType}) : new MediaRecorder(stream);
     audioChunks=[];
     mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
     mediaRecorder.onstop=()=>{
       stream.getTracks().forEach(t=>t.stop());
-      const blob=new Blob(audioChunks,{type:'audio/webm'});
+      const blob=new Blob(audioChunks,{type:mimeType || 'audio/webm'});
       const duration=Math.round((Date.now()-recordStartTime)/1000);
-      if(blob.size>800*1024){alert('Слишком длинное');restoreMicBtn();return;}
+      console.log('Записано байт:', blob.size, 'длительность:', duration);
+      if(blob.size>800*1024){alert('Слишком длинное (макс ~30 сек)');restoreMicBtn();return;}
+      if(blob.size < 1000){alert('Запись слишком короткая');restoreMicBtn();return;}
       const reader=new FileReader();
       reader.onload=async ev=>{
         await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,type:'voice',data:ev.target.result,duration});
+        vibrate(20);
         restoreMicBtn();
       };
       reader.readAsDataURL(blob);
@@ -728,7 +868,7 @@ window.toggleVoiceRecord = async () => {
     recordStartTime=Date.now();
     showRecordingUI();
   } catch(e){
-    alert('Нет доступа к микрофону. Нужен HTTPS.');
+    alert('Нет доступа к микрофону.\n\nРазреши микрофон в настройках браузера:\nChrome → ⋮ → Настройки → Настройки сайтов → Микрофон');
   }
 };
 
@@ -813,11 +953,6 @@ window.openSettings = () => {
       <div class="settings-item"><div class="si-ico">📳</div><div class="si-body"><div class="si-title">Вибрация</div></div><div class="toggle ${settings.vibration?'on':''}" onclick="toggleSetting('vibration',true,false)"></div></div>
     </div>
     <div class="settings-section">
-      <div class="settings-title">Приватность</div>
-      <div class="settings-item"><div class="si-ico">👁</div><div class="si-body"><div class="si-title">Онлайн-статус</div></div><div class="toggle ${settings.onlineVisible?'on':''}" onclick="toggleSetting('onlineVisible',true,false)"></div></div>
-      <div class="settings-item"><div class="si-ico">⏱</div><div class="si-body"><div class="si-title">Последнее посещение</div></div><div class="toggle ${settings.lastSeenVisible?'on':''}" onclick="toggleSetting('lastSeenVisible',true,false)"></div></div>
-    </div>
-    <div class="settings-section">
       <div class="settings-title">Действия</div>
       <div class="settings-item" onclick="openCreateGroup()"><div class="si-ico">👥</div><div class="si-body"><div class="si-title">Создать группу</div></div><div class="si-arrow">›</div></div>
       <div class="settings-item" onclick="logout()"><div class="si-ico">🚪</div><div class="si-body"><div class="si-title" style="color:#e53935">Выйти</div></div></div>
@@ -882,6 +1017,7 @@ window.openGame = id => {
   if(id==='2048') start2048(root);
 };
 
+// ----- SOLITAIRE -----
 function startSolitaire(root){
   const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   let deck=[],cols=[[],[],[],[],[],[],[]],foundations=[[],[],[],[]],stock=[];
@@ -921,7 +1057,7 @@ function startSolitaire(root){
   let picked=null;
   window.solPick=(ci,ji)=>{
     const c=cols[ci][ji];if(!c.faceUp)return;
-    picked={ci,ji};
+    picked={ci,ji};vibrate(10);
     document.querySelectorAll('.card').forEach(e=>e.style.outline='');
     event.target.closest('.card').style.outline='3px solid #ffd600';
   };
@@ -932,14 +1068,14 @@ function startSolitaire(root){
       if(picked.ji!==col.length-1) return;
       const f=foundations[idx];
       const need=f.length===0?1:f[f.length-1].v+1;
-      if(c.v===need&&cardMatch(c,idx)){col.pop();f.push(c);picked=null;render();}
+      if(c.v===need&&cardMatch(c,idx)){col.pop();f.push(c);picked=null;vibrate(20);render();}
     } else if(type==='c'){
       if(idx===picked.ci){picked=null;render();return;}
       const target=cols[idx],top=target[target.length-1];
       if((!top&&c.v===13)||(top&&top.faceUp&&top.v===c.v+1&&isRed(top)!==isRed(c))){
         const moved=col.splice(picked.ji);moved.forEach(m=>target.push(m));
         if(col.length&&!col[col.length-1].faceUp) col[col.length-1].faceUp=true;
-        picked=null;render();
+        picked=null;vibrate(15);render();
       }
     }
   };
@@ -947,6 +1083,7 @@ function startSolitaire(root){
   function isRed(c){return c.suit==='♥'||c.suit==='♦';}
   window.solStock=()=>{
     if(!stock.length) return;
+    vibrate(10);
     const c=stock.pop();c.faceUp=true;
     let placed=false;
     for(let i=0;i<7;i++){
@@ -960,6 +1097,7 @@ function startSolitaire(root){
   newGame();
 }
 
+// ----- MINESWEEPER -----
 function startMines(root){
   const SIZE=9,MINES=10;
   let board,revealed,flagged,over,firstClick;
@@ -994,6 +1132,7 @@ function startMines(root){
   }
   function click(x,y){
     if(over||flagged[y][x]) return;
+    vibrate(10);
     if(firstClick){placeMines(x,y);firstClick=false;}
     if(board[y][x]===-1){
       revealed[y][x]=true;over=true;
@@ -1002,7 +1141,7 @@ function startMines(root){
     }
     reveal(x,y);checkWin();render();
   }
-  function flag(x,y){if(over||revealed[y][x])return;flagged[y][x]=!flagged[y][x];render();}
+  function flag(x,y){if(over||revealed[y][x])return;vibrate(15);flagged[y][x]=!flagged[y][x];render();}
   function checkWin(){
     let opened=0,total=SIZE*SIZE-MINES;
     for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++) if(revealed[y][x]) opened++;
@@ -1043,6 +1182,7 @@ function startMines(root){
   init();
 }
 
+// ----- TTT -----
 function startTTT(root){
   let board=Array(9).fill(''),human='X',ai='O',over=false,wins=0,losses=0;
   function render(){
@@ -1089,6 +1229,7 @@ function startTTT(root){
   }
   window.tttMove=i=>{
     if(over||board[i]) return;
+    vibrate(10);
     board[i]=human;
     if(!checkEnd()){render();setTimeout(aiMove,350);return;}
     render();
@@ -1097,65 +1238,98 @@ function startTTT(root){
   render();
 }
 
+// ----- SNAKE (улучшенное управление) -----
 function startSnake(root){
-  const SIZE=20,CELL=18;
+  const SIZE=20,CELL=16;
+  const CW = Math.min(SIZE*CELL, window.innerWidth - 60, 360);
+  const REAL_CELL = Math.floor(CW / SIZE);
+  const REAL_SIZE = REAL_CELL * SIZE;
+  
   root.innerHTML=`
     <h2>🐍 Змейка</h2>
-    <div class="game-score"><span>Счёт: <span id="snScore">0</span></span><span>Рекорд: <span id="snBest">${localStorage.getItem('tg_snakeBest')||0}</span></span></div>
-    <div id="snakeWrap" style="position:relative;max-width:100%;margin:0 auto;width:fit-content;touch-action:none">
-      <canvas class="snake-canvas" id="snCanvas" width="${SIZE*CELL}" height="${SIZE*CELL}"></canvas>
+    <div class="game-score">
+      <span>Счёт: <span id="snScore">0</span></span>
+      <span>Рекорд: <span id="snBest">${localStorage.getItem('tg_snakeBest')||0}</span></span>
     </div>
-    <div class="dpad">
-      <div class="empty"></div><button ontouchstart="event.preventDefault();window.snakeDir('up')" onclick="window.snakeDir('up')">▲</button><div class="empty"></div>
-      <button ontouchstart="event.preventDefault();window.snakeDir('left')" onclick="window.snakeDir('left')">◀</button>
-      <button ontouchstart="event.preventDefault();window.snakeDir('down')" onclick="window.snakeDir('down')">▼</button>
-      <button ontouchstart="event.preventDefault();window.snakeDir('right')" onclick="window.snakeDir('right')">▶</button>
+    <div id="snakeWrap" class="game-wrap" style="touch-action:none">
+      <canvas class="snake-canvas" id="snCanvas" width="${REAL_SIZE}" height="${REAL_SIZE}"></canvas>
     </div>
-    <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.snakeNew()">Новая</button></div>`;
+    <div class="dpad-big" id="snDpad">
+      <div class="empty"></div>
+      <button data-dir="up" ontouchstart="event.preventDefault();window.snakeDir('up')" onclick="window.snakeDir('up')">▲</button>
+      <div class="empty"></div>
+      <button data-dir="left" ontouchstart="event.preventDefault();window.snakeDir('left')" onclick="window.snakeDir('left')">◀</button>
+      <button class="center" ontouchstart="event.preventDefault();window.snakePause()" onclick="window.snakePause()">⏸</button>
+      <button data-dir="right" ontouchstart="event.preventDefault();window.snakeDir('right')" onclick="window.snakeDir('right')">▶</button>
+      <div class="empty"></div>
+      <button data-dir="down" ontouchstart="event.preventDefault();window.snakeDir('down')" onclick="window.snakeDir('down')">▼</button>
+      <div class="empty"></div>
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <button class="game-btn" onclick="window.snakeNew()">Новая игра</button>
+    </div>
+    <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Управляй кнопками ▲◀▼▶ или свайпами по полю</p>
+  `;
   const canvas=document.getElementById('snCanvas');
-  canvas.style.maxWidth='100%';canvas.style.height='auto';
   const ctx=canvas.getContext('2d');
-  let snake,dir,food,score,alive;
+  const CELL_USE = REAL_CELL;
+  const SIZE_USE = REAL_SIZE;
+  let snake,dir,food,score,alive,paused,gameLoop;
+  
   function init(){
     snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-    dir={x:1,y:0};score=0;alive=true;
+    dir={x:1,y:0};score=0;alive=true;paused=false;
     placeFood();draw();
-    if(window.snakeInterval) clearInterval(window.snakeInterval);
-    window.snakeInterval=setInterval(tick,150);
+    if(gameLoop) clearInterval(gameLoop);
+    gameLoop=setInterval(tick,140);
+    window.snakeInterval=gameLoop;
     setupSwipe();
   }
   function placeFood(){
     while(true){food={x:Math.floor(Math.random()*SIZE),y:Math.floor(Math.random()*SIZE)};if(!snake.some(s=>s.x===food.x&&s.y===food.y)) break;}
   }
   function tick(){
-    if(!alive) return;
+    if(!alive||paused) return;
     const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
     if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE||snake.some(s=>s.x===head.x&&s.y===head.y)){
-      alive=false;clearInterval(window.snakeInterval);
+      alive=false;clearInterval(gameLoop);
       const best=+localStorage.getItem('tg_snakeBest')||0;
       if(score>best) localStorage.setItem('tg_snakeBest',score);
       const bestEl=document.getElementById('snBest');if(bestEl) bestEl.textContent=Math.max(best,score);
-      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE*CELL,SIZE*CELL);
-      ctx.fillStyle='#fff';ctx.font='20px sans-serif';ctx.textAlign='center';
-      ctx.fillText('Игра окончена! Счёт: '+score,SIZE*CELL/2,SIZE*CELL/2);
+      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
+      ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';
+      ctx.fillText('Игра окончена!',SIZE_USE/2,SIZE_USE/2-15);
+      ctx.fillText('Счёт: '+score,SIZE_USE/2,SIZE_USE/2+15);
       return;
     }
     snake.unshift(head);
-    if(head.x===food.x&&head.y===food.y){score++;const el=document.getElementById('snScore');if(el) el.textContent=score;placeFood();}
+    if(head.x===food.x&&head.y===food.y){score++;vibrate(10);const el=document.getElementById('snScore');if(el) el.textContent=score;placeFood();}
     else snake.pop();
     draw();
   }
   function draw(){
-    ctx.fillStyle='#111';ctx.fillRect(0,0,SIZE*CELL,SIZE*CELL);
-    ctx.fillStyle='#e53935';ctx.fillRect(food.x*CELL+2,food.y*CELL+2,CELL-4,CELL-4);
-    snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#4caf50':'#7bc862';ctx.fillRect(s.x*CELL+1,s.y*CELL+1,CELL-2,CELL-2);});
+    ctx.fillStyle='#111';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
+    ctx.fillStyle='#e53935';ctx.fillRect(food.x*CELL_USE+2,food.y*CELL_USE+2,CELL_USE-4,CELL_USE-4);
+    snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#4caf50':'#7bc862';ctx.fillRect(s.x*CELL_USE+1,s.y*CELL_USE+1,CELL_USE-2,CELL_USE-2);});
+    if(paused){
+      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
+      ctx.fillStyle='#fff';ctx.font='bold 24px sans-serif';ctx.textAlign='center';
+      ctx.fillText('ПАУЗА',SIZE_USE/2,SIZE_USE/2);
+    }
   }
   window.snakeDir=d=>{
-    if(!alive) return;
+    if(!alive||paused) return;
+    vibrate(8);
     if(d==='up'&&dir.y!==1) dir={x:0,y:-1};
     else if(d==='down'&&dir.y!==-1) dir={x:0,y:1};
     else if(d==='left'&&dir.x!==1) dir={x:-1,y:0};
     else if(d==='right'&&dir.x!==-1) dir={x:1,y:0};
+  };
+  window.snakePause=()=>{
+    if(!alive) return;
+    paused=!paused;
+    vibrate(15);
+    draw();
   };
   function setupSwipe(){
     const wrap=document.getElementById('snakeWrap');
@@ -1166,23 +1340,23 @@ function startSnake(root){
       if(moved) return;
       const t=e.touches[0];
       const dx=t.clientX-sx,dy=t.clientY-sy;
-      if(Math.abs(dx)<24&&Math.abs(dy)<24) return;
+      if(Math.abs(dx)<20&&Math.abs(dy)<20) return;
       moved=true;
       if(Math.abs(dx)>Math.abs(dy)) window.snakeDir(dx>0?'right':'left');
       else window.snakeDir(dy>0?'down':'up');
     },{passive:true});
-    wrap.addEventListener('touchend',()=>{moved=false;});
   }
   window.snakeNew=init;
   init();
 }
 
+// ----- 2048 (улучшенное управление) -----
 function start2048(root){
-  let grid,score,over;
+  let grid,score,over,paused;
   window.game2048Active=true;
   function init(){
     grid=Array.from({length:4},()=>Array(4).fill(0));
-    score=0;over=false;addTile();addTile();render();setupSwipe();
+    score=0;over=false;paused=false;addTile();addTile();render();setupSwipe();
   }
   function addTile(){
     const empty=[];
@@ -1198,7 +1372,8 @@ function start2048(root){
     return arr;
   }
   function move(dir){
-    if(over||!window.game2048Active) return;
+    if(over||paused||!window.game2048Active) return;
+    vibrate(8);
     const before=JSON.stringify(grid);
     if(dir==='left') grid=grid.map(r=>slide(r));
     if(dir==='right') grid=grid.map(r=>slide(r.reverse()).reverse());
@@ -1227,17 +1402,24 @@ function start2048(root){
       <h2>🧠 2048</h2>
       <div class="game-score"><span>Счёт: ${score}</span><span>Рекорд: ${Math.max(+localStorage.getItem('tg_g2048Best')||0,score)}</span></div>
       <div class="g2048-board" id="g2048Board">${grid.flat().map(v=>`<div class="g2048-cell ${v?'v'+v:''}">${v||''}</div>`).join('')}</div>
-      <div class="dpad" style="grid-template-columns:repeat(3,50px);grid-template-rows:repeat(3,50px);margin-top:12px">
-        <div class="empty"></div><button ontouchstart="event.preventDefault();window.g2048Move('up')" onclick="window.g2048Move('up')">▲</button><div class="empty"></div>
+      <div class="dpad-big" id="g2048Dpad" style="max-width:240px">
+        <div class="empty"></div>
+        <button ontouchstart="event.preventDefault();window.g2048Move('up')" onclick="window.g2048Move('up')">▲</button>
+        <div class="empty"></div>
         <button ontouchstart="event.preventDefault();window.g2048Move('left')" onclick="window.g2048Move('left')">◀</button>
-        <button ontouchstart="event.preventDefault();window.g2048Move('down')" onclick="window.g2048Move('down')">▼</button>
+        <button class="center" ontouchstart="event.preventDefault();window.g2048Pause()" onclick="window.g2048Pause()">${paused?'▶':'⏸'}</button>
         <button ontouchstart="event.preventDefault();window.g2048Move('right')" onclick="window.g2048Move('right')">▶</button>
+        <div class="empty"></div>
+        <button ontouchstart="event.preventDefault();window.g2048Move('down')" onclick="window.g2048Move('down')">▼</button>
+        <div class="empty"></div>
       </div>
-      <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.g2048New()">Новая</button></div>`;
+      <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.g2048New()">Новая</button></div>
+      <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Кнопки или свайпы по полю</p>`;
     const best=+localStorage.getItem('tg_g2048Best')||0;
     if(score>best) localStorage.setItem('tg_g2048Best',score);
   }
   window.g2048Move=move;
+  window.g2048Pause=()=>{paused=!paused;vibrate(15);render();setupSwipe();};
   function setupSwipe(){
     const board=document.getElementById('g2048Board');
     if(!board) return;
