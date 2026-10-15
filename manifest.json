@@ -1,0 +1,39 @@
+{
+  "name": "Telegrand Messenger",
+  "short_name": "Telegrand",
+  "description": "Мессенджер с играми, историями и стикерами",
+  "start_url": "/tg/",
+  "scope": "/tg/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3390ec",
+  "theme_color": "#3390ec",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "communication"],
+  "shortcuts": [
+    {
+      "name": "Чаты",
+      "url": "/tg/?tab=chats",
+      "description": "Открыть чаты"
+    },
+    {
+      "name": "Игры",
+      "url": "/tg/?tab=games",
+      "description": "Открыть игры"
+    }
+  ]
+}
