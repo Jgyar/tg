@@ -6,39 +6,61 @@
 <title>Telegrand</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-:root { --bg:#fff; --bg2:#f4f4f5; --bg3:#e9e9eb; --text:#000; --text2:#707579; --accent:#3390ec; --msg-out:#eeffde; --msg-in:#fff; --border:#e4e4e5; --font-size:15px; --chat-bg: radial-gradient(circle, rgba(128,128,128,.1) 1px, transparent 1px); --chat-bg-size: 24px 24px; }
-[data-theme="dark"] { --bg:#212121; --bg2:#181818; --bg3:#2b2b2b; --text:#fff; --text2:#aaa; --accent:#5288c1; --msg-out:#2b5278; --msg-in:#182533; --border:#303030; }
+:root { 
+  --bg:#fff; --bg2:#f4f4f5; --bg3:#e9e9eb; --text:#000; --text2:#707579; --accent:#3390ec; 
+  --msg-out:#eeffde; --msg-in:#fff; --border:#e4e4e5; --font-size:15px; 
+  --chat-bg: radial-gradient(circle, rgba(128,128,128,.1) 1px, transparent 1px); 
+  --chat-bg-size: 24px 24px;
+}
+[data-theme="dark"] { 
+  --bg:#212121; --bg2:#181818; --bg3:#2b2b2b; --text:#fff; --text2:#aaa; --accent:#5288c1; 
+  --msg-out:#2b5278; --msg-in:#182533; --border:#303030; 
+}
 body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; }
 
+/* ===== Общие анимации ===== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 50% { opacity: .4; } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+
+.fade-in { animation: fadeIn .25s ease; }
+.slide-in { animation: slideIn .3s ease; }
+.scale-in { animation: scaleIn .2s ease; }
+
+/* ===== AUTH ===== */
 #authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: linear-gradient(135deg, #3390ec, #6bb2f5); padding: 20px; }
-.auth-box { background: var(--bg); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.auth-box { background: var(--bg); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn .3s ease; }
 .auth-box h1 { text-align: center; margin-bottom: 8px; font-size: 26px; }
 .auth-box .logo { text-align: center; font-size: 54px; margin-bottom: 10px; }
 .auth-box p.sub { text-align: center; color: var(--text2); margin-bottom: 24px; font-size: 14px; }
 .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--bg3); border-radius: 10px; padding: 4px; }
-.auth-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text2); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.auth-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text2); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: .2s; }
 .auth-tabs button.active { background: var(--accent); color: #fff; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
-.field input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg2); color: var(--text); font-size: 15px; outline: none; }
+.field input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg2); color: var(--text); font-size: 15px; outline: none; transition: .2s; }
 .field input:focus { border-color: var(--accent); }
-.btn-main { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; }
+.btn-main { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; transition: .2s; }
+.btn-main:active { transform: scale(.98); }
 .btn-main:disabled { opacity: .5; }
 .err { color: #e53935; font-size: 13px; text-align: center; margin-top: 12px; min-height: 18px; }
 
+/* ===== APP ===== */
 #app { display: none; height: 100vh; height: 100dvh; }
 .layout { display: flex; height: 100vh; height: 100dvh; }
-.sidebar { width: 340px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar { width: 340px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; transition: transform .3s ease; }
 .sidebar-header { padding: 10px 12px; display: flex; align-items: center; gap: 10px; background: var(--bg); border-bottom: 1px solid var(--border); }
-.avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 16px; cursor: pointer; flex-shrink: 0; position: relative; }
-.online-dot { position: absolute; bottom: -1px; right: -1px; width: 12px; height: 12px; border-radius: 50%; background: #4caf50; border: 2px solid var(--bg); }
+.avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 16px; cursor: pointer; flex-shrink: 0; position: relative; overflow: hidden; background-size: cover; background-position: center; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.online-dot { position: absolute; bottom: -1px; right: -1px; width: 12px; height: 12px; border-radius: 50%; background: #4caf50; border: 2px solid var(--bg); z-index: 2; }
 .sidebar-header .search { flex: 1; padding: 9px 14px; border: none; border-radius: 20px; background: var(--bg3); color: var(--text); outline: none; font-size: 14px; }
 .sidebar-tabs { display: flex; background: var(--bg); border-bottom: 1px solid var(--border); }
-.sidebar-tabs button { flex: 1; padding: 12px 4px; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: 600; font-size: 12px; border-bottom: 2px solid transparent; }
+.sidebar-tabs button { flex: 1; padding: 12px 4px; border: none; background: transparent; color: var(--text2); cursor: pointer; font-weight: 600; font-size: 12px; border-bottom: 2px solid transparent; transition: .2s; }
 .sidebar-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
 .list { flex: 1; overflow-y: auto; }
-.item { display: flex; gap: 12px; padding: 10px 16px; cursor: pointer; align-items: center; }
-.item:hover { background: var(--bg3); }
+.item { display: flex; gap: 12px; padding: 10px 16px; cursor: pointer; align-items: center; transition: background .2s; animation: fadeIn .25s ease; }
+.item:active { background: var(--bg3); }
 .item.active { background: var(--accent); color: #fff; }
 .item.active .sub, .item.active .time { color: rgba(255,255,255,.8); }
 .body { flex: 1; min-width: 0; }
@@ -52,9 +74,40 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .chat-header .info { flex: 1; min-width: 0; }
 .chat-header h3 { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chat-header p { font-size: 12px; color: var(--accent); }
-.icon-btn { background: transparent; border: none; cursor: pointer; font-size: 20px; padding: 8px; border-radius: 50%; color: var(--text2); min-width: 40px; min-height: 40px; }
-.messages { flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 8px; background: var(--bg3); background-image: var(--chat-bg); background-size: var(--chat-bg-size); }
-.msg { max-width: 78%; padding: 8px 12px; border-radius: 12px; word-wrap: break-word; font-size: var(--font-size); position: relative; }
+.icon-btn { background: transparent; border: none; cursor: pointer; font-size: 20px; padding: 8px; border-radius: 50%; color: var(--text2); min-width: 40px; min-height: 40px; transition: .2s; }
+.icon-btn:active { background: var(--bg3); }
+
+/* ===== Обои чата (реально работают) ===== */
+.messages { 
+  flex: 1; 
+  overflow-y: auto; 
+  padding: 16px 12px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  position: relative;
+  transition: background .3s ease;
+}
+.messages::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--chat-bg);
+  background-size: var(--chat-bg-size);
+  opacity: var(--chat-bg-opacity, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+.msg { 
+  max-width: 78%; 
+  padding: 8px 12px; 
+  border-radius: 12px; 
+  word-wrap: break-word; 
+  font-size: var(--font-size); 
+  position: relative; 
+  z-index: 1;
+  animation: slideIn .2s ease;
+}
 .msg.out { align-self: flex-end; background: var(--msg-out); border-bottom-right-radius: 4px; }
 .msg.in { align-self: flex-start; background: var(--msg-in); border-bottom-left-radius: 4px; }
 .msg .author { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
@@ -64,44 +117,85 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .msg-img { max-width: 260px; max-height: 320px; border-radius: 8px; margin: 4px 0; cursor: pointer; display: block; }
 .msg-file { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(128,128,128,.15); border-radius: 8px; margin: 4px 0; text-decoration: none; color: inherit; }
 .msg-sticker { font-size: 72px; line-height: 1; padding: 4px; user-select: none; }
+
+/* ===== Голосовые ===== */
 .msg-voice { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 180px; }
-.voice-play { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.voice-play:active { background: #1a5fa8; }
+.voice-play { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: .2s; }
+.voice-play:active { transform: scale(.9); }
 .voice-wave { flex: 1; height: 24px; display: flex; align-items: center; gap: 2px; }
-.voice-wave span { width: 3px; background: var(--accent); border-radius: 2px; opacity: .5; }
+.voice-wave span { width: 3px; background: var(--accent); border-radius: 2px; opacity: .5; transition: opacity .15s; }
 .voice-wave span.on { opacity: 1; }
+
+/* ===== Видео-кружки ===== */
+.msg-video-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  display: block;
+  margin: 4px auto;
+  background: #000;
+  border: 2px solid var(--accent);
+  transition: transform .2s;
+}
+.msg-video-circle:active { transform: scale(.97); }
+.video-circle-wrap {
+  position: relative;
+  display: inline-block;
+}
+.video-circle-play {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  border: 2px solid #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+
 .msg-edit-input { width: 100%; border: none; background: transparent; color: inherit; font-size: var(--font-size); outline: none; border-bottom: 1px solid var(--accent); }
 
 .reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-.reaction { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 12px; background: rgba(128,128,128,.2); cursor: pointer; font-size: 13px; }
+.reaction { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 12px; background: rgba(128,128,128,.2); cursor: pointer; font-size: 13px; transition: .2s; }
+.reaction:active { transform: scale(.95); }
 .reaction.mine { background: var(--accent); color: #fff; }
 .reaction-add { padding: 3px 8px; border-radius: 12px; background: transparent; border: 1px dashed var(--border); cursor: pointer; font-size: 13px; color: var(--text2); }
 
 .input-bar { padding: 8px 10px 10px; display: flex; gap: 6px; align-items: flex-end; border-top: 1px solid var(--border); background: var(--bg); padding-bottom: max(10px, env(safe-area-inset-bottom)); }
 .input-bar textarea { flex: 1; padding: 10px 14px; border: none; border-radius: 20px; background: var(--bg3); color: var(--text); font-size: var(--font-size); resize: none; max-height: 120px; outline: none; font-family: inherit; min-width: 0; }
-.send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0; }
-.attach-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: transparent; color: var(--text2); font-size: 20px; cursor: pointer; flex-shrink: 0; }
+.send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0; transition: .2s; }
+.send-btn:active { transform: scale(.9); }
+.attach-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: transparent; color: var(--text2); font-size: 20px; cursor: pointer; flex-shrink: 0; transition: .2s; }
+.attach-btn:active { transform: scale(.9); }
 .attach-btn.recording { color: #e53935; animation: pulse 1s infinite; }
-@keyframes pulse { 50% { opacity: .4; } }
 
-.empty-chat { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: var(--text2); text-align: center; padding: 20px; }
+.empty-chat { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: var(--text2); text-align: center; padding: 20px; position: relative; z-index: 1; }
 .empty-chat .big { font-size: 70px; }
 
-.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+/* ===== MODAL ===== */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; padding: 16px; animation: fadeIn .2s; }
 .modal-bg.show { display: flex; }
-.modal { background: var(--bg); border-radius: 16px; padding: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+.modal { background: var(--bg); border-radius: 16px; padding: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; animation: scaleIn .2s; }
 .modal h2 { margin-bottom: 16px; font-size: 20px; }
 .modal .close { position: absolute; top: 12px; right: 12px; font-size: 26px; cursor: pointer; color: var(--text2); border: none; background: none; width: 40px; height: 40px; }
 
 .sticker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 300px; overflow-y: auto; }
-.sticker-grid span { font-size: 36px; cursor: pointer; padding: 6px; text-align: center; border-radius: 8px; }
+.sticker-grid span { font-size: 36px; cursor: pointer; padding: 6px; text-align: center; border-radius: 8px; transition: .15s; }
+.sticker-grid span:active { background: var(--bg3); transform: scale(1.1); }
 
 .attach-panel { display: flex; gap: 8px; padding: 8px 12px; background: var(--bg); border-top: 1px solid var(--border); flex-wrap: wrap; }
-.attach-panel button { padding: 10px 16px; border: none; border-radius: 10px; background: var(--bg3); color: var(--text); cursor: pointer; font-size: 14px; font-weight: 500; }
+.attach-panel button { padding: 10px 16px; border: none; border-radius: 10px; background: var(--bg3); color: var(--text); cursor: pointer; font-size: 14px; font-weight: 500; transition: .2s; }
+.attach-panel button:active { transform: scale(.95); }
 
 .settings-section { background: var(--bg2); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
 .settings-title { padding: 8px 16px; font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
-.settings-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); }
+.settings-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: .15s; }
 .settings-item:last-child { border-bottom: none; }
 .settings-item:active { background: var(--bg3); }
 .settings-item .si-ico { font-size: 22px; width: 32px; text-align: center; }
@@ -114,19 +208,90 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .toggle.on::after { left: 21px; }
 
-.game-card { display: flex; gap: 14px; padding: 16px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; cursor: pointer; align-items: center; border: 1px solid var(--border); }
+/* Превью обоев */
+.wallpaper-preview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.wallpaper-option {
+  height: 80px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+  transition: .2s;
+  background-size: cover;
+  background-position: center;
+}
+.wallpaper-option:active { transform: scale(.96); }
+.wallpaper-option.active { border-color: var(--accent); }
+.wallpaper-option::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 11px;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.wp-dots { background: #e9e9eb; background-image: radial-gradient(circle, rgba(0,0,0,.15) 1.5px, transparent 1.5px); background-size: 16px 16px; }
+[data-theme="dark"] .wp-dots { background: #2b2b2b; background-image: radial-gradient(circle, rgba(255,255,255,.15) 1.5px, transparent 1.5px); }
+.wp-plain { background: #d0d0d0; }
+[data-theme="dark"] .wp-plain { background: #333; }
+.wp-gradient { background: linear-gradient(135deg, #667eea, #764ba2); }
+.wp-green { background: linear-gradient(135deg, #2a6b3f, #4caf50); }
+.wp-sunset { background: linear-gradient(135deg, #ff6b6b, #ffd93d); }
+
+/* ===== Аватар в профиле ===== */
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  border: 3px solid var(--accent);
+  transition: .2s;
+}
+.profile-avatar:active { transform: scale(.95); }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  opacity: 0;
+  transition: .2s;
+}
+.profile-avatar:hover .overlay { opacity: 1; }
+
+/* ===== Игры ===== */
+.game-card { display: flex; gap: 14px; padding: 16px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; cursor: pointer; align-items: center; border: 1px solid var(--border); transition: .2s; animation: fadeIn .3s ease; }
 .game-card:active { transform: scale(.98); }
 .game-ico { font-size: 32px; }
 .game-info h4 { font-size: 15px; margin-bottom: 3px; }
 .game-info p { font-size: 12px; color: var(--text2); }
 .game-score { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 10px 16px; background: var(--bg3); border-radius: 10px; font-weight: 600; font-size: 14px; flex-wrap: wrap; gap: 8px; }
-.game-btn { padding: 10px 20px; border: none; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; font-size: 15px; }
-.game-btn:active { opacity: .8; }
+.game-btn { padding: 10px 20px; border: none; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; font-weight: 600; font-size: 15px; transition: .2s; }
+.game-btn:active { transform: scale(.95); }
 
 .sol-table { background: #2a6b3f; border-radius: 12px; padding: 10px; min-height: 400px; overflow-x: auto; }
 .sol-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 .sol-col { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 44px; }
-.card { width: 44px; height: 62px; border-radius: 5px; background: #fff; border: 1px solid #999; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 3px; cursor: pointer; font-weight: 700; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,.2); font-size: 11px; }
+.card { width: 44px; height: 62px; border-radius: 5px; background: #fff; border: 1px solid #999; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 3px; cursor: pointer; font-weight: 700; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,.2); font-size: 11px; transition: .15s; }
+.card:active { transform: scale(.95); }
 .card.red { color: #e53935; } .card.black { color: #000; }
 .card.back { background: linear-gradient(45deg, #3390ec, #1a5fa8); }
 .card.empty { background: rgba(255,255,255,.15); border: 2px dashed rgba(255,255,255,.4); box-shadow: none; cursor: default; }
@@ -135,64 +300,27 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .card .suit { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 18px; }
 
 .ms-board { display: inline-grid; gap: 2px; background: var(--border); padding: 2px; border-radius: 8px; touch-action: manipulation; }
-.ms-cell { width: 34px; height: 34px; background: var(--bg3); border: none; cursor: pointer; font-weight: 700; font-size: 15px; border-radius: 3px; }
+.ms-cell { width: 34px; height: 34px; background: var(--bg3); border: none; cursor: pointer; font-weight: 700; font-size: 15px; border-radius: 3px; transition: .1s; }
+.ms-cell:active { transform: scale(.9); }
 .ms-cell.open { background: var(--bg2); cursor: default; }
 .ms-cell.mine { background: #e53935; color: #fff; }
 .ms-1 { color: #1976d2; } .ms-2 { color: #388e3c; } .ms-3 { color: #d32f2f; } .ms-4 { color: #7b1fa2; }
 
 .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 320px; margin: 0 auto; }
-.ttt-cell { aspect-ratio: 1; background: var(--bg3); border: none; border-radius: 10px; font-size: 48px; font-weight: 700; cursor: pointer; color: var(--text); }
+.ttt-cell { aspect-ratio: 1; background: var(--bg3); border: none; border-radius: 10px; font-size: 48px; font-weight: 700; cursor: pointer; color: var(--text); transition: .15s; }
+.ttt-cell:active { transform: scale(.93); }
 .ttt-cell.x { color: #3390ec; } .ttt-cell.o { color: #e53935; }
 
-/* Snake */
 .snake-canvas { background: #111; border-radius: 10px; display: block; margin: 0 auto; max-width: 100%; height: auto; touch-action: none; }
-/* Big D-pad для телефона */
-.dpad-big { 
-  display: grid; 
-  grid-template-columns: repeat(3, 1fr); 
-  grid-template-rows: repeat(3, 1fr);
-  gap: 8px; 
-  justify-content: center; 
-  margin: 12px auto 0;
-  max-width: 280px;
-  aspect-ratio: 1;
-}
-.dpad-big button {
-  background: var(--bg3);
-  border: none;
-  border-radius: 16px;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  transition: transform .05s, background .1s;
-  box-shadow: 0 2px 4px rgba(0,0,0,.15);
-}
-.dpad-big button:active { 
-  background: var(--accent); 
-  color: #fff; 
-  transform: scale(.92);
-}
-.dpad-big .empty { 
-  background: transparent; 
-  box-shadow: none;
-  pointer-events: none; 
-}
-.dpad-big .center {
-  background: var(--bg2);
-  font-size: 16px;
-  color: var(--text2);
-}
 
-/* 2048 */
+.dpad-big { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; justify-content: center; margin: 12px auto 0; max-width: 280px; aspect-ratio: 1; }
+.dpad-big button { background: var(--bg3); border: none; border-radius: 16px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; touch-action: manipulation; transition: transform .05s, background .1s; box-shadow: 0 2px 4px rgba(0,0,0,.15); }
+.dpad-big button:active { background: var(--accent); color: #fff; transform: scale(.92); }
+.dpad-big .empty { background: transparent; box-shadow: none; pointer-events: none; }
+.dpad-big .center { background: var(--bg2); font-size: 16px; color: var(--text2); }
+
 .g2048-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; justify-content: center; background: #bbada0; padding: 8px; border-radius: 10px; max-width: 340px; margin: 0 auto; touch-action: none; }
-.g2048-cell { aspect-ratio: 1; background: #cdc1b4; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #776e65; }
+.g2048-cell { aspect-ratio: 1; background: #cdc1b4; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #776e65; transition: .1s; }
 .v2 { background: #eee4da !important; } .v4 { background: #ede0c8 !important; } .v8 { background: #f2b179 !important; color: #fff !important; }
 .v16 { background: #f59563 !important; color: #fff !important; } .v32 { background: #f67c5f !important; color: #fff !important; }
 .v64 { background: #f65e3b !important; color: #fff !important; } .v128 { background: #edcf72 !important; color: #fff !important; font-size: 22px !important; }
@@ -203,24 +331,34 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 [data-theme="dark"] .recording-bar { background: #4a2020; color: #ff8a80; }
 .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: #e53935; animation: pulse 1s infinite; }
 
-/* Кнопка паузы */
-.pause-overlay {
-  position: absolute; inset: 0; background: rgba(0,0,0,.7);
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 10px; color: #fff; font-size: 24px; font-weight: 600;
-  z-index: 5;
+/* Видео-кружок запись */
+.video-record-modal {
+  position: fixed; inset: 0; background: #000; z-index: 200; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
 }
-.game-wrap { position: relative; max-width: 100%; margin: 0 auto; width: fit-content; }
+.video-record-modal video {
+  width: 260px; height: 260px; border-radius: 50%; object-fit: cover; border: 3px solid #fff;
+}
+.video-record-controls { display: flex; gap: 20px; }
+.video-record-controls button {
+  padding: 14px 24px; border-radius: 30px; border: none; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: .2s;
+}
+.video-record-controls .record-start { background: #e53935; color: #fff; }
+.video-record-controls .record-cancel { background: rgba(255,255,255,.2); color: #fff; }
+.video-record-controls .record-send { background: #4caf50; color: #fff; }
+.video-record-timer { color: #fff; font-size: 20px; font-weight: 600; }
 
 @media (max-width: 700px) {
   .sidebar { width: 100%; position: absolute; z-index: 10; height: 100vh; height: 100dvh; }
-  .sidebar.hidden { display: none; }
+  .sidebar.hidden { display: none; transform: translateX(-100%); }
   .main { width: 100%; }
   .msg { max-width: 85%; }
   .card { width: 38px; height: 54px; font-size: 10px; }
   .card .suit { font-size: 15px; }
   .sol-col { min-width: 38px; }
   .ms-cell { width: 32px; height: 32px; }
+  .msg-video-circle { width: 180px; height: 180px; }
 }
 </style>
 </head>
@@ -271,6 +409,7 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 
 <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleFile(this, 'image')">
 <input type="file" id="docInput" style="display:none" onchange="handleFile(this, 'file')">
+<input type="file" id="avatarInput" style="display:none" accept="image/*" onchange="handleAvatarUpload(this)">
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -280,6 +419,31 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser=null, currentProfile=null, profiles={}, chats=[], activeChat=null, chatMessages=[], lastMessages={}, sideTab='chats', channel=null, editingMsgId=null;
+
+// ===== Время по МСК =====
+function formatMoscowTime(dateInput) {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  return date.toLocaleTimeString('ru-RU', {
+    hour: '2-digit', 
+    minute: '2-digit',
+    timeZone: 'Europe/Moscow'
+  });
+}
+function formatMoscowDateTime(dateInput) {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+    timeZone: 'Europe/Moscow'
+  });
+}
+function moscowDateKey(dateInput) {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  return date.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
+}
+function moscowFullDate(dateInput) {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  return date.toLocaleDateString('ru-RU', { day:'2-digit', month:'long', timeZone:'Europe/Moscow' });
+}
 
 const STICKERS=['😀','😂','🥰','😎','🤔','😴','🤯','🥳','😭','🤩','🐶','🐱','🦊','🐼','🦁','🐸','🐵','🦄','🐧','🦋','🍕','🍔','🍟','🍩','🍦','🍎','🍓','🎂','☕','🍺','⚽','🏀','🎮','🎲','🎯','🎨','🎭','🎸','🚀','✈️','❤️','🔥','⭐','✨','💯','👍','👏','🙏','💪','🎉'];
 const REACTIONS=['👍','❤️','😂','🔥','😢','😮','🎉','👏','🤔','💯'];
@@ -293,6 +457,15 @@ const GAMES=[
   {id:'2048',icon:'🧠',title:'2048',desc:'Свайпы + D-pad'}
 ];
 
+const WALLPAPERS = {
+  dots: { label:'Точки', css:'radial-gradient(circle, rgba(128,128,128,.15) 1.5px, transparent 1.5px)', size:'16px 16px' },
+  plain: { label:'Сплошной', css:'none', size:'auto' },
+  gradient: { label:'Градиент', css:'linear-gradient(135deg, rgba(102,126,234,.15), rgba(118,75,162,.15))', size:'auto' },
+  green: { label:'Зелёный', css:'linear-gradient(135deg, rgba(42,107,63,.15), rgba(76,175,80,.15))', size:'auto' },
+  sunset: { label:'Закат', css:'linear-gradient(135deg, rgba(255,107,107,.15), rgba(255,217,61,.15))', size:'auto' },
+  none: { label:'Без обоев', css:'none', size:'auto' }
+};
+
 let settings = JSON.parse(localStorage.getItem('tg_settings') || 'null') || {
   theme:'light', fontSize:15, wallpaper:'dots',
   notifications:true, sound:true, vibration:true,
@@ -302,9 +475,9 @@ let settings = JSON.parse(localStorage.getItem('tg_settings') || 'null') || {
 function applySettings(){
   document.documentElement.setAttribute('data-theme', settings.theme);
   document.documentElement.style.setProperty('--font-size', settings.fontSize+'px');
-  const walls={dots:'radial-gradient(circle, rgba(128,128,128,.1) 1px, transparent 1px)',plain:'none',gradient:'linear-gradient(135deg, rgba(51,144,236,.08), rgba(107,178,245,.08))'};
-  document.documentElement.style.setProperty('--chat-bg', walls[settings.wallpaper]||walls.dots);
-  document.documentElement.style.setProperty('--chat-bg-size', settings.wallpaper==='dots'?'24px 24px':'auto');
+  const wp = WALLPAPERS[settings.wallpaper] || WALLPAPERS.dots;
+  document.documentElement.style.setProperty('--chat-bg', wp.css);
+  document.documentElement.style.setProperty('--chat-bg-size', wp.size);
 }
 applySettings();
 
@@ -312,6 +485,17 @@ function vibrate(ms=15){
   if (settings.vibration && navigator.vibrate) {
     try { navigator.vibrate(ms); } catch(e){}
   }
+}
+
+// ============ АВАТАР ============
+function renderAvatarHTML(profile, size='42px', showOnline=false) {
+  const fontSize = size === '42px' ? '16px' : size === '80px' ? '32px' : '14px';
+  const initial = (profile.name || '?')[0].toUpperCase();
+  
+  if (profile.avatar_url) {
+    return `<div class="avatar" style="width:${size};height:${size};background-image:url('${profile.avatar_url}')">${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
+  }
+  return `<div class="avatar" style="width:${size};height:${size};font-size:${fontSize};background:${profile.color||'#3390ec'}">${profile.avatar_emoji || initial}${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
 }
 
 // ============ AUTH ============
@@ -396,14 +580,17 @@ async function loadProfile(){
     currentProfile=created;
   }
   await supabase.from('profiles').update({online:true,last_seen:new Date().toISOString()}).eq('id',currentUser.id);
+  // Применить обои из профиля пользователя
+  if (currentProfile.chat_wallpaper && WALLPAPERS[currentProfile.chat_wallpaper]) {
+    settings.wallpaper = currentProfile.chat_wallpaper;
+    localStorage.setItem('tg_settings', JSON.stringify(settings));
+    applySettings();
+  }
 }
 
 // ============ APP ============
 async function initApp(){
-  const initial=currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase();
-  const av=document.getElementById('myAvatar');
-  av.textContent=initial;
-  av.style.background=currentProfile.color||'#3390ec';
+  updateMyAvatar();
   await loadAllProfiles();
   await loadMyChats();
   subscribeRealtime();
@@ -411,6 +598,20 @@ async function initApp(){
   window.addEventListener('beforeunload',()=>{
     if(currentUser) supabase.from('profiles').update({online:false,last_seen:new Date().toISOString()}).eq('id',currentUser.id);
   });
+}
+
+function updateMyAvatar(){
+  const av=document.getElementById('myAvatar');
+  if (currentProfile.avatar_url) {
+    av.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+    av.style.backgroundSize = 'cover';
+    av.style.backgroundPosition = 'center';
+    av.textContent = '';
+  } else {
+    av.style.backgroundImage = '';
+    av.textContent = currentProfile.avatar_emoji || currentProfile.name[0].toUpperCase();
+    av.style.background = currentProfile.color || '#3390ec';
+  }
 }
 
 async function loadAllProfiles(){
@@ -467,7 +668,12 @@ window.switchSide = tab => {
   document.getElementById('tabChats').classList.toggle('active',tab==='chats');
   document.getElementById('tabUsers').classList.toggle('active',tab==='users');
   document.getElementById('tabGames').classList.toggle('active',tab==='games');
-  renderList();
+  const el = document.getElementById('list');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    renderList();
+    el.style.opacity = '1';
+  }, 100);
 };
 
 function renderList(){
@@ -482,9 +688,9 @@ function renderList(){
     });
     el.innerHTML=sorted.map(c=>{
       const last=lastMessages[c.id];
-      const time=last?new Date(last.created_at).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}):'';
+      const time=last?formatMoscowTime(last.created_at):'';
       const active=activeChat&&activeChat.id===c.id?'active':'';
-      let name,initial,color,isOnline=false;
+      let name,initial,color,isOnline=false,avatarUrl=null;
       if(c.type==='direct'){
         const otherId=c.members.find(m=>m!==currentUser.id);
         const other=profiles[otherId]||{};
@@ -492,11 +698,15 @@ function renderList(){
         initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
         color=other.color||'#3390ec';
         isOnline=!!other.online;
+        avatarUrl=other.avatar_url;
       } else {name=c.name||'Группа';initial='👥';color='#7bc862';}
       if(q&&!name.toLowerCase().includes(q)) return '';
       const preview=last?(last.user_id===currentUser.id?'Вы: ':'')+previewText(last):'Нет сообщений';
+      const avatarHtml = avatarUrl 
+        ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}')">${isOnline?'<div class="online-dot"></div>':''}</div>`
+        : `<div class="avatar" style="background:${color}">${initial}${isOnline?'<div class="online-dot"></div>':''}</div>`;
       return `<div class="item ${active}" onclick="openChat(${c.id})">
-        <div class="avatar" style="background:${color}">${initial}${isOnline?'<div class="online-dot"></div>':''}</div>
+        ${avatarHtml}
         <div class="body"><div class="name">${escapeHtml(name)}</div><div class="sub">${escapeHtml(preview).slice(0,50)}</div></div>
         <div class="time">${time}</div>
       </div>`;
@@ -505,12 +715,16 @@ function renderList(){
     const others=Object.values(profiles).filter(p=>p.id!==currentUser.id);
     if(!others.length){el.innerHTML='<div class="empty-list">Пока никого нет.<br>Пусть друзья зарегистрируются!</div>';return;}
     const filtered=others.filter(p=>!q||(p.name||'').toLowerCase().includes(q)||(p.username||'').toLowerCase().includes(q));
-    el.innerHTML=filtered.map(p=>`
+    el.innerHTML=filtered.map(p=>{
+      const avatarHtml = p.avatar_url
+        ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')">${p.online?'<div class="online-dot"></div>':''}</div>`
+        : `<div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>`;
+      return `
       <div class="item" onclick="startDirect('${p.id}')">
-        <div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>
+        ${avatarHtml}
         <div class="body"><div class="name">${escapeHtml(p.name||p.username)}</div><div class="sub">@${escapeHtml(p.username)}${p.online?' · в сети':''}</div></div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   } else {
     el.innerHTML=GAMES.map(g=>`
       <div class="game-card" onclick="openGame('${g.id}')">
@@ -523,6 +737,7 @@ function renderList(){
 
 function previewText(m){
   if(m.type==='voice') return '🎤 Голосовое';
+  if(m.type==='video') return '🎬 Видео-кружок';
   if(m.type==='image') return '🖼 Фото';
   if(m.type==='file') return '📎 '+(m.file_name||'Файл');
   if(m.type==='sticker') return m.text+' Стикер';
@@ -590,20 +805,25 @@ function renderMain(){
   const main=document.getElementById('mainArea');
   const chat=activeChat;
   if(!chat){main.innerHTML='<div class="empty-chat"><div class="big">💬</div><p>Выбери чат слева</p></div>';return;}
-  let name,initial,color,sub;
+  let name,initial,color,sub,avatarUrl=null;
   if(chat.type==='direct'){
     const otherId=chat.members.find(m=>m!==currentUser.id);
     const other=profiles[otherId]||{};
     name=other.name||'Пользователь';
     initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
     color=other.color||'#3390ec';
-    sub=other.online?'в сети':(other.last_seen?'был(а) '+new Date(other.last_seen).toLocaleString('ru',{hour:'2-digit',minute:'2-digit'}):'не в сети');
+    sub=other.online?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
+    avatarUrl=other.avatar_url;
   } else {name=chat.name||'Группа';initial='👥';color='#7bc862';sub=chat.members.length+' участников';}
 
+  const avatarHtml = avatarUrl
+    ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}')"></div>`
+    : `<div class="avatar" style="background:${color}">${initial}</div>`;
+
   main.innerHTML=`
-    <div class="chat-header">
+    <div class="chat-header fade-in">
       <button class="icon-btn" onclick="backToList()">←</button>
-      <div class="avatar" style="background:${color}">${initial}</div>
+      ${avatarHtml}
       <div class="info"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(sub)}</p></div>
     </div>
     <div class="messages" id="messages">${renderMessagesHTML()}</div>
@@ -619,9 +839,16 @@ function renderMain(){
 
 function renderMessagesHTML(){
   if(!chatMessages.length) return '<div class="empty-chat"><div class="big">💬</div><p>Начни переписку</p></div>';
+  let lastDate = '';
   return chatMessages.map(m=>{
     const out=m.user_id===currentUser.id;
-    const time=new Date(m.created_at).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+    const time=formatMoscowTime(m.created_at);
+    const dateKey = moscowDateKey(m.created_at);
+    let dateSep = '';
+    if (dateKey !== lastDate) {
+      dateSep = `<div style="text-align:center;color:var(--text2);font-size:12px;margin:12px 0 8px;position:relative;z-index:1"><span style="background:var(--bg3);padding:4px 12px;border-radius:12px">${moscowFullDate(m.created_at)}</span></div>`;
+      lastDate = dateKey;
+    }
     const author=!out&&activeChat.type==='group'?`<div class="author">${escapeHtml(profiles[m.user_id]?.name||m.username||'?')}</div>`:'';
     const isEditing=editingMsgId===m.id;
     let content='';
@@ -630,12 +857,13 @@ function renderMessagesHTML(){
     else if(m.type==='image') content=`<img class="msg-img" src="${m.data}" onclick="viewImage('${m.id}')" alt="фото">`;
     else if(m.type==='file') content=`<a class="msg-file" href="${m.data}" download="${escapeHtml(m.file_name||'file')}"><div style="font-size:28px">📎</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500">${escapeHtml(m.file_name||'Файл')}</div><div style="font-size:12px;color:var(--text2)">${formatSize(m.file_size||0)}</div></div></a>`;
     else if(m.type==='voice') content=`<div class="msg-voice"><button class="voice-play" onclick="playVoice('${m.id}')" id="play_${m.id}">▶</button><div class="voice-wave" id="wave_${m.id}">${Array(24).fill(0).map(()=>`<span style="height:${6+Math.random()*18}px"></span>`).join('')}</div><div style="font-size:12px;color:var(--text2)">${m.duration?Math.floor(m.duration/60)+':'+String(m.duration%60).padStart(2,'0'):'0:00'}</div></div>`;
+    else if(m.type==='video') content=`<div style="text-align:center"><video class="msg-video-circle" src="${m.data}" onclick="playVideoCircle(this)" playsinline muted></video></div>`;
     else content=`<div class="text">${escapeHtml(m.text||'').replace(/\n/g,'<br>')}</div>`;
 
     const reacts=m.reactions||{};
     const reactsHtml=renderReactionsHTML(m,reacts);
     const actions=out?`<span class="del" onclick="event.stopPropagation();${isEditing?`saveEdit(${m.id})`:`editMsg(${m.id})`}">${isEditing?'💾':'✏️'}</span><span class="del" onclick="event.stopPropagation();deleteMsg(${m.id})">🗑</span>`:'';
-    return `<div class="msg ${out?'out':'in'}">${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${actions}</div></div>`;
+    return `${dateSep}<div class="msg ${out?'out':'in'}">${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${actions}</div></div>`;
   }).join('');
 }
 
@@ -653,6 +881,19 @@ function renderMessages(){const el=document.getElementById('messages');if(el)el.
 function scrollBottom(){const box=document.getElementById('messages');if(box)box.scrollTop=box.scrollHeight;}
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+window.playVideoCircle = video => {
+  vibrate(10);
+  if (video.paused) {
+    document.querySelectorAll('.msg-video-circle').forEach(v => { if (v !== video) { v.pause(); v.currentTime = 0; v.muted = true; }});
+    video.muted = false;
+    video.play();
+  } else {
+    video.pause();
+    video.currentTime = 0;
+    video.muted = true;
+  }
+};
 
 window.sendMessage = async () => {
   const inp=document.getElementById('msgInput');
@@ -706,7 +947,8 @@ window.openAttachPanel = () => {
   slot.innerHTML=`
     <button onclick="document.getElementById('fileInput').click();closePopup()">🖼 Фото</button>
     <button onclick="document.getElementById('docInput').click();closePopup()">📎 Файл</button>
-    <button onclick="closePopup();openStickers()">🎨 Стикер</button>`;
+    <button onclick="closePopup();openStickers()">🎨 Стикер</button>
+    <button onclick="closePopup();startVideoRecord()">🎬 Кружок</button>`;
   document.body.appendChild(slot);
 };
 
@@ -723,6 +965,115 @@ window.sendSticker = async emoji => {
   closePopup();
   vibrate(15);
   await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,type:'sticker',text:emoji});
+};
+
+// ============ ВИДЕО-КРУЖОК ============
+let videoStream = null, mediaRecorderVideo = null, videoChunks = [], videoRecordTimer = null, videoRecordStart = 0, videoModalEl = null;
+
+window.startVideoRecord = async () => {
+  try {
+    videoStream = await navigator.mediaDevices.getUserMedia({ 
+      video: { width: 480, height: 480, facingMode: 'user' }, 
+      audio: true 
+    });
+    videoModalEl = document.createElement('div');
+    videoModalEl.className = 'video-record-modal';
+    videoModalEl.innerHTML = `
+      <video id="videoPreview" autoplay muted playsinline></video>
+      <div class="video-record-timer" id="videoTimer">0:00</div>
+      <div class="video-record-controls">
+        <button class="record-cancel" onclick="cancelVideoRecord()">Отмена</button>
+        <button class="record-start" id="recordStartBtn" onclick="startRecordingVideo()">● Запись</button>
+        <button class="record-send" id="recordSendBtn" onclick="stopAndSendVideo()" style="display:none">Отправить</button>
+      </div>
+    `;
+    document.body.appendChild(videoModalEl);
+    document.getElementById('videoPreview').srcObject = videoStream;
+  } catch(e) {
+    alert('Нет доступа к камере: ' + e.message);
+  }
+};
+
+window.startRecordingVideo = () => {
+  if (!videoStream) return;
+  videoChunks = [];
+  let mimeType = 'video/webm;codecs=vp9,opus';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4';
+  
+  try {
+    mediaRecorderVideo = new MediaRecorder(videoStream, { mimeType });
+  } catch(e) {
+    alert('Камера не поддерживает запись видео');
+    return;
+  }
+  mediaRecorderVideo.ondataavailable = e => videoChunks.push(e.data);
+  mediaRecorderVideo.onstop = () => processVideoBlob();
+  mediaRecorderVideo.start();
+  videoRecordStart = Date.now();
+  document.getElementById('recordStartBtn').style.display = 'none';
+  document.getElementById('recordSendBtn').style.display = 'inline-block';
+  vibrate(30);
+  
+  videoRecordTimer = setInterval(() => {
+    const t = Math.round((Date.now() - videoRecordStart) / 1000);
+    const el = document.getElementById('videoTimer');
+    if (el) {
+      el.textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+      if (t >= 15) { stopAndSendVideo(); }
+    }
+  }, 200);
+};
+
+window.stopAndSendVideo = () => {
+  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') {
+    mediaRecorderVideo.stop();
+  }
+  if (videoRecordTimer) clearInterval(videoRecordTimer);
+};
+
+async function processVideoBlob() {
+  const blob = new Blob(videoChunks, { type: 'video/webm' });
+  const duration = Math.round((Date.now() - videoRecordStart) / 1000);
+  
+  if (videoStream) {
+    videoStream.getTracks().forEach(t => t.stop());
+    videoStream = null;
+  }
+  if (videoModalEl) { videoModalEl.remove(); videoModalEl = null; }
+  
+  if (blob.size > 800*1024) {
+    alert('Кружок слишком большой. Запиши короче (макс 10-15 сек).');
+    return;
+  }
+  if (blob.size < 1000) {
+    alert('Запись слишком короткая');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    await supabase.from('messages').insert({
+      chat_id: activeChat.id,
+      user_id: currentUser.id,
+      username: currentProfile.username,
+      type: 'video',
+      data: ev.target.result,
+      duration
+    });
+    vibrate(20);
+  };
+  reader.readAsDataURL(blob);
+}
+
+window.cancelVideoRecord = () => {
+  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') {
+    mediaRecorderVideo.onstop = null;
+    mediaRecorderVideo.stop();
+  }
+  if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
+  if (videoModalEl) { videoModalEl.remove(); videoModalEl = null; }
+  if (videoRecordTimer) clearInterval(videoRecordTimer);
 };
 
 window.handleFile = async (input,kind) => {
@@ -753,81 +1104,26 @@ window.viewImage = id => {
   document.body.appendChild(p);
 };
 
-// ============ FIXED VOICE PLAYER ============
 window.playVoice = id => {
-  console.log('=== playVoice вызван с id:', id);
-  console.log('chatMessages:', chatMessages.length, 'сообщений');
-  
   const m = chatMessages.find(x => String(x.id) === String(id));
-  if (!m) {
-    alert('Сообщение не найдено. Перезайди в чат.');
-    return;
-  }
-  console.log('Сообщение найдено, data длина:', m.data ? m.data.length : 'null');
-  
-  if (!m.data) {
-    alert('Нет данных голосового');
-    return;
-  }
-  
+  if (!m || !m.data) { alert('Нет данных'); return; }
   const btn = document.getElementById('play_' + id);
   const wave = document.getElementById('wave_' + id);
-  
-  // Остановить предыдущее
-  if (window.currentAudio) {
-    try { window.currentAudio.pause(); } catch(e){}
-    window.currentAudio = null;
-  }
-  
+  if (window.currentAudio) { try { window.currentAudio.pause(); } catch(e){} }
   try {
     const audio = new Audio(m.data);
-    audio.volume = 1.0;
     window.currentAudio = audio;
-    
-    audio.onplay = () => {
-      console.log('▶ Playback started');
-      if (btn) btn.textContent = '⏸';
-      vibrate(10);
-    };
-    
-    audio.onended = () => {
-      console.log('⏹ Playback ended');
-      if (btn) btn.textContent = '▶';
-      if (wave) Array.from(wave.children).forEach(s => s.classList.remove('on'));
-    };
-    
-    audio.onerror = (e) => {
-      console.error('❌ Audio error:', e, audio.error);
-      const errCode = audio.error ? audio.error.code : '?';
-      const errMsg = audio.error ? audio.error.message : 'неизвестно';
-      alert('Ошибка воспроизведения (код ' + errCode + '): ' + errMsg + 
-        '\n\nВозможно, формат не поддерживается. Попробуй другую запись или перезагрузи страницу.');
-      if (btn) btn.textContent = '▶';
-    };
-    
+    audio.onplay = () => { if (btn) btn.textContent = '⏸'; vibrate(10); };
+    audio.onended = () => { if (btn) btn.textContent = '▶'; if (wave) Array.from(wave.children).forEach(s => s.classList.remove('on')); };
+    audio.onerror = () => { alert('Ошибка воспроизведения'); if (btn) btn.textContent = '▶'; };
     audio.ontimeupdate = () => {
       if (!wave) return;
       const pct = audio.currentTime / (audio.duration || 1);
       const activeBars = Math.floor(pct * wave.children.length);
       Array.from(wave.children).forEach((s,i) => s.classList.toggle('on', i < activeBars));
     };
-    
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => console.log('✅ play() resolved'))
-        .catch(err => {
-          console.error('❌ play() rejected:', err);
-          alert('Не могу воспроизвести: ' + err.message + 
-            '\n\nЕсли звук не работает — проверь громкость телефона.');
-          if (btn) btn.textContent = '▶';
-        });
-    }
-  } catch(e) {
-    console.error('❌ Exception:', e);
-    alert('Ошибка: ' + e.message);
-    if (btn) btn.textContent = '▶';
-  }
+    audio.play().catch(err => { alert('Не могу воспроизвести: ' + err.message); if (btn) btn.textContent = '▶'; });
+  } catch(e) { alert('Ошибка: ' + e.message); }
 };
 
 // ============ VOICE ============
@@ -837,15 +1133,11 @@ window.toggleVoiceRecord = async () => {
   if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();return;}
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    // Определить поддерживаемый формат
     let mimeType = 'audio/webm';
     if (!MediaRecorder.isTypeSupported(mimeType)) {
       if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
-      else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
       else mimeType = '';
     }
-    console.log('Запись в формате:', mimeType || 'по умолчанию');
-    
     mediaRecorder = mimeType ? new MediaRecorder(stream, {mimeType}) : new MediaRecorder(stream);
     audioChunks=[];
     mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
@@ -853,9 +1145,8 @@ window.toggleVoiceRecord = async () => {
       stream.getTracks().forEach(t=>t.stop());
       const blob=new Blob(audioChunks,{type:mimeType || 'audio/webm'});
       const duration=Math.round((Date.now()-recordStartTime)/1000);
-      console.log('Записано байт:', blob.size, 'длительность:', duration);
-      if(blob.size>800*1024){alert('Слишком длинное (макс ~30 сек)');restoreMicBtn();return;}
-      if(blob.size < 1000){alert('Запись слишком короткая');restoreMicBtn();return;}
+      if(blob.size>800*1024){alert('Слишком длинное');restoreMicBtn();return;}
+      if(blob.size < 1000){alert('Слишком коротко');restoreMicBtn();return;}
       const reader=new FileReader();
       reader.onload=async ev=>{
         await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,type:'voice',data:ev.target.result,duration});
@@ -868,7 +1159,7 @@ window.toggleVoiceRecord = async () => {
     recordStartTime=Date.now();
     showRecordingUI();
   } catch(e){
-    alert('Нет доступа к микрофону.\n\nРазреши микрофон в настройках браузера:\nChrome → ⋮ → Настройки → Настройки сайтов → Микрофон');
+    alert('Нет доступа к микрофону. Разреши в настройках браузера.');
   }
 };
 
@@ -920,29 +1211,44 @@ window.cancelRecording = () => {
 // ============ SETTINGS ============
 window.openSettings = () => {
   const modal=document.getElementById('modalBox');
+  const avatarHtml = currentProfile.avatar_url
+    ? `<img src="${currentProfile.avatar_url}">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;background:${currentProfile.color||'#3390ec'}">${currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase()}</div>`;
+  
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <h2>⚙️ Настройки</h2>
     <div class="settings-section">
       <div class="settings-title">Профиль</div>
       <div style="text-align:center;padding:16px">
-        <div class="avatar" style="width:80px;height:80px;font-size:32px;margin:0 auto 10px;background:${currentProfile.color||'#3390ec'}" onclick="pickAvatarEmoji()">${currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase()}</div>
+        <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+          ${avatarHtml}
+          <div class="overlay">📷</div>
+        </div>
         <div style="font-size:18px;font-weight:600">${escapeHtml(currentProfile.name)}</div>
         <div style="color:var(--text2);font-size:13px">@${escapeHtml(currentProfile.username)}</div>
         <div style="color:var(--text2);font-size:12px;margin-top:4px">${escapeHtml(currentUser.email)}</div>
       </div>
-      <div class="settings-item" onclick="editName()"><div class="si-ico">👤</div><div class="si-body"><div class="si-title">Имя</div></div><div class="si-arrow">›</div></div>
+      <div class="settings-item" onclick="document.getElementById('avatarInput').click()">
+        <div class="si-ico">📸</div>
+        <div class="si-body"><div class="si-title">Загрузить фото</div><div class="si-desc">Заменить аватарку на картинку</div></div>
+        <div class="si-arrow">›</div>
+      </div>
+      <div class="settings-item" onclick="editName()"><div class="si-ico">👤</div><div class="si-body"><div class="si-title">Изменить имя</div></div><div class="si-arrow">›</div></div>
       <div class="settings-item" onclick="pickAvatarEmoji()"><div class="si-ico">😀</div><div class="si-body"><div class="si-title">Аватар-эмодзи</div></div><div class="si-arrow">›</div></div>
+      ${currentProfile.avatar_url ? `<div class="settings-item" onclick="removeAvatar()"><div class="si-ico">🗑</div><div class="si-body"><div class="si-title" style="color:#e53935">Удалить фото</div></div></div>` : ''}
     </div>
     <div class="settings-section">
       <div class="settings-title">Внешний вид</div>
       <div class="settings-item"><div class="si-ico">${settings.theme==='dark'?'🌙':'☀️'}</div><div class="si-body"><div class="si-title">Тёмная тема</div></div><div class="toggle ${settings.theme==='dark'?'on':''}" onclick="toggleSetting('theme','dark','light')"></div></div>
       <div class="settings-item" style="flex-wrap:wrap"><div class="si-ico">🔤</div><div class="si-body"><div class="si-title">Размер шрифта</div><div class="si-desc">${settings.fontSize} px</div></div><input type="range" min="12" max="22" value="${settings.fontSize}" style="width:100%;margin-top:10px" oninput="setFontSize(this.value)"></div>
-      <div class="settings-item" style="flex-wrap:wrap"><div class="si-ico">🖼</div><div class="si-body"><div class="si-title">Обои чата</div></div>
-        <div style="width:100%;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <button class="game-btn" style="background:${settings.wallpaper==='dots'?'var(--accent)':'var(--bg3)'};color:${settings.wallpaper==='dots'?'#fff':'var(--text)'}" onclick="setWallpaper('dots')">Точки</button>
-          <button class="game-btn" style="background:${settings.wallpaper==='plain'?'var(--accent)':'var(--bg3)'};color:${settings.wallpaper==='plain'?'#fff':'var(--text)'}" onclick="setWallpaper('plain')">Сплошной</button>
-          <button class="game-btn" style="background:${settings.wallpaper==='gradient'?'var(--accent)':'var(--bg3)'};color:${settings.wallpaper==='gradient'?'#fff':'var(--text)'}" onclick="setWallpaper('gradient')">Градиент</button>
+      <div class="settings-item" style="flex-wrap:wrap">
+        <div class="si-ico">🖼</div>
+        <div class="si-body"><div class="si-title">Обои чата</div><div class="si-desc">Сейчас: ${WALLPAPERS[settings.wallpaper]?.label || 'Точки'}</div></div>
+        <div class="wallpaper-preview">
+          ${Object.entries(WALLPAPERS).map(([key, wp]) => `
+            <div class="wallpaper-option wp-${key} ${settings.wallpaper===key?'active':''}" data-label="${wp.label}" onclick="setWallpaper('${key}')"></div>
+          `).join('')}
         </div>
       </div>
     </div>
@@ -961,6 +1267,41 @@ window.openSettings = () => {
   document.getElementById('modalBg').classList.add('show');
 };
 
+window.handleAvatarUpload = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 200*1024) {
+    alert('Картинка слишком большая (макс 200 КБ). Сожми или выбери поменьше.');
+    input.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const data = ev.target.result;
+    const { error } = await supabase.from('profiles').update({ avatar_url: data }).eq('id', currentUser.id);
+    if (error) { alert('Ошибка: ' + error.message); return; }
+    currentProfile.avatar_url = data;
+    updateMyAvatar();
+    await loadAllProfiles();
+    renderList();
+    if (activeChat) renderMain();
+    openSettings();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+};
+
+window.removeAvatar = async () => {
+  if (!confirm('Удалить аватарку?')) return;
+  await supabase.from('profiles').update({ avatar_url: null }).eq('id', currentUser.id);
+  currentProfile.avatar_url = null;
+  updateMyAvatar();
+  await loadAllProfiles();
+  renderList();
+  if (activeChat) renderMain();
+  openSettings();
+};
+
 window.toggleSetting = (key,on,off) => {
   settings[key]=settings[key]===on?off:on;
   localStorage.setItem('tg_settings',JSON.stringify(settings));
@@ -974,10 +1315,16 @@ window.setFontSize = v => {
   applySettings();
 };
 
-window.setWallpaper = name => {
-  settings.wallpaper=name;
-  localStorage.setItem('tg_settings',JSON.stringify(settings));
+window.setWallpaper = async name => {
+  settings.wallpaper = name;
+  localStorage.setItem('tg_settings', JSON.stringify(settings));
   applySettings();
+  // Сохранить в профиль, чтобы применялось везде
+  try {
+    await supabase.from('profiles').update({ chat_wallpaper: name }).eq('id', currentUser.id);
+    currentProfile.chat_wallpaper = name;
+  } catch(e){}
+  vibrate(15);
   openSettings();
 };
 
@@ -986,7 +1333,7 @@ window.editName = async () => {
   if(v&&v.trim()){
     await supabase.from('profiles').update({name:v.trim()}).eq('id',currentUser.id);
     currentProfile.name=v.trim();
-    document.getElementById('myAvatar').textContent=currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase();
+    updateMyAvatar();
     openSettings();
   }
 };
@@ -995,16 +1342,18 @@ window.pickAvatarEmoji = async () => {
   const v=prompt('Введи эмодзи:\n'+AVATAR_EMOJIS.join(' '),currentProfile.avatar_emoji||'😀');
   if(v&&v.trim()){
     const emoji=v.trim().slice(0,3);
-    await supabase.from('profiles').update({avatar_emoji:emoji}).eq('id',currentUser.id);
+    // Убираем фото если было
+    await supabase.from('profiles').update({avatar_emoji:emoji, avatar_url:null}).eq('id',currentUser.id);
     currentProfile.avatar_emoji=emoji;
-    document.getElementById('myAvatar').textContent=emoji;
+    currentProfile.avatar_url=null;
+    updateMyAvatar();
     openSettings();
   }
 };
 
 window.closeModal = () => {document.getElementById('modalBg').classList.remove('show');closePopup();};
 
-// ============ GAMES ============
+// ============ GAMES (без изменений) ============
 window.openGame = id => {
   const modal=document.getElementById('modalBox');
   modal.innerHTML=`<button class="close" onclick="closeModal()">×</button><div id="gameRoot"></div>`;
@@ -1017,7 +1366,6 @@ window.openGame = id => {
   if(id==='2048') start2048(root);
 };
 
-// ----- SOLITAIRE -----
 function startSolitaire(root){
   const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   let deck=[],cols=[[],[],[],[],[],[],[]],foundations=[[],[],[],[]],stock=[];
@@ -1097,7 +1445,6 @@ function startSolitaire(root){
   newGame();
 }
 
-// ----- MINESWEEPER -----
 function startMines(root){
   const SIZE=9,MINES=10;
   let board,revealed,flagged,over,firstClick;
@@ -1182,7 +1529,6 @@ function startMines(root){
   init();
 }
 
-// ----- TTT -----
 function startTTT(root){
   let board=Array(9).fill(''),human='X',ai='O',over=false,wins=0,losses=0;
   function render(){
@@ -1238,7 +1584,6 @@ function startTTT(root){
   render();
 }
 
-// ----- SNAKE (улучшенное управление) -----
 function startSnake(root){
   const SIZE=20,CELL=16;
   const CW = Math.min(SIZE*CELL, window.innerWidth - 60, 360);
@@ -1251,7 +1596,7 @@ function startSnake(root){
       <span>Счёт: <span id="snScore">0</span></span>
       <span>Рекорд: <span id="snBest">${localStorage.getItem('tg_snakeBest')||0}</span></span>
     </div>
-    <div id="snakeWrap" class="game-wrap" style="touch-action:none">
+    <div id="snakeWrap" style="position:relative;max-width:100%;margin:0 auto;width:fit-content;touch-action:none">
       <canvas class="snake-canvas" id="snCanvas" width="${REAL_SIZE}" height="${REAL_SIZE}"></canvas>
     </div>
     <div class="dpad-big" id="snDpad">
@@ -1268,7 +1613,7 @@ function startSnake(root){
     <div style="text-align:center;margin-top:12px">
       <button class="game-btn" onclick="window.snakeNew()">Новая игра</button>
     </div>
-    <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Управляй кнопками ▲◀▼▶ или свайпами по полю</p>
+    <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Управляй кнопками ▲◀▼▶ или свайпами</p>
   `;
   const canvas=document.getElementById('snCanvas');
   const ctx=canvas.getContext('2d');
@@ -1350,7 +1695,6 @@ function startSnake(root){
   init();
 }
 
-// ----- 2048 (улучшенное управление) -----
 function start2048(root){
   let grid,score,over,paused;
   window.game2048Active=true;
@@ -1440,4 +1784,4 @@ function start2048(root){
 }
 </script>
 </body>
-  </html>
+</html>
