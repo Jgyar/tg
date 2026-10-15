@@ -9,26 +9,22 @@
 :root { 
   --bg:#fff; --bg2:#f4f4f5; --bg3:#e9e9eb; --text:#000; --text2:#707579; --accent:#3390ec; 
   --msg-out:#eeffde; --msg-in:#fff; --border:#e4e4e5; --font-size:15px; 
-  --chat-bg: radial-gradient(circle, rgba(128,128,128,.1) 1px, transparent 1px); 
-  --chat-bg-size: 24px 24px;
+  --chat-bg-image: radial-gradient(circle, rgba(0,0,0,.2) 1.5px, transparent 1.5px); 
+  --chat-bg-size: 14px 14px;
+  --chat-bg-repeat: repeat;
 }
 [data-theme="dark"] { 
   --bg:#212121; --bg2:#181818; --bg3:#2b2b2b; --text:#fff; --text2:#aaa; --accent:#5288c1; 
-  --msg-out:#2b5278; --msg-in:#182533; --border:#303030; 
+  --msg-out:#2b5278; --msg-in:#182533; --border:#303030;
+  --chat-bg-image: radial-gradient(circle, rgba(255,255,255,.2) 1.5px, transparent 1.5px);
 }
 body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; }
 
-/* ===== Общие анимации ===== */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 50% { opacity: .4; } }
 @keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
 
-.fade-in { animation: fadeIn .25s ease; }
-.slide-in { animation: slideIn .3s ease; }
-.scale-in { animation: scaleIn .2s ease; }
-
-/* ===== AUTH ===== */
 #authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: linear-gradient(135deg, #3390ec, #6bb2f5); padding: 20px; }
 .auth-box { background: var(--bg); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn .3s ease; }
 .auth-box h1 { text-align: center; margin-bottom: 8px; font-size: 26px; }
@@ -46,7 +42,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .btn-main:disabled { opacity: .5; }
 .err { color: #e53935; font-size: 13px; text-align: center; margin-top: 12px; min-height: 18px; }
 
-/* ===== APP ===== */
 #app { display: none; height: 100vh; height: 100dvh; }
 .layout { display: flex; height: 100vh; height: 100dvh; }
 .sidebar { width: 340px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; transition: transform .3s ease; }
@@ -77,7 +72,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .icon-btn { background: transparent; border: none; cursor: pointer; font-size: 20px; padding: 8px; border-radius: 50%; color: var(--text2); min-width: 40px; min-height: 40px; transition: .2s; }
 .icon-btn:active { background: var(--bg3); }
 
-/* ===== Обои чата (реально работают) ===== */
 .messages { 
   flex: 1; 
   overflow-y: auto; 
@@ -87,27 +81,13 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
   gap: 8px; 
   position: relative;
   transition: background .3s ease;
-}
-.messages::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--chat-bg);
+  background-color: var(--bg3);
+  background-image: var(--chat-bg-image);
   background-size: var(--chat-bg-size);
-  opacity: var(--chat-bg-opacity, 1);
-  pointer-events: none;
-  z-index: 0;
+  background-repeat: var(--chat-bg-repeat, repeat);
+  background-attachment: local;
 }
-.msg { 
-  max-width: 78%; 
-  padding: 8px 12px; 
-  border-radius: 12px; 
-  word-wrap: break-word; 
-  font-size: var(--font-size); 
-  position: relative; 
-  z-index: 1;
-  animation: slideIn .2s ease;
-}
+.msg { max-width: 78%; padding: 8px 12px; border-radius: 12px; word-wrap: break-word; font-size: var(--font-size); position: relative; z-index: 1; animation: slideIn .2s ease; }
 .msg.out { align-self: flex-end; background: var(--msg-out); border-bottom-right-radius: 4px; }
 .msg.in { align-self: flex-start; background: var(--msg-in); border-bottom-left-radius: 4px; }
 .msg .author { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
@@ -117,8 +97,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .msg-img { max-width: 260px; max-height: 320px; border-radius: 8px; margin: 4px 0; cursor: pointer; display: block; }
 .msg-file { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(128,128,128,.15); border-radius: 8px; margin: 4px 0; text-decoration: none; color: inherit; }
 .msg-sticker { font-size: 72px; line-height: 1; padding: 4px; user-select: none; }
-
-/* ===== Голосовые ===== */
 .msg-voice { display: flex; align-items: center; gap: 8px; padding: 4px 0; min-width: 180px; }
 .voice-play { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: .2s; }
 .voice-play:active { transform: scale(.9); }
@@ -126,38 +104,8 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .voice-wave span { width: 3px; background: var(--accent); border-radius: 2px; opacity: .5; transition: opacity .15s; }
 .voice-wave span.on { opacity: 1; }
 
-/* ===== Видео-кружки ===== */
-.msg-video-circle {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  display: block;
-  margin: 4px auto;
-  background: #000;
-  border: 2px solid var(--accent);
-  transition: transform .2s;
-}
+.msg-video-circle { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; cursor: pointer; display: block; margin: 4px auto; background: #000; border: 2px solid var(--accent); transition: transform .2s; }
 .msg-video-circle:active { transform: scale(.97); }
-.video-circle-wrap {
-  position: relative;
-  display: inline-block;
-}
-.video-circle-play {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px; height: 60px;
-  border-radius: 50%;
-  background: rgba(0,0,0,.6);
-  color: #fff;
-  border: 2px solid #fff;
-  font-size: 24px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
-}
 
 .msg-edit-input { width: 100%; border: none; background: transparent; color: inherit; font-size: var(--font-size); outline: none; border-bottom: 1px solid var(--accent); }
 
@@ -178,7 +126,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .empty-chat { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: var(--text2); text-align: center; padding: 20px; position: relative; z-index: 1; }
 .empty-chat .big { font-size: 70px; }
 
-/* ===== MODAL ===== */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; padding: 16px; animation: fadeIn .2s; }
 .modal-bg.show { display: flex; }
 .modal { background: var(--bg); border-radius: 16px; padding: 20px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; animation: scaleIn .2s; }
@@ -208,76 +155,27 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .toggle.on::after { left: 21px; }
 
-/* Превью обоев */
-.wallpaper-preview {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 10px;
-}
-.wallpaper-option {
-  height: 80px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: 3px solid transparent;
-  position: relative;
-  overflow: hidden;
-  transition: .2s;
-  background-size: cover;
-  background-position: center;
-}
+.wallpaper-preview { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; width: 100%; }
+.wallpaper-option { height: 90px; border-radius: 12px; cursor: pointer; border: 3px solid var(--border); position: relative; overflow: hidden; transition: .2s; background-size: cover; background-position: center; display: flex; align-items: flex-end; justify-content: center; padding: 6px; }
 .wallpaper-option:active { transform: scale(.96); }
-.wallpaper-option.active { border-color: var(--accent); }
-.wallpaper-option::after {
-  content: attr(data-label);
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  font-size: 11px;
-  background: rgba(0,0,0,.6);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.wp-dots { background: #e9e9eb; background-image: radial-gradient(circle, rgba(0,0,0,.15) 1.5px, transparent 1.5px); background-size: 16px 16px; }
-[data-theme="dark"] .wp-dots { background: #2b2b2b; background-image: radial-gradient(circle, rgba(255,255,255,.15) 1.5px, transparent 1.5px); }
-.wp-plain { background: #d0d0d0; }
-[data-theme="dark"] .wp-plain { background: #333; }
+.wallpaper-option.active { border-color: var(--accent); border-width: 4px; }
+.wallpaper-option .wp-label { font-size: 12px; font-weight: 600; background: rgba(0,0,0,.75); color: #fff; padding: 3px 8px; border-radius: 6px; pointer-events: none; }
+.wallpaper-option.active::after { content: '✓'; position: absolute; top: 4px; right: 4px; background: var(--accent); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+.wp-dots { background-color: #e9e9eb; background-image: radial-gradient(circle, rgba(0,0,0,.25) 1.5px, transparent 1.5px); background-size: 14px 14px; }
+[data-theme="dark"] .wp-dots { background-color: #2b2b2b; background-image: radial-gradient(circle, rgba(255,255,255,.25) 1.5px, transparent 1.5px); }
+.wp-plain { background: linear-gradient(135deg,#f4f4f5,#e9e9eb); }
+[data-theme="dark"] .wp-plain { background: linear-gradient(135deg,#2b2b2b,#1a1a1a); }
 .wp-gradient { background: linear-gradient(135deg, #667eea, #764ba2); }
 .wp-green { background: linear-gradient(135deg, #2a6b3f, #4caf50); }
 .wp-sunset { background: linear-gradient(135deg, #ff6b6b, #ffd93d); }
+.wp-none { background: #fff; }
+[data-theme="dark"] .wp-none { background: #212121; }
 
-/* ===== Аватар в профиле ===== */
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 0 auto 10px;
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
-  overflow: hidden;
-  border: 3px solid var(--accent);
-  transition: .2s;
-}
+.profile-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 10px; position: relative; background-size: cover; background-position: center; cursor: pointer; overflow: hidden; border: 3px solid var(--accent); transition: .2s; display: flex; align-items: center; justify-content: center; }
 .profile-avatar:active { transform: scale(.95); }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-avatar .overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.5);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  opacity: 0;
-  transition: .2s;
-}
-.profile-avatar:hover .overlay { opacity: 1; }
+.profile-avatar .overlay { position: absolute; inset: 0; background: rgba(0,0,0,.5); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 
-/* ===== Игры ===== */
 .game-card { display: flex; gap: 14px; padding: 16px; background: var(--bg); border-radius: 12px; margin-bottom: 8px; cursor: pointer; align-items: center; border: 1px solid var(--border); transition: .2s; animation: fadeIn .3s ease; }
 .game-card:active { transform: scale(.98); }
 .game-ico { font-size: 32px; }
@@ -312,7 +210,6 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .ttt-cell.x { color: #3390ec; } .ttt-cell.o { color: #e53935; }
 
 .snake-canvas { background: #111; border-radius: 10px; display: block; margin: 0 auto; max-width: 100%; height: auto; touch-action: none; }
-
 .dpad-big { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; justify-content: center; margin: 12px auto 0; max-width: 280px; aspect-ratio: 1; }
 .dpad-big button { background: var(--bg3); border: none; border-radius: 16px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; touch-action: manipulation; transition: transform .05s, background .1s; box-shadow: 0 2px 4px rgba(0,0,0,.15); }
 .dpad-big button:active { background: var(--accent); color: #fff; transform: scale(.92); }
@@ -331,23 +228,14 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 [data-theme="dark"] .recording-bar { background: #4a2020; color: #ff8a80; }
 .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: #e53935; animation: pulse 1s infinite; }
 
-/* Видео-кружок запись */
-.video-record-modal {
-  position: fixed; inset: 0; background: #000; z-index: 200; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 20px;
-}
-.video-record-modal video {
-  width: 260px; height: 260px; border-radius: 50%; object-fit: cover; border: 3px solid #fff;
-}
-.video-record-controls { display: flex; gap: 20px; }
-.video-record-controls button {
-  padding: 14px 24px; border-radius: 30px; border: none; font-size: 16px; font-weight: 600;
-  cursor: pointer; transition: .2s;
-}
+.video-record-modal { position: fixed; inset: 0; background: #000; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 20px; }
+.video-record-modal video { width: 260px; height: 260px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; }
+.video-record-controls { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+.video-record-controls button { padding: 14px 24px; border-radius: 30px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: .2s; }
 .video-record-controls .record-start { background: #e53935; color: #fff; }
 .video-record-controls .record-cancel { background: rgba(255,255,255,.2); color: #fff; }
 .video-record-controls .record-send { background: #4caf50; color: #fff; }
-.video-record-timer { color: #fff; font-size: 20px; font-weight: 600; }
+.video-record-timer { color: #fff; font-size: 24px; font-weight: 600; }
 
 @media (max-width: 700px) {
   .sidebar { width: 100%; position: absolute; z-index: 10; height: 100vh; height: 100dvh; }
@@ -420,21 +308,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser=null, currentProfile=null, profiles={}, chats=[], activeChat=null, chatMessages=[], lastMessages={}, sideTab='chats', channel=null, editingMsgId=null;
 
-// ===== Время по МСК =====
 function formatMoscowTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  return date.toLocaleTimeString('ru-RU', {
-    hour: '2-digit', 
-    minute: '2-digit',
-    timeZone: 'Europe/Moscow'
-  });
+  return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
 }
 function formatMoscowDateTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  return date.toLocaleString('ru-RU', {
-    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
-    timeZone: 'Europe/Moscow'
-  });
+  return date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
 }
 function moscowDateKey(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
@@ -458,13 +338,26 @@ const GAMES=[
 ];
 
 const WALLPAPERS = {
-  dots: { label:'Точки', css:'radial-gradient(circle, rgba(128,128,128,.15) 1.5px, transparent 1.5px)', size:'16px 16px' },
-  plain: { label:'Сплошной', css:'none', size:'auto' },
-  gradient: { label:'Градиент', css:'linear-gradient(135deg, rgba(102,126,234,.15), rgba(118,75,162,.15))', size:'auto' },
-  green: { label:'Зелёный', css:'linear-gradient(135deg, rgba(42,107,63,.15), rgba(76,175,80,.15))', size:'auto' },
-  sunset: { label:'Закат', css:'linear-gradient(135deg, rgba(255,107,107,.15), rgba(255,217,61,.15))', size:'auto' },
-  none: { label:'Без обоев', css:'none', size:'auto' }
+  dots: { label:'Точки' },
+  plain: { label:'Сплошной' },
+  gradient: { label:'Градиент' },
+  green: { label:'Зелёный' },
+  sunset: { label:'Закат' },
+  none: { label:'Без обоев' }
 };
+
+function getWallpaperCSS(name, theme) {
+  const dark = theme === 'dark';
+  const map = {
+    dots: { css: dark ? 'radial-gradient(circle, rgba(255,255,255,.2) 1.5px, transparent 1.5px)' : 'radial-gradient(circle, rgba(0,0,0,.2) 1.5px, transparent 1.5px)', size: '14px 14px', repeat: 'repeat' },
+    plain: { css: dark ? 'linear-gradient(135deg,#2b2b2b,#1a1a1a)' : 'linear-gradient(135deg,#f4f4f5,#e9e9eb)', size: 'cover', repeat: 'no-repeat' },
+    gradient: { css: 'linear-gradient(135deg, #667eea, #764ba2)', size: 'cover', repeat: 'no-repeat' },
+    green: { css: 'linear-gradient(135deg, #2a6b3f, #4caf50)', size: 'cover', repeat: 'no-repeat' },
+    sunset: { css: 'linear-gradient(135deg, #ff6b6b, #ffd93d)', size: 'cover', repeat: 'no-repeat' },
+    none: { css: 'none', size: 'auto', repeat: 'no-repeat' }
+  };
+  return map[name] || map.dots;
+}
 
 let settings = JSON.parse(localStorage.getItem('tg_settings') || 'null') || {
   theme:'light', fontSize:15, wallpaper:'dots',
@@ -475,9 +368,10 @@ let settings = JSON.parse(localStorage.getItem('tg_settings') || 'null') || {
 function applySettings(){
   document.documentElement.setAttribute('data-theme', settings.theme);
   document.documentElement.style.setProperty('--font-size', settings.fontSize+'px');
-  const wp = WALLPAPERS[settings.wallpaper] || WALLPAPERS.dots;
-  document.documentElement.style.setProperty('--chat-bg', wp.css);
+  const wp = getWallpaperCSS(settings.wallpaper, settings.theme);
+  document.documentElement.style.setProperty('--chat-bg-image', wp.css);
   document.documentElement.style.setProperty('--chat-bg-size', wp.size);
+  document.documentElement.style.setProperty('--chat-bg-repeat', wp.repeat);
 }
 applySettings();
 
@@ -486,12 +380,10 @@ function vibrate(ms=15){
     try { navigator.vibrate(ms); } catch(e){}
   }
 }
-
 // ============ АВАТАР ============
 function renderAvatarHTML(profile, size='42px', showOnline=false) {
   const fontSize = size === '42px' ? '16px' : size === '80px' ? '32px' : '14px';
   const initial = (profile.name || '?')[0].toUpperCase();
-  
   if (profile.avatar_url) {
     return `<div class="avatar" style="width:${size};height:${size};background-image:url('${profile.avatar_url}')">${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
   }
@@ -580,7 +472,6 @@ async function loadProfile(){
     currentProfile=created;
   }
   await supabase.from('profiles').update({online:true,last_seen:new Date().toISOString()}).eq('id',currentUser.id);
-  // Применить обои из профиля пользователя
   if (currentProfile.chat_wallpaper && WALLPAPERS[currentProfile.chat_wallpaper]) {
     settings.wallpaper = currentProfile.chat_wallpaper;
     localStorage.setItem('tg_settings', JSON.stringify(settings));
@@ -670,10 +561,7 @@ window.switchSide = tab => {
   document.getElementById('tabGames').classList.toggle('active',tab==='games');
   const el = document.getElementById('list');
   el.style.opacity = '0';
-  setTimeout(() => {
-    renderList();
-    el.style.opacity = '1';
-  }, 100);
+  setTimeout(() => { renderList(); el.style.opacity = '1'; }, 100);
 };
 
 function renderList(){
@@ -705,11 +593,7 @@ function renderList(){
       const avatarHtml = avatarUrl 
         ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}')">${isOnline?'<div class="online-dot"></div>':''}</div>`
         : `<div class="avatar" style="background:${color}">${initial}${isOnline?'<div class="online-dot"></div>':''}</div>`;
-      return `<div class="item ${active}" onclick="openChat(${c.id})">
-        ${avatarHtml}
-        <div class="body"><div class="name">${escapeHtml(name)}</div><div class="sub">${escapeHtml(preview).slice(0,50)}</div></div>
-        <div class="time">${time}</div>
-      </div>`;
+      return `<div class="item ${active}" onclick="openChat(${c.id})">${avatarHtml}<div class="body"><div class="name">${escapeHtml(name)}</div><div class="sub">${escapeHtml(preview).slice(0,50)}</div></div><div class="time">${time}</div></div>`;
     }).join('');
   } else if(sideTab==='users'){
     const others=Object.values(profiles).filter(p=>p.id!==currentUser.id);
@@ -719,19 +603,10 @@ function renderList(){
       const avatarHtml = p.avatar_url
         ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')">${p.online?'<div class="online-dot"></div>':''}</div>`
         : `<div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>`;
-      return `
-      <div class="item" onclick="startDirect('${p.id}')">
-        ${avatarHtml}
-        <div class="body"><div class="name">${escapeHtml(p.name||p.username)}</div><div class="sub">@${escapeHtml(p.username)}${p.online?' · в сети':''}</div></div>
-      </div>`;
+      return `<div class="item" onclick="startDirect('${p.id}')">${avatarHtml}<div class="body"><div class="name">${escapeHtml(p.name||p.username)}</div><div class="sub">@${escapeHtml(p.username)}${p.online?' · в сети':''}</div></div></div>`;
     }).join('');
   } else {
-    el.innerHTML=GAMES.map(g=>`
-      <div class="game-card" onclick="openGame('${g.id}')">
-        <div class="game-ico">${g.icon}</div>
-        <div class="game-info"><h4>${g.title}</h4><p>${g.desc}</p></div>
-      </div>
-    `).join('');
+    el.innerHTML=GAMES.map(g=>`<div class="game-card" onclick="openGame('${g.id}')"><div class="game-ico">${g.icon}</div><div class="game-info"><h4>${g.title}</h4><p>${g.desc}</p></div></div>`).join('');
   }
 }
 
@@ -762,11 +637,7 @@ window.openCreateGroup = () => {
     <div class="field"><label>Название группы</label><input id="groupName" placeholder="Например: Друзья"></div>
     <div style="margin:12px 0;font-size:14px;color:var(--text2)">Выберите участников:</div>
     <div style="max-height:250px;overflow-y:auto;margin-bottom:12px">
-      ${others.map(p=>`<label style="display:flex;gap:10px;padding:10px;cursor:pointer;align-items:center;border-bottom:1px solid var(--border)">
-        <input type="checkbox" value="${p.id}">
-        <div class="avatar" style="width:32px;height:32px;font-size:14px;background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div>
-        <span>${escapeHtml(p.name||p.username)}</span>
-      </label>`).join('')||'<div style="text-align:center;color:var(--text2);padding:20px">Нет других людей</div>'}
+      ${others.map(p=>`<label style="display:flex;gap:10px;padding:10px;cursor:pointer;align-items:center;border-bottom:1px solid var(--border)"><input type="checkbox" value="${p.id}"><div class="avatar" style="width:32px;height:32px;font-size:14px;background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div><span>${escapeHtml(p.name||p.username)}</span></label>`).join('')||'<div style="text-align:center;color:var(--text2);padding:20px">Нет других людей</div>'}
     </div>
     <button class="btn-main" onclick="createGroup()">Создать</button>
   `;
@@ -815,11 +686,9 @@ function renderMain(){
     sub=other.online?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
     avatarUrl=other.avatar_url;
   } else {name=chat.name||'Группа';initial='👥';color='#7bc862';sub=chat.members.length+' участников';}
-
   const avatarHtml = avatarUrl
     ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}')"></div>`
     : `<div class="avatar" style="background:${color}">${initial}</div>`;
-
   main.innerHTML=`
     <div class="chat-header fade-in">
       <button class="icon-btn" onclick="backToList()">←</button>
@@ -846,7 +715,7 @@ function renderMessagesHTML(){
     const dateKey = moscowDateKey(m.created_at);
     let dateSep = '';
     if (dateKey !== lastDate) {
-      dateSep = `<div style="text-align:center;color:var(--text2);font-size:12px;margin:12px 0 8px;position:relative;z-index:1"><span style="background:var(--bg3);padding:4px 12px;border-radius:12px">${moscowFullDate(m.created_at)}</span></div>`;
+      dateSep = `<div style="text-align:center;color:var(--text2);font-size:12px;margin:12px 0 8px;position:relative;z-index:1"><span style="background:rgba(0,0,0,.15);padding:4px 12px;border-radius:12px">${moscowFullDate(m.created_at)}</span></div>`;
       lastDate = dateKey;
     }
     const author=!out&&activeChat.type==='group'?`<div class="author">${escapeHtml(profiles[m.user_id]?.name||m.username||'?')}</div>`:'';
@@ -859,7 +728,6 @@ function renderMessagesHTML(){
     else if(m.type==='voice') content=`<div class="msg-voice"><button class="voice-play" onclick="playVoice('${m.id}')" id="play_${m.id}">▶</button><div class="voice-wave" id="wave_${m.id}">${Array(24).fill(0).map(()=>`<span style="height:${6+Math.random()*18}px"></span>`).join('')}</div><div style="font-size:12px;color:var(--text2)">${m.duration?Math.floor(m.duration/60)+':'+String(m.duration%60).padStart(2,'0'):'0:00'}</div></div>`;
     else if(m.type==='video') content=`<div style="text-align:center"><video class="msg-video-circle" src="${m.data}" onclick="playVideoCircle(this)" playsinline muted></video></div>`;
     else content=`<div class="text">${escapeHtml(m.text||'').replace(/\n/g,'<br>')}</div>`;
-
     const reacts=m.reactions||{};
     const reactsHtml=renderReactionsHTML(m,reacts);
     const actions=out?`<span class="del" onclick="event.stopPropagation();${isEditing?`saveEdit(${m.id})`:`editMsg(${m.id})`}">${isEditing?'💾':'✏️'}</span><span class="del" onclick="event.stopPropagation();deleteMsg(${m.id})">🗑</span>`:'';
@@ -870,11 +738,7 @@ function renderMessagesHTML(){
 function renderReactionsHTML(m,reacts){
   const keys=Object.keys(reacts);
   if(!keys.length) return `<div class="reactions"><button class="reaction-add" onclick="openReactionPicker(event,${m.id})">+ 😊</button></div>`;
-  return `<div class="reactions">${keys.map(k=>{
-    const arr=reacts[k]||[];
-    const mine=arr.includes(currentUser.id);
-    return `<div class="reaction ${mine?'mine':''}" onclick="toggleReaction(${m.id},'${k}')"><span>${k}</span><span>${arr.length}</span></div>`;
-  }).join('')}<button class="reaction-add" onclick="openReactionPicker(event,${m.id})">+</button></div>`;
+  return `<div class="reactions">${keys.map(k=>{const arr=reacts[k]||[];const mine=arr.includes(currentUser.id);return `<div class="reaction ${mine?'mine':''}" onclick="toggleReaction(${m.id},'${k}')"><span>${k}</span><span>${arr.length}</span></div>`;}).join('')}<button class="reaction-add" onclick="openReactionPicker(event,${m.id})">+</button></div>`;
 }
 
 function renderMessages(){const el=document.getElementById('messages');if(el)el.innerHTML=renderMessagesHTML();}
@@ -944,11 +808,7 @@ window.openAttachPanel = () => {
   slot.id='attachSlot';slot.className='attach-panel';
   slot.style.position='fixed';slot.style.bottom='70px';slot.style.left='10px';slot.style.right='10px';
   slot.style.borderRadius='12px';slot.style.boxShadow='0 4px 20px rgba(0,0,0,.3)';
-  slot.innerHTML=`
-    <button onclick="document.getElementById('fileInput').click();closePopup()">🖼 Фото</button>
-    <button onclick="document.getElementById('docInput').click();closePopup()">📎 Файл</button>
-    <button onclick="closePopup();openStickers()">🎨 Стикер</button>
-    <button onclick="closePopup();startVideoRecord()">🎬 Кружок</button>`;
+  slot.innerHTML=`<button onclick="document.getElementById('fileInput').click();closePopup()">🖼 Фото</button><button onclick="document.getElementById('docInput').click();closePopup()">📎 Файл</button><button onclick="closePopup();openStickers()">🎨 Стикер</button><button onclick="closePopup();startVideoRecord()">🎬 Кружок</button>`;
   document.body.appendChild(slot);
 };
 
@@ -967,23 +827,20 @@ window.sendSticker = async emoji => {
   await supabase.from('messages').insert({chat_id:activeChat.id,user_id:currentUser.id,username:currentProfile.username,type:'sticker',text:emoji});
 };
 
-// ============ ВИДЕО-КРУЖОК ============
+// ============ ВИДЕО-КРУЖОК (60 сек, до 3 МБ) ============
 let videoStream = null, mediaRecorderVideo = null, videoChunks = [], videoRecordTimer = null, videoRecordStart = 0, videoModalEl = null;
 
 window.startVideoRecord = async () => {
   try {
-    videoStream = await navigator.mediaDevices.getUserMedia({ 
-      video: { width: 480, height: 480, facingMode: 'user' }, 
-      audio: true 
-    });
+    videoStream = await navigator.mediaDevices.getUserMedia({ video: { width: 480, height: 480, facingMode: 'user' }, audio: true });
     videoModalEl = document.createElement('div');
     videoModalEl.className = 'video-record-modal';
     videoModalEl.innerHTML = `
       <video id="videoPreview" autoplay muted playsinline></video>
-      <div class="video-record-timer" id="videoTimer">0:00</div>
+      <div class="video-record-timer" id="videoTimer">0:00 / 1:00</div>
       <div class="video-record-controls">
         <button class="record-cancel" onclick="cancelVideoRecord()">Отмена</button>
-        <button class="record-start" id="recordStartBtn" onclick="startRecordingVideo()">● Запись</button>
+        <button class="record-start" id="recordStartBtn" onclick="startRecordingVideo()">● Начать запись</button>
         <button class="record-send" id="recordSendBtn" onclick="stopAndSendVideo()" style="display:none">Отправить</button>
       </div>
     `;
@@ -1000,13 +857,8 @@ window.startRecordingVideo = () => {
   let mimeType = 'video/webm;codecs=vp9,opus';
   if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
   if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4';
-  
-  try {
-    mediaRecorderVideo = new MediaRecorder(videoStream, { mimeType });
-  } catch(e) {
-    alert('Камера не поддерживает запись видео');
-    return;
-  }
+  try { mediaRecorderVideo = new MediaRecorder(videoStream, { mimeType }); }
+  catch(e) { alert('Камера не поддерживает запись'); return; }
   mediaRecorderVideo.ondataavailable = e => videoChunks.push(e.data);
   mediaRecorderVideo.onstop = () => processVideoBlob();
   mediaRecorderVideo.start();
@@ -1014,63 +866,36 @@ window.startRecordingVideo = () => {
   document.getElementById('recordStartBtn').style.display = 'none';
   document.getElementById('recordSendBtn').style.display = 'inline-block';
   vibrate(30);
-  
   videoRecordTimer = setInterval(() => {
     const t = Math.round((Date.now() - videoRecordStart) / 1000);
     const el = document.getElementById('videoTimer');
-    if (el) {
-      el.textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
-      if (t >= 15) { stopAndSendVideo(); }
-    }
+    if (el) el.textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')} / 1:00`;
+    if (t >= 60) { stopAndSendVideo(); }
   }, 200);
 };
 
 window.stopAndSendVideo = () => {
-  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') {
-    mediaRecorderVideo.stop();
-  }
+  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') mediaRecorderVideo.stop();
   if (videoRecordTimer) clearInterval(videoRecordTimer);
 };
 
 async function processVideoBlob() {
   const blob = new Blob(videoChunks, { type: 'video/webm' });
   const duration = Math.round((Date.now() - videoRecordStart) / 1000);
-  
-  if (videoStream) {
-    videoStream.getTracks().forEach(t => t.stop());
-    videoStream = null;
-  }
+  if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
   if (videoModalEl) { videoModalEl.remove(); videoModalEl = null; }
-  
-  if (blob.size > 800*1024) {
-    alert('Кружок слишком большой. Запиши короче (макс 10-15 сек).');
-    return;
-  }
-  if (blob.size < 1000) {
-    alert('Запись слишком короткая');
-    return;
-  }
-  
+  if (blob.size > 3*1024*1024) { alert('Кружок слишком большой (макс 3 МБ, ~40 сек).'); return; }
+  if (blob.size < 1000) { alert('Слишком короткая запись'); return; }
   const reader = new FileReader();
   reader.onload = async ev => {
-    await supabase.from('messages').insert({
-      chat_id: activeChat.id,
-      user_id: currentUser.id,
-      username: currentProfile.username,
-      type: 'video',
-      data: ev.target.result,
-      duration
-    });
+    await supabase.from('messages').insert({ chat_id: activeChat.id, user_id: currentUser.id, username: currentProfile.username, type: 'video', data: ev.target.result, duration });
     vibrate(20);
   };
   reader.readAsDataURL(blob);
 }
 
 window.cancelVideoRecord = () => {
-  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') {
-    mediaRecorderVideo.onstop = null;
-    mediaRecorderVideo.stop();
-  }
+  if (mediaRecorderVideo && mediaRecorderVideo.state === 'recording') { mediaRecorderVideo.onstop = null; mediaRecorderVideo.stop(); }
   if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
   if (videoModalEl) { videoModalEl.remove(); videoModalEl = null; }
   if (videoRecordTimer) clearInterval(videoRecordTimer);
@@ -1134,10 +959,7 @@ window.toggleVoiceRecord = async () => {
   try{
     const stream=await navigator.mediaDevices.getUserMedia({audio:true});
     let mimeType = 'audio/webm';
-    if (!MediaRecorder.isTypeSupported(mimeType)) {
-      if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
-      else mimeType = '';
-    }
+    if (!MediaRecorder.isTypeSupported(mimeType)) { if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4'; else mimeType = ''; }
     mediaRecorder = mimeType ? new MediaRecorder(stream, {mimeType}) : new MediaRecorder(stream);
     audioChunks=[];
     mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
@@ -1214,26 +1036,18 @@ window.openSettings = () => {
   const avatarHtml = currentProfile.avatar_url
     ? `<img src="${currentProfile.avatar_url}">`
     : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;background:${currentProfile.color||'#3390ec'}">${currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase()}</div>`;
-  
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <h2>⚙️ Настройки</h2>
     <div class="settings-section">
       <div class="settings-title">Профиль</div>
       <div style="text-align:center;padding:16px">
-        <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
-          ${avatarHtml}
-          <div class="overlay">📷</div>
-        </div>
+        <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">${avatarHtml}<div class="overlay">📷</div></div>
         <div style="font-size:18px;font-weight:600">${escapeHtml(currentProfile.name)}</div>
         <div style="color:var(--text2);font-size:13px">@${escapeHtml(currentProfile.username)}</div>
         <div style="color:var(--text2);font-size:12px;margin-top:4px">${escapeHtml(currentUser.email)}</div>
       </div>
-      <div class="settings-item" onclick="document.getElementById('avatarInput').click()">
-        <div class="si-ico">📸</div>
-        <div class="si-body"><div class="si-title">Загрузить фото</div><div class="si-desc">Заменить аватарку на картинку</div></div>
-        <div class="si-arrow">›</div>
-      </div>
+      <div class="settings-item" onclick="document.getElementById('avatarInput').click()"><div class="si-ico">📸</div><div class="si-body"><div class="si-title">Загрузить фото</div><div class="si-desc">До 2 МБ, авто-сжатие</div></div><div class="si-arrow">›</div></div>
       <div class="settings-item" onclick="editName()"><div class="si-ico">👤</div><div class="si-body"><div class="si-title">Изменить имя</div></div><div class="si-arrow">›</div></div>
       <div class="settings-item" onclick="pickAvatarEmoji()"><div class="si-ico">😀</div><div class="si-body"><div class="si-title">Аватар-эмодзи</div></div><div class="si-arrow">›</div></div>
       ${currentProfile.avatar_url ? `<div class="settings-item" onclick="removeAvatar()"><div class="si-ico">🗑</div><div class="si-body"><div class="si-title" style="color:#e53935">Удалить фото</div></div></div>` : ''}
@@ -1246,9 +1060,7 @@ window.openSettings = () => {
         <div class="si-ico">🖼</div>
         <div class="si-body"><div class="si-title">Обои чата</div><div class="si-desc">Сейчас: ${WALLPAPERS[settings.wallpaper]?.label || 'Точки'}</div></div>
         <div class="wallpaper-preview">
-          ${Object.entries(WALLPAPERS).map(([key, wp]) => `
-            <div class="wallpaper-option wp-${key} ${settings.wallpaper===key?'active':''}" data-label="${wp.label}" onclick="setWallpaper('${key}')"></div>
-          `).join('')}
+          ${Object.entries(WALLPAPERS).map(([key, wp]) => `<div class="wallpaper-option wp-${key} ${settings.wallpaper===key?'active':''}" onclick="setWallpaper('${key}')"><span class="wp-label">${wp.label}</span></div>`).join('')}
         </div>
       </div>
     </div>
@@ -1270,22 +1082,30 @@ window.openSettings = () => {
 window.handleAvatarUpload = async (input) => {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 200*1024) {
-    alert('Картинка слишком большая (макс 200 КБ). Сожми или выбери поменьше.');
-    input.value = '';
-    return;
-  }
+  if (file.size > 2*1024*1024) { alert('Картинка слишком большая (макс 2 МБ).'); input.value=''; return; }
   const reader = new FileReader();
-  reader.onload = async ev => {
-    const data = ev.target.result;
-    const { error } = await supabase.from('profiles').update({ avatar_url: data }).eq('id', currentUser.id);
-    if (error) { alert('Ошибка: ' + error.message); return; }
-    currentProfile.avatar_url = data;
-    updateMyAvatar();
-    await loadAllProfiles();
-    renderList();
-    if (activeChat) renderMain();
-    openSettings();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = async () => {
+      const canvas = document.createElement('canvas');
+      const SIZE = 300;
+      canvas.width = SIZE; canvas.height = SIZE;
+      const ctx = canvas.getContext('2d');
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide) / 2;
+      const sy = (img.height - minSide) / 2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, SIZE, SIZE);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      const { error } = await supabase.from('profiles').update({ avatar_url: dataUrl }).eq('id', currentUser.id);
+      if (error) { alert('Ошибка: ' + error.message); return; }
+      currentProfile.avatar_url = dataUrl;
+      updateMyAvatar();
+      await loadAllProfiles();
+      renderList();
+      if (activeChat) renderMain();
+      openSettings();
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
   input.value = '';
@@ -1319,7 +1139,6 @@ window.setWallpaper = async name => {
   settings.wallpaper = name;
   localStorage.setItem('tg_settings', JSON.stringify(settings));
   applySettings();
-  // Сохранить в профиль, чтобы применялось везде
   try {
     await supabase.from('profiles').update({ chat_wallpaper: name }).eq('id', currentUser.id);
     currentProfile.chat_wallpaper = name;
@@ -1342,7 +1161,6 @@ window.pickAvatarEmoji = async () => {
   const v=prompt('Введи эмодзи:\n'+AVATAR_EMOJIS.join(' '),currentProfile.avatar_emoji||'😀');
   if(v&&v.trim()){
     const emoji=v.trim().slice(0,3);
-    // Убираем фото если было
     await supabase.from('profiles').update({avatar_emoji:emoji, avatar_url:null}).eq('id',currentUser.id);
     currentProfile.avatar_emoji=emoji;
     currentProfile.avatar_url=null;
@@ -1353,7 +1171,7 @@ window.pickAvatarEmoji = async () => {
 
 window.closeModal = () => {document.getElementById('modalBg').classList.remove('show');closePopup();};
 
-// ============ GAMES (без изменений) ============
+// ============ GAMES ============
 window.openGame = id => {
   const modal=document.getElementById('modalBox');
   modal.innerHTML=`<button class="close" onclick="closeModal()">×</button><div id="gameRoot"></div>`;
@@ -1387,13 +1205,7 @@ function startSolitaire(root){
           ${foundations.map((f,i)=>{const top=f[f.length-1];return `<div class="card ${top?cardColor(top):'empty'}" onclick="window.solDrop('f',${i})">${top?cardHTML(top):''}</div>`;}).join('')}
         </div>
         <div class="sol-row" style="align-items:flex-start">
-          ${cols.map((col,i)=>`
-            <div class="sol-col" onclick="window.solDrop('c',${i})">
-              ${col.map((c,j)=>{
-                if(!c.faceUp) return `<div class="card back" style="margin-top:${j?-45:0}px"></div>`;
-                return `<div class="card ${cardColor(c)}" style="margin-top:${j?-45:0}px" onclick="event.stopPropagation();window.solPick(${i},${j})">${cardHTML(c)}</div>`;
-              }).join('')}
-            </div>`).join('')}
+          ${cols.map((col,i)=>`<div class="sol-col" onclick="window.solDrop('c',${i})">${col.map((c,j)=>{if(!c.faceUp) return `<div class="card back" style="margin-top:${j?-45:0}px"></div>`;return `<div class="card ${cardColor(c)}" style="margin-top:${j?-45:0}px" onclick="event.stopPropagation();window.solPick(${i},${j})">${cardHTML(c)}</div>`;}).join('')}</div>`).join('')}
         </div>
       </div>`;
     const total=foundations.reduce((a,f)=>a+f.length,0);
@@ -1403,44 +1215,11 @@ function startSolitaire(root){
   function cardColor(c){return (c.suit==='♥'||c.suit==='♦')?'red':'black';}
   function cardHTML(c){return `<div class="corner">${c.rank}${c.suit}</div><div class="suit">${c.suit}</div><div class="corner br">${c.rank}${c.suit}</div>`;}
   let picked=null;
-  window.solPick=(ci,ji)=>{
-    const c=cols[ci][ji];if(!c.faceUp)return;
-    picked={ci,ji};vibrate(10);
-    document.querySelectorAll('.card').forEach(e=>e.style.outline='');
-    event.target.closest('.card').style.outline='3px solid #ffd600';
-  };
-  window.solDrop=(type,idx)=>{
-    if(!picked) return;
-    const col=cols[picked.ci],c=col[picked.ji];
-    if(type==='f'){
-      if(picked.ji!==col.length-1) return;
-      const f=foundations[idx];
-      const need=f.length===0?1:f[f.length-1].v+1;
-      if(c.v===need&&cardMatch(c,idx)){col.pop();f.push(c);picked=null;vibrate(20);render();}
-    } else if(type==='c'){
-      if(idx===picked.ci){picked=null;render();return;}
-      const target=cols[idx],top=target[target.length-1];
-      if((!top&&c.v===13)||(top&&top.faceUp&&top.v===c.v+1&&isRed(top)!==isRed(c))){
-        const moved=col.splice(picked.ji);moved.forEach(m=>target.push(m));
-        if(col.length&&!col[col.length-1].faceUp) col[col.length-1].faceUp=true;
-        picked=null;vibrate(15);render();
-      }
-    }
-  };
+  window.solPick=(ci,ji)=>{const c=cols[ci][ji];if(!c.faceUp)return;picked={ci,ji};vibrate(10);document.querySelectorAll('.card').forEach(e=>e.style.outline='');event.target.closest('.card').style.outline='3px solid #ffd600';};
+  window.solDrop=(type,idx)=>{if(!picked) return;const col=cols[picked.ci],c=col[picked.ji];if(type==='f'){if(picked.ji!==col.length-1) return;const f=foundations[idx];const need=f.length===0?1:f[f.length-1].v+1;if(c.v===need&&cardMatch(c,idx)){col.pop();f.push(c);picked=null;vibrate(20);render();}}else if(type==='c'){if(idx===picked.ci){picked=null;render();return;}const target=cols[idx],top=target[target.length-1];if((!top&&c.v===13)||(top&&top.faceUp&&top.v===c.v+1&&isRed(top)!==isRed(c))){const moved=col.splice(picked.ji);moved.forEach(m=>target.push(m));if(col.length&&!col[col.length-1].faceUp) col[col.length-1].faceUp=true;picked=null;vibrate(15);render();}}};
   function cardMatch(c,fi){const f=foundations[fi];if(!f.length) return true;return f[0].suit===c.suit;}
   function isRed(c){return c.suit==='♥'||c.suit==='♦';}
-  window.solStock=()=>{
-    if(!stock.length) return;
-    vibrate(10);
-    const c=stock.pop();c.faceUp=true;
-    let placed=false;
-    for(let i=0;i<7;i++){
-      const col=cols[i],top=col[col.length-1];
-      if((!top&&c.v===13)||(top&&top.faceUp&&top.v===c.v+1&&isRed(top)!==isRed(c))){col.push(c);placed=true;break;}
-    }
-    if(!placed){stock.unshift(c);c.faceUp=false;}
-    render();
-  };
+  window.solStock=()=>{if(!stock.length) return;vibrate(10);const c=stock.pop();c.faceUp=true;let placed=false;for(let i=0;i<7;i++){const col=cols[i],top=col[col.length-1];if((!top&&c.v===13)||(top&&top.faceUp&&top.v===c.v+1&&isRed(top)!==isRed(c))){col.push(c);placed=true;break;}}if(!placed){stock.unshift(c);c.faceUp=false;}render();};
   window.solNew=newGame;
   newGame();
 }
@@ -1448,82 +1227,23 @@ function startSolitaire(root){
 function startMines(root){
   const SIZE=9,MINES=10;
   let board,revealed,flagged,over,firstClick;
-  function init(){
-    board=Array.from({length:SIZE},()=>Array(SIZE).fill(0));
-    revealed=Array.from({length:SIZE},()=>Array(SIZE).fill(false));
-    flagged=Array.from({length:SIZE},()=>Array(SIZE).fill(false));
-    over=false;firstClick=true;render();
-  }
-  function placeMines(sx,sy){
-    let placed=0;
-    while(placed<MINES){
-      const x=Math.floor(Math.random()*SIZE),y=Math.floor(Math.random()*SIZE);
-      if(board[y][x]===-1) continue;
-      if(Math.abs(x-sx)<=1&&Math.abs(y-sy)<=1) continue;
-      board[y][x]=-1;placed++;
-    }
-    for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++){
-      if(board[y][x]===-1) continue;
-      let c=0;
-      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
-        const nx=x+dx,ny=y+dy;
-        if(nx>=0&&nx<SIZE&&ny>=0&&ny<SIZE&&board[ny][nx]===-1) c++;
-      }
-      board[y][x]=c;
-    }
-  }
-  function reveal(x,y){
-    if(x<0||x>=SIZE||y<0||y>=SIZE||revealed[y][x]||flagged[y][x]) return;
-    revealed[y][x]=true;
-    if(board[y][x]===0){for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) reveal(x+dx,y+dy);}
-  }
-  function click(x,y){
-    if(over||flagged[y][x]) return;
-    vibrate(10);
-    if(firstClick){placeMines(x,y);firstClick=false;}
-    if(board[y][x]===-1){
-      revealed[y][x]=true;over=true;
-      for(let yy=0;yy<SIZE;yy++) for(let xx=0;xx<SIZE;xx++) if(board[yy][xx]===-1) revealed[yy][xx]=true;
-      render();setTimeout(()=>alert('💥 Бум!'),100);return;
-    }
-    reveal(x,y);checkWin();render();
-  }
+  function init(){board=Array.from({length:SIZE},()=>Array(SIZE).fill(0));revealed=Array.from({length:SIZE},()=>Array(SIZE).fill(false));flagged=Array.from({length:SIZE},()=>Array(SIZE).fill(false));over=false;firstClick=true;render();}
+  function placeMines(sx,sy){let placed=0;while(placed<MINES){const x=Math.floor(Math.random()*SIZE),y=Math.floor(Math.random()*SIZE);if(board[y][x]===-1) continue;if(Math.abs(x-sx)<=1&&Math.abs(y-sy)<=1) continue;board[y][x]=-1;placed++;}for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++){if(board[y][x]===-1) continue;let c=0;for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){const nx=x+dx,ny=y+dy;if(nx>=0&&nx<SIZE&&ny>=0&&ny<SIZE&&board[ny][nx]===-1) c++;}board[y][x]=c;}}
+  function reveal(x,y){if(x<0||x>=SIZE||y<0||y>=SIZE||revealed[y][x]||flagged[y][x]) return;revealed[y][x]=true;if(board[y][x]===0){for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++) reveal(x+dx,y+dy);}}
+  function click(x,y){if(over||flagged[y][x]) return;vibrate(10);if(firstClick){placeMines(x,y);firstClick=false;}if(board[y][x]===-1){revealed[y][x]=true;over=true;for(let yy=0;yy<SIZE;yy++) for(let xx=0;xx<SIZE;xx++) if(board[yy][xx]===-1) revealed[yy][xx]=true;render();setTimeout(()=>alert('💥 Бум!'),100);return;}reveal(x,y);checkWin();render();}
   function flag(x,y){if(over||revealed[y][x])return;vibrate(15);flagged[y][x]=!flagged[y][x];render();}
-  function checkWin(){
-    let opened=0,total=SIZE*SIZE-MINES;
-    for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++) if(revealed[y][x]) opened++;
-    if(opened===total){over=true;setTimeout(()=>alert('🎉 Победа!'),100);}
-  }
+  function checkWin(){let opened=0,total=SIZE*SIZE-MINES;for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++) if(revealed[y][x]) opened++;if(opened===total){over=true;setTimeout(()=>alert('🎉 Победа!'),100);}}
   function render(){
     let html=`<h2>💣 Сапёр</h2>
       <div class="game-score"><span>Мин: ${MINES}</span><span>Флагов: ${flagged.flat().filter(Boolean).length}</span><button class="game-btn" onclick="window.msNew()">Новая</button></div>
       <p style="color:var(--text2);font-size:12px;text-align:center;margin-bottom:8px">Тап — открыть, долгий тап — 🚩</p>
       <div style="text-align:center"><div class="ms-board" id="msBoard">`;
-    for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++){
-      const r=revealed[y][x],f=flagged[y][x],v=board[y][x];
-      let cls='ms-cell',txt='';
-      if(r){cls+=' open';if(v===-1){cls+=' mine';txt='💣';}else if(v>0){cls+=' ms-'+v;txt=v;}}
-      else if(f) txt='🚩';
-      html+=`<button class="${cls}" data-x="${x}" data-y="${y}">${txt}</button>`;
-    }
+    for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++){const r=revealed[y][x],f=flagged[y][x],v=board[y][x];let cls='ms-cell',txt='';if(r){cls+=' open';if(v===-1){cls+=' mine';txt='💣';}else if(v>0){cls+=' ms-'+v;txt=v;}}else if(f) txt='🚩';html+=`<button class="${cls}" data-x="${x}" data-y="${y}">${txt}</button>`;}
     html+=`</div></div>`;
     root.innerHTML=html;
     const boardEl=document.getElementById('msBoard');
     let longPressTimer=null,longPressed=false;
-    boardEl.querySelectorAll('.ms-cell').forEach(cell=>{
-      const x=+cell.dataset.x,y=+cell.dataset.y;
-      const start=()=>{longPressed=false;longPressTimer=setTimeout(()=>{longPressed=true;flag(x,y);},400);};
-      const cancel=()=>{if(longPressTimer)clearTimeout(longPressTimer);};
-      const end=e=>{cancel();if(!longPressed){e.preventDefault();click(x,y);}};
-      cell.addEventListener('touchstart',start,{passive:true});
-      cell.addEventListener('touchend',end);
-      cell.addEventListener('touchcancel',cancel);
-      cell.addEventListener('touchmove',cancel);
-      cell.addEventListener('mousedown',start);
-      cell.addEventListener('mouseup',end);
-      cell.addEventListener('mouseleave',cancel);
-      cell.addEventListener('contextmenu',e=>{e.preventDefault();flag(x,y);});
-    });
+    boardEl.querySelectorAll('.ms-cell').forEach(cell=>{const x=+cell.dataset.x,y=+cell.dataset.y;const start=()=>{longPressed=false;longPressTimer=setTimeout(()=>{longPressed=true;flag(x,y);},400);};const cancel=()=>{if(longPressTimer)clearTimeout(longPressTimer);};const end=e=>{cancel();if(!longPressed){e.preventDefault();click(x,y);}};cell.addEventListener('touchstart',start,{passive:true});cell.addEventListener('touchend',end);cell.addEventListener('touchcancel',cancel);cell.addEventListener('touchmove',cancel);cell.addEventListener('mousedown',start);cell.addEventListener('mouseup',end);cell.addEventListener('mouseleave',cancel);cell.addEventListener('contextmenu',e=>{e.preventDefault();flag(x,y);});});
   }
   window.msNew=init;
   init();
@@ -1531,55 +1251,13 @@ function startMines(root){
 
 function startTTT(root){
   let board=Array(9).fill(''),human='X',ai='O',over=false,wins=0,losses=0;
-  function render(){
-    const status=over?(winner()?`${winner()} победил!`:'Ничья!'):'Ваш ход (X)';
-    root.innerHTML=`
-      <h2>⭕ Крестики-нолики</h2>
-      <div class="game-score"><span>Побед: ${wins}</span><span>${status}</span><span>Поражений: ${losses}</span></div>
-      <div class="ttt-board">${board.map((c,i)=>`<button class="ttt-cell ${c==='X'?'x':c==='O'?'o':''}" onclick="window.tttMove(${i})">${c}</button>`).join('')}</div>
-      <div style="text-align:center;margin-top:16px"><button class="game-btn" onclick="window.tttNew()">Новая</button></div>`;
-  }
-  function winner(){
-    const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    for(const[a,b,c] of lines) if(board[a]&&board[a]===board[b]&&board[a]===board[c]) return board[a];
-    return null;
-  }
+  function render(){const status=over?(winner()?`${winner()} победил!`:'Ничья!'):'Ваш ход (X)';root.innerHTML=`<h2>⭕ Крестики-нолики</h2><div class="game-score"><span>Побед: ${wins}</span><span>${status}</span><span>Поражений: ${losses}</span></div><div class="ttt-board">${board.map((c,i)=>`<button class="ttt-cell ${c==='X'?'x':c==='O'?'o':''}" onclick="window.tttMove(${i})">${c}</button>`).join('')}</div><div style="text-align:center;margin-top:16px"><button class="game-btn" onclick="window.tttNew()">Новая</button></div>`;}
+  function winner(){const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];for(const[a,b,c] of lines) if(board[a]&&board[a]===board[b]&&board[a]===board[c]) return board[a];return null;}
   function full(){return board.every(c=>c);}
-  function aiMove(){
-    if(over) return;
-    let bestScore=-Infinity,bestMove=-1;
-    for(let i=0;i<9;i++) if(!board[i]){board[i]=ai;const s=minimax(0,false);board[i]='';if(s>bestScore){bestScore=s;bestMove=i;}}
-    if(bestMove!==-1) board[bestMove]=ai;
-    checkEnd();render();
-  }
-  function minimax(depth,isMax){
-    const w=winner();
-    if(w===ai) return 10-depth;
-    if(w===human) return depth-10;
-    if(full()) return 0;
-    if(isMax){
-      let best=-Infinity;
-      for(let i=0;i<9;i++) if(!board[i]){board[i]=ai;best=Math.max(best,minimax(depth+1,false));board[i]='';}
-      return best;
-    } else {
-      let best=Infinity;
-      for(let i=0;i<9;i++) if(!board[i]){board[i]=human;best=Math.min(best,minimax(depth+1,true));board[i]='';}
-      return best;
-    }
-  }
-  function checkEnd(){
-    const w=winner();
-    if(w){over=true;if(w===human)wins++;else losses++;return true;}
-    if(full()){over=true;return true;}
-    return false;
-  }
-  window.tttMove=i=>{
-    if(over||board[i]) return;
-    vibrate(10);
-    board[i]=human;
-    if(!checkEnd()){render();setTimeout(aiMove,350);return;}
-    render();
-  };
+  function aiMove(){if(over) return;let bestScore=-Infinity,bestMove=-1;for(let i=0;i<9;i++) if(!board[i]){board[i]=ai;const s=minimax(0,false);board[i]='';if(s>bestScore){bestScore=s;bestMove=i;}}if(bestMove!==-1) board[bestMove]=ai;checkEnd();render();}
+  function minimax(depth,isMax){const w=winner();if(w===ai) return 10-depth;if(w===human) return depth-10;if(full()) return 0;if(isMax){let best=-Infinity;for(let i=0;i<9;i++) if(!board[i]){board[i]=ai;best=Math.max(best,minimax(depth+1,false));board[i]='';}return best;}else{let best=Infinity;for(let i=0;i<9;i++) if(!board[i]){board[i]=human;best=Math.min(best,minimax(depth+1,true));board[i]='';}return best;}}
+  function checkEnd(){const w=winner();if(w){over=true;if(w===human)wins++;else losses++;return true;}if(full()){over=true;return true;}return false;}
+  window.tttMove=i=>{if(over||board[i]) return;vibrate(10);board[i]=human;if(!checkEnd()){render();setTimeout(aiMove,350);return;}render();};
   window.tttNew=()=>{board=Array(9).fill('');over=false;render();};
   render();
 }
@@ -1589,108 +1267,31 @@ function startSnake(root){
   const CW = Math.min(SIZE*CELL, window.innerWidth - 60, 360);
   const REAL_CELL = Math.floor(CW / SIZE);
   const REAL_SIZE = REAL_CELL * SIZE;
-  
   root.innerHTML=`
     <h2>🐍 Змейка</h2>
-    <div class="game-score">
-      <span>Счёт: <span id="snScore">0</span></span>
-      <span>Рекорд: <span id="snBest">${localStorage.getItem('tg_snakeBest')||0}</span></span>
-    </div>
-    <div id="snakeWrap" style="position:relative;max-width:100%;margin:0 auto;width:fit-content;touch-action:none">
-      <canvas class="snake-canvas" id="snCanvas" width="${REAL_SIZE}" height="${REAL_SIZE}"></canvas>
-    </div>
+    <div class="game-score"><span>Счёт: <span id="snScore">0</span></span><span>Рекорд: <span id="snBest">${localStorage.getItem('tg_snakeBest')||0}</span></span></div>
+    <div id="snakeWrap" style="position:relative;max-width:100%;margin:0 auto;width:fit-content;touch-action:none"><canvas class="snake-canvas" id="snCanvas" width="${REAL_SIZE}" height="${REAL_SIZE}"></canvas></div>
     <div class="dpad-big" id="snDpad">
-      <div class="empty"></div>
-      <button data-dir="up" ontouchstart="event.preventDefault();window.snakeDir('up')" onclick="window.snakeDir('up')">▲</button>
-      <div class="empty"></div>
-      <button data-dir="left" ontouchstart="event.preventDefault();window.snakeDir('left')" onclick="window.snakeDir('left')">◀</button>
+      <div class="empty"></div><button ontouchstart="event.preventDefault();window.snakeDir('up')" onclick="window.snakeDir('up')">▲</button><div class="empty"></div>
+      <button ontouchstart="event.preventDefault();window.snakeDir('left')" onclick="window.snakeDir('left')">◀</button>
       <button class="center" ontouchstart="event.preventDefault();window.snakePause()" onclick="window.snakePause()">⏸</button>
-      <button data-dir="right" ontouchstart="event.preventDefault();window.snakeDir('right')" onclick="window.snakeDir('right')">▶</button>
-      <div class="empty"></div>
-      <button data-dir="down" ontouchstart="event.preventDefault();window.snakeDir('down')" onclick="window.snakeDir('down')">▼</button>
-      <div class="empty"></div>
+      <button ontouchstart="event.preventDefault();window.snakeDir('right')" onclick="window.snakeDir('right')">▶</button>
+      <div class="empty"></div><button ontouchstart="event.preventDefault();window.snakeDir('down')" onclick="window.snakeDir('down')">▼</button><div class="empty"></div>
     </div>
-    <div style="text-align:center;margin-top:12px">
-      <button class="game-btn" onclick="window.snakeNew()">Новая игра</button>
-    </div>
-    <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Управляй кнопками ▲◀▼▶ или свайпами</p>
+    <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.snakeNew()">Новая игра</button></div>
   `;
   const canvas=document.getElementById('snCanvas');
   const ctx=canvas.getContext('2d');
   const CELL_USE = REAL_CELL;
   const SIZE_USE = REAL_SIZE;
   let snake,dir,food,score,alive,paused,gameLoop;
-  
-  function init(){
-    snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-    dir={x:1,y:0};score=0;alive=true;paused=false;
-    placeFood();draw();
-    if(gameLoop) clearInterval(gameLoop);
-    gameLoop=setInterval(tick,140);
-    window.snakeInterval=gameLoop;
-    setupSwipe();
-  }
-  function placeFood(){
-    while(true){food={x:Math.floor(Math.random()*SIZE),y:Math.floor(Math.random()*SIZE)};if(!snake.some(s=>s.x===food.x&&s.y===food.y)) break;}
-  }
-  function tick(){
-    if(!alive||paused) return;
-    const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
-    if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE||snake.some(s=>s.x===head.x&&s.y===head.y)){
-      alive=false;clearInterval(gameLoop);
-      const best=+localStorage.getItem('tg_snakeBest')||0;
-      if(score>best) localStorage.setItem('tg_snakeBest',score);
-      const bestEl=document.getElementById('snBest');if(bestEl) bestEl.textContent=Math.max(best,score);
-      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
-      ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';
-      ctx.fillText('Игра окончена!',SIZE_USE/2,SIZE_USE/2-15);
-      ctx.fillText('Счёт: '+score,SIZE_USE/2,SIZE_USE/2+15);
-      return;
-    }
-    snake.unshift(head);
-    if(head.x===food.x&&head.y===food.y){score++;vibrate(10);const el=document.getElementById('snScore');if(el) el.textContent=score;placeFood();}
-    else snake.pop();
-    draw();
-  }
-  function draw(){
-    ctx.fillStyle='#111';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
-    ctx.fillStyle='#e53935';ctx.fillRect(food.x*CELL_USE+2,food.y*CELL_USE+2,CELL_USE-4,CELL_USE-4);
-    snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#4caf50':'#7bc862';ctx.fillRect(s.x*CELL_USE+1,s.y*CELL_USE+1,CELL_USE-2,CELL_USE-2);});
-    if(paused){
-      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);
-      ctx.fillStyle='#fff';ctx.font='bold 24px sans-serif';ctx.textAlign='center';
-      ctx.fillText('ПАУЗА',SIZE_USE/2,SIZE_USE/2);
-    }
-  }
-  window.snakeDir=d=>{
-    if(!alive||paused) return;
-    vibrate(8);
-    if(d==='up'&&dir.y!==1) dir={x:0,y:-1};
-    else if(d==='down'&&dir.y!==-1) dir={x:0,y:1};
-    else if(d==='left'&&dir.x!==1) dir={x:-1,y:0};
-    else if(d==='right'&&dir.x!==-1) dir={x:1,y:0};
-  };
-  window.snakePause=()=>{
-    if(!alive) return;
-    paused=!paused;
-    vibrate(15);
-    draw();
-  };
-  function setupSwipe(){
-    const wrap=document.getElementById('snakeWrap');
-    if(!wrap) return;
-    let sx=0,sy=0,moved=false;
-    wrap.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});
-    wrap.addEventListener('touchmove',e=>{
-      if(moved) return;
-      const t=e.touches[0];
-      const dx=t.clientX-sx,dy=t.clientY-sy;
-      if(Math.abs(dx)<20&&Math.abs(dy)<20) return;
-      moved=true;
-      if(Math.abs(dx)>Math.abs(dy)) window.snakeDir(dx>0?'right':'left');
-      else window.snakeDir(dy>0?'down':'up');
-    },{passive:true});
-  }
+  function init(){snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};score=0;alive=true;paused=false;placeFood();draw();if(gameLoop) clearInterval(gameLoop);gameLoop=setInterval(tick,140);window.snakeInterval=gameLoop;setupSwipe();}
+  function placeFood(){while(true){food={x:Math.floor(Math.random()*SIZE),y:Math.floor(Math.random()*SIZE)};if(!snake.some(s=>s.x===food.x&&s.y===food.y)) break;}}
+  function tick(){if(!alive||paused) return;const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(head.x<0||head.x>=SIZE||head.y<0||head.y>=SIZE||snake.some(s=>s.x===head.x&&s.y===head.y)){alive=false;clearInterval(gameLoop);const best=+localStorage.getItem('tg_snakeBest')||0;if(score>best) localStorage.setItem('tg_snakeBest',score);const bestEl=document.getElementById('snBest');if(bestEl) bestEl.textContent=Math.max(best,score);ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText('Игра окончена!',SIZE_USE/2,SIZE_USE/2-15);ctx.fillText('Счёт: '+score,SIZE_USE/2,SIZE_USE/2+15);return;}snake.unshift(head);if(head.x===food.x&&head.y===food.y){score++;vibrate(10);const el=document.getElementById('snScore');if(el) el.textContent=score;placeFood();}else snake.pop();draw();}
+  function draw(){ctx.fillStyle='#111';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);ctx.fillStyle='#e53935';ctx.fillRect(food.x*CELL_USE+2,food.y*CELL_USE+2,CELL_USE-4,CELL_USE-4);snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#4caf50':'#7bc862';ctx.fillRect(s.x*CELL_USE+1,s.y*CELL_USE+1,CELL_USE-2,CELL_USE-2);});if(paused){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,SIZE_USE,SIZE_USE);ctx.fillStyle='#fff';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText('ПАУЗА',SIZE_USE/2,SIZE_USE/2);}}
+  window.snakeDir=d=>{if(!alive||paused) return;vibrate(8);if(d==='up'&&dir.y!==1) dir={x:0,y:-1};else if(d==='down'&&dir.y!==-1) dir={x:0,y:1};else if(d==='left'&&dir.x!==1) dir={x:-1,y:0};else if(d==='right'&&dir.x!==-1) dir={x:1,y:0};};
+  window.snakePause=()=>{if(!alive) return;paused=!paused;vibrate(15);draw();};
+  function setupSwipe(){const wrap=document.getElementById('snakeWrap');if(!wrap) return;let sx=0,sy=0,moved=false;wrap.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});wrap.addEventListener('touchmove',e=>{if(moved) return;const t=e.touches[0];const dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)<20&&Math.abs(dy)<20) return;moved=true;if(Math.abs(dx)>Math.abs(dy)) window.snakeDir(dx>0?'right':'left');else window.snakeDir(dy>0?'down':'up');},{passive:true});}
   window.snakeNew=init;
   init();
 }
@@ -1698,87 +1299,30 @@ function startSnake(root){
 function start2048(root){
   let grid,score,over,paused;
   window.game2048Active=true;
-  function init(){
-    grid=Array.from({length:4},()=>Array(4).fill(0));
-    score=0;over=false;paused=false;addTile();addTile();render();setupSwipe();
-  }
-  function addTile(){
-    const empty=[];
-    for(let y=0;y<4;y++) for(let x=0;x<4;x++) if(!grid[y][x]) empty.push({x,y});
-    if(!empty.length) return;
-    const {x,y}=empty[Math.floor(Math.random()*empty.length)];
-    grid[y][x]=Math.random()<0.9?2:4;
-  }
-  function slide(row){
-    let arr=row.filter(v=>v);
-    for(let i=0;i<arr.length-1;i++) if(arr[i]===arr[i+1]){arr[i]*=2;score+=arr[i];arr.splice(i+1,1);}
-    while(arr.length<4) arr.push(0);
-    return arr;
-  }
-  function move(dir){
-    if(over||paused||!window.game2048Active) return;
-    vibrate(8);
-    const before=JSON.stringify(grid);
-    if(dir==='left') grid=grid.map(r=>slide(r));
-    if(dir==='right') grid=grid.map(r=>slide(r.reverse()).reverse());
-    if(dir==='up'||dir==='down'){
-      for(let x=0;x<4;x++){
-        let col=[grid[0][x],grid[1][x],grid[2][x],grid[3][x]];
-        if(dir==='down') col.reverse();
-        col=slide(col);
-        if(dir==='down') col.reverse();
-        for(let y=0;y<4;y++) grid[y][x]=col[y];
-      }
-    }
-    if(JSON.stringify(grid)!==before){addTile();render();setupSwipe();}
-    if(isOver()){over=true;setTimeout(()=>alert('Игра окончена! Счёт: '+score),100);}
-  }
-  function isOver(){
-    for(let y=0;y<4;y++) for(let x=0;x<4;x++){
-      if(!grid[y][x]) return false;
-      if(x<3&&grid[y][x]===grid[y][x+1]) return false;
-      if(y<3&&grid[y][x]===grid[y+1][x]) return false;
-    }
-    return true;
-  }
+  function init(){grid=Array.from({length:4},()=>Array(4).fill(0));score=0;over=false;paused=false;addTile();addTile();render();setupSwipe();}
+  function addTile(){const empty=[];for(let y=0;y<4;y++) for(let x=0;x<4;x++) if(!grid[y][x]) empty.push({x,y});if(!empty.length) return;const {x,y}=empty[Math.floor(Math.random()*empty.length)];grid[y][x]=Math.random()<0.9?2:4;}
+  function slide(row){let arr=row.filter(v=>v);for(let i=0;i<arr.length-1;i++) if(arr[i]===arr[i+1]){arr[i]*=2;score+=arr[i];arr.splice(i+1,1);}while(arr.length<4) arr.push(0);return arr;}
+  function move(dir){if(over||paused||!window.game2048Active) return;vibrate(8);const before=JSON.stringify(grid);if(dir==='left') grid=grid.map(r=>slide(r));if(dir==='right') grid=grid.map(r=>slide(r.reverse()).reverse());if(dir==='up'||dir==='down'){for(let x=0;x<4;x++){let col=[grid[0][x],grid[1][x],grid[2][x],grid[3][x]];if(dir==='down') col.reverse();col=slide(col);if(dir==='down') col.reverse();for(let y=0;y<4;y++) grid[y][x]=col[y];}}if(JSON.stringify(grid)!==before){addTile();render();setupSwipe();}if(isOver()){over=true;setTimeout(()=>alert('Игра окончена! Счёт: '+score),100);}}
+  function isOver(){for(let y=0;y<4;y++) for(let x=0;x<4;x++){if(!grid[y][x]) return false;if(x<3&&grid[y][x]===grid[y][x+1]) return false;if(y<3&&grid[y][x]===grid[y+1][x]) return false;}return true;}
   function render(){
     root.innerHTML=`
       <h2>🧠 2048</h2>
       <div class="game-score"><span>Счёт: ${score}</span><span>Рекорд: ${Math.max(+localStorage.getItem('tg_g2048Best')||0,score)}</span></div>
       <div class="g2048-board" id="g2048Board">${grid.flat().map(v=>`<div class="g2048-cell ${v?'v'+v:''}">${v||''}</div>`).join('')}</div>
       <div class="dpad-big" id="g2048Dpad" style="max-width:240px">
-        <div class="empty"></div>
-        <button ontouchstart="event.preventDefault();window.g2048Move('up')" onclick="window.g2048Move('up')">▲</button>
-        <div class="empty"></div>
+        <div class="empty"></div><button ontouchstart="event.preventDefault();window.g2048Move('up')" onclick="window.g2048Move('up')">▲</button><div class="empty"></div>
         <button ontouchstart="event.preventDefault();window.g2048Move('left')" onclick="window.g2048Move('left')">◀</button>
         <button class="center" ontouchstart="event.preventDefault();window.g2048Pause()" onclick="window.g2048Pause()">${paused?'▶':'⏸'}</button>
         <button ontouchstart="event.preventDefault();window.g2048Move('right')" onclick="window.g2048Move('right')">▶</button>
-        <div class="empty"></div>
-        <button ontouchstart="event.preventDefault();window.g2048Move('down')" onclick="window.g2048Move('down')">▼</button>
-        <div class="empty"></div>
+        <div class="empty"></div><button ontouchstart="event.preventDefault();window.g2048Move('down')" onclick="window.g2048Move('down')">▼</button><div class="empty"></div>
       </div>
-      <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.g2048New()">Новая</button></div>
-      <p style="text-align:center;color:var(--text2);font-size:12px;margin-top:8px">Кнопки или свайпы по полю</p>`;
+      <div style="text-align:center;margin-top:12px"><button class="game-btn" onclick="window.g2048New()">Новая</button></div>`;
     const best=+localStorage.getItem('tg_g2048Best')||0;
     if(score>best) localStorage.setItem('tg_g2048Best',score);
   }
   window.g2048Move=move;
   window.g2048Pause=()=>{paused=!paused;vibrate(15);render();setupSwipe();};
-  function setupSwipe(){
-    const board=document.getElementById('g2048Board');
-    if(!board) return;
-    let sx=0,sy=0,moved=false;
-    board.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});
-    board.addEventListener('touchmove',e=>{
-      if(moved) return;
-      const t=e.touches[0];
-      const dx=t.clientX-sx,dy=t.clientY-sy;
-      if(Math.abs(dx)<30&&Math.abs(dy)<30) return;
-      moved=true;
-      if(Math.abs(dx)>Math.abs(dy)) move(dx>0?'right':'left');
-      else move(dy>0?'down':'up');
-    },{passive:true});
-  }
+  function setupSwipe(){const board=document.getElementById('g2048Board');if(!board) return;let sx=0,sy=0,moved=false;board.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});board.addEventListener('touchmove',e=>{if(moved) return;const t=e.touches[0];const dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)<30&&Math.abs(dy)<30) return;moved=true;if(Math.abs(dx)>Math.abs(dy)) move(dx>0?'right':'left');else move(dy>0?'down':'up');},{passive:true});}
   window.g2048New=init;
   init();
 }
