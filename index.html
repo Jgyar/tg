@@ -269,6 +269,104 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
   .ms-cell { width: 32px; height: 32px; }
   .msg-video-circle { width: 180px; height: 180px; }
 }
+
+/* ============ НОВЫЕ СТИЛИ 4.2-4.6 ============ */
+
+/* Стикеры-картинки */
+.sticker-tabs { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); margin-bottom: 12px; overflow-x: auto; }
+.sticker-tab { padding: 8px 14px; border-radius: 20px; background: var(--bg3); color: var(--text); cursor: pointer; font-size: 14px; font-weight: 500; white-space: nowrap; transition: .2s; border: none; }
+.sticker-tab.active { background: var(--accent); color: #fff; }
+.sticker-grid-img { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 340px; overflow-y: auto; }
+.sticker-img-item { aspect-ratio: 1; border-radius: 10px; background: var(--bg3); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px; transition: .2s; border: none; }
+.sticker-img-item:active { transform: scale(.92); background: var(--border); }
+.sticker-img-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.msg-sticker-img { max-width: 140px; max-height: 140px; cursor: pointer; display: block; margin: 4px 0; }
+.sticker-add-btn { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border: 2px dashed var(--border); border-radius: 10px; background: transparent; color: var(--text2); font-size: 28px; cursor: pointer; }
+
+/* Профиль пользователя */
+.user-profile-header { text-align: center; padding: 20px 0; }
+.user-profile-avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 12px; background-size: cover; background-position: center; background-color: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 600; color: #fff; border: 4px solid var(--accent); }
+.user-profile-name { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.user-profile-username { color: var(--text2); font-size: 14px; margin-bottom: 8px; }
+.user-profile-status { color: var(--accent); font-size: 13px; margin-bottom: 12px; }
+.user-profile-bio { color: var(--text2); font-size: 14px; line-height: 1.5; padding: 0 20px 16px; text-align: center; }
+.user-profile-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 12px 16px; }
+.user-profile-photo { aspect-ratio: 1; border-radius: 8px; background-size: cover; background-position: center; background-color: var(--bg3); cursor: pointer; }
+.profile-btn-row { display: flex; gap: 10px; padding: 0 16px 16px; }
+.profile-btn-row button { flex: 1; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
+.profile-btn-row button.secondary { background: var(--bg3); color: var(--text); }
+
+/* Управление группой */
+.group-info-header { text-align: center; padding: 20px 0; }
+.group-info-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 44px; color: #fff; background-size: cover; background-position: center; }
+.group-member-item { display: flex; gap: 12px; padding: 10px 16px; align-items: center; border-bottom: 1px solid var(--border); }
+.group-member-item .body { flex: 1; min-width: 0; }
+.group-member-item .name { font-size: 15px; font-weight: 500; }
+.group-member-item .admin-badge { background: var(--accent); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+.group-member-item .kick-btn { background: #e53935; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+/* Истории */
+.stories-row { display: flex; gap: 12px; padding: 12px 16px; overflow-x: auto; background: var(--bg); border-bottom: 1px solid var(--border); }
+.story-bubble { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; width: 72px; }
+.story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366); }
+.story-ring.viewed { background: var(--border); }
+.story-ring-inner { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--bg); background-size: cover; background-position: center; background-color: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; font-weight: 600; }
+.story-username { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 72px; text-align: center; }
+.story-add-bubble .story-ring { background: linear-gradient(45deg, var(--accent), #6bb2f5); }
+.story-viewer { position: fixed; inset: 0; background: #000; z-index: 400; display: flex; flex-direction: column; }
+.story-progress { display: flex; gap: 4px; padding: 12px 12px 0; }
+.story-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,.3); border-radius: 2px; overflow: hidden; }
+.story-progress-fill { height: 100%; background: #fff; width: 0; transition: width .1s linear; }
+.story-content { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; }
+.story-content img, .story-content video { max-width: 100%; max-height: 100%; border-radius: 12px; }
+.story-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #fff; }
+.story-header .story-author { font-weight: 600; }
+.story-header .story-time { font-size: 12px; opacity: .7; }
+.story-header .story-close { margin-left: auto; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; padding: 4px 10px; }
+
+/* Прочитано */
+.read-status { font-size: 14px; line-height: 1; margin-left: 2px; }
+.read-status.read { color: #4fc3f7; }
+
+/* Поиск */
+.search-panel { position: fixed; inset: 0; background: var(--bg); z-index: 250; display: flex; flex-direction: column; animation: fadeIn .2s; }
+.search-header { display: flex; align-items: center; gap: 10px; padding: 12px; border-bottom: 1px solid var(--border); }
+.search-header input { flex: 1; padding: 12px 16px; border-radius: 22px; border: none; background: var(--bg3); color: var(--text); font-size: 15px; outline: none; }
+.search-header button { background: none; border: none; color: var(--accent); font-size: 16px; cursor: pointer; padding: 8px 12px; }
+.search-results { flex: 1; overflow-y: auto; padding: 8px 0; }
+.search-result-item { padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.search-result-item:active { background: var(--bg3); }
+.search-result-item .sr-chat { font-size: 12px; color: var(--accent); margin-bottom: 4px; }
+.search-result-item .sr-text { font-size: 14px; line-height: 1.4; }
+.search-result-item mark { background: rgba(255,214,0,.4); color: inherit; padding: 0 2px; border-radius: 3px; }
+
+/* Кастомные темы */
+.accent-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+.accent-color { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: .2s; }
+.accent-color.active { border-color: var(--text); transform: scale(1.1); }
+.accent-color:active { transform: scale(.9); }
+
+/* Push / PWA */
+.push-banner { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--accent); color: #fff; }
+.push-banner .pb-text { flex: 1; font-size: 14px; }
+.push-banner button { padding: 8px 14px; border-radius: 8px; border: none; background: rgba(255,255,255,.25); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
+.push-banner button.primary { background: #fff; color: var(--accent); }
+
+/* Улучшения дизайна */
+.msg { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+[data-theme="dark"] .msg { box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.item .avatar { transition: transform .2s; }
+.item:active .avatar { transform: scale(.95); }
+.settings-item { transition: background .15s, transform .1s; }
+.settings-item:active { transform: scale(.98); }
+button { -webkit-tap-highlight-color: transparent; }
+.icon-btn { transition: transform .15s, background .15s; }
+.icon-btn:active { transform: scale(.9); }
+.send-btn, .attach-btn { transition: transform .15s, opacity .15s; }
+.send-btn:active, .attach-btn:active { transform: scale(.88); }
+.chat-header { box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+[data-theme="dark"] .chat-header { box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.sidebar-tabs button { transition: color .2s, border-color .2s, background .15s; }
+.sidebar-tabs button:active { background: var(--bg3); }
 </style>
 </head>
 <body>
@@ -315,6 +413,72 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modalBox"></div>
 </div>
+<!-- ============ НОВЫЕ ЭЛЕМЕНТЫ 4.2-4.6 ============ -->
+
+<!-- Скрытые input для новых загрузок -->
+<input type="file" id="stickerInput" style="display:none" accept="image/*" onchange="handleStickerUpload(this)">
+<input type="file" id="storyInput" style="display:none" accept="image/*,video/*" onchange="handleStoryUpload(this)">
+<input type="file" id="profilePhotoInput" style="display:none" accept="image/*" onchange="handleProfilePhotoUpload(this)">
+
+<!-- Push-баннер -->
+<div id="pushBanner" style="display:none" class="push-banner">
+  <div class="pb-text">🔔 Включить уведомления о новых сообщениях?</div>
+  <button onclick="declinePush()">Позже</button>
+  <button class="primary" onclick="acceptPush()">Включить</button>
+</div>
+
+<!-- Панель поиска -->
+<div id="searchPanel" class="search-panel" style="display:none">
+  <div class="search-header">
+    <input type="text" id="searchGlobalInput" placeholder="Поиск по чатам и сообщениям..." oninput="runSearch(this.value)">
+    <button onclick="closeSearchPanel()">Отмена</button>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<!-- Просмотр историй -->
+<div id="storyViewer" class="story-viewer" style="display:none">
+  <div class="story-progress" id="storyProgress"></div>
+  <div class="story-header">
+    <div id="storyAuthorAvatar" style="width:36px;height:36px;border-radius:50%;background:#666;background-size:cover;background-position:center"></div>
+    <div>
+      <div class="story-author" id="storyAuthorName">...</div>
+      <div class="story-time" id="storyTime">...</div>
+    </div>
+    <button class="story-close" onclick="closeStoryViewer()">✕</button>
+  </div>
+  <div class="story-content" id="storyContent" onclick="nextStory()"></div>
+</div>
+
+<!-- Профиль пользователя -->
+<div class="modal-bg" id="userProfileModal" onclick="if(event.target===this)closeUserProfile()">
+  <div class="modal" id="userProfileBox"></div>
+</div>
+
+<!-- Инфо о группе -->
+<div class="modal-bg" id="groupInfoModal" onclick="if(event.target===this)closeGroupInfo()">
+  <div class="modal" id="groupInfoBox"></div>
+</div>
+
+<!-- Акцентный цвет -->
+<div class="modal-bg" id="accentColorModal" onclick="if(event.target===this)closeAccentPicker()">
+  <div class="modal">
+    <button class="close" onclick="closeAccentPicker()">×</button>
+    <h2>🎨 Цвет акцента</h2>
+    <div class="accent-picker" id="accentPicker"></div>
+  </div>
+</div>
+
+<!-- Меню действий чата -->
+<div class="modal-bg" id="chatMenuModal" onclick="if(event.target===this)closeChatMenu()">
+  <div class="modal">
+    <button class="close" onclick="closeChatMenu()">×</button>
+    <h2>Действия</h2>
+    <div id="chatMenuContent"></div>
+  </div>
+</div>
+
+<!-- Конец новых элементов -->
 
 <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleFile(this, 'image')">
 <input type="file" id="docInput" style="display:none" onchange="handleFile(this, 'file')">
@@ -335,6 +499,7 @@ if ('serviceWorker' in navigator) {
 let currentUser=null, currentProfile=null, profiles={}, chats=[], activeChat=null, chatMessages=[], lastMessages={}, sideTab='chats', channel=null, editingMsgId=null;
 let replyingTo=null;
 let pinnedMessageId=null;
+window._readIds = new Set();
 
 function formatMoscowTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
@@ -705,6 +870,8 @@ window.openChat = async chatId => {
   document.getElementById('sidebar').classList.add('hidden');
   const {data}=await supabase.from('messages').select('*').eq('chat_id',chatId).order('created_at',{ascending:true});
   chatMessages=data||[];
+window._readIds = await getReadIds(chatId);
+markChatRead(chatId);
   renderMain();
   renderList();
 };
@@ -730,9 +897,11 @@ function renderMain(){
     sub=other.online?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
     avatarUrl=other.avatar_url;
   } else {name=chat.name||'Группа';initial='👥';color='#7bc862';sub=chat.members.length+' участников';}
-  const avatarHtml = avatarUrl
-    ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}')"></div>`
-    : `<div class="avatar" style="background:${color}">${initial}</div>`;
+  const otherUserId = chat.type === 'direct' ? chat.members.find(m => m !== currentUser.id) : null;
+const avatarClick = otherUserId ? `onclick="openUserProfile('${otherUserId}')"` : (chat.type === 'group' ? `onclick="openGroupInfo()"` : '');
+const avatarHtml = avatarUrl
+  ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${avatarUrl}');cursor:pointer" ${avatarClick}></div>`
+  : `<div class="avatar" style="background:${color};cursor:pointer" ${avatarClick}>${initial}</div>`;
 
   // Закреплённое сообщение
   let pinnedHtml = '';
@@ -811,6 +980,7 @@ function renderMessagesHTML(){
 
     if(isEditing) content=`<input class="msg-edit-input" id="edit_${m.id}" value="${escapeHtml(m.text||'')}" onkeydown="if(event.key==='Enter')saveEdit(${m.id})">`;
     else if(m.type==='sticker') content=`<div class="msg-sticker">${m.text}</div>`;
+    else if(m.type==='sticker_img') content=`<img class="msg-sticker-img" src="${m.text}" onclick="viewStickerImg('${m.text}')" alt="sticker">`;
     else if(m.type==='image') content=`<img class="msg-img" src="${m.data}" onclick="viewImage('${m.id}')" alt="фото">`;
     else if(m.type==='file') content=`<a class="msg-file" href="${m.data}" download="${escapeHtml(m.file_name||'file')}"><div style="font-size:28px">📎</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500">${escapeHtml(m.file_name||'Файл')}</div><div style="font-size:12px;color:var(--text2)">${formatSize(m.file_size||0)}</div></div></a>`;
     else if(m.type==='voice') content=`<div class="msg-voice"><button class="voice-play" onclick="playVoice('${m.id}')" id="play_${m.id}">▶</button><div class="voice-wave" id="wave_${m.id}">${Array(24).fill(0).map(()=>`<span style="height:${6+Math.random()*18}px"></span>`).join('')}</div><div style="font-size:12px;color:var(--text2)">${m.duration?Math.floor(m.duration/60)+':'+String(m.duration%60).padStart(2,'0'):'0:00'}</div></div>`;
@@ -820,7 +990,8 @@ function renderMessagesHTML(){
     const reacts=m.reactions||{};
     const reactsHtml=renderReactionsHTML(m,reacts);
     const menuBtn = isEditing ? '' : `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event,${m.id})">⋯</button>`;
-    return `${dateSep}<div class="msg ${out?'out':'in'}" id="msg-${m.id}">${replyPreview}${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${menuBtn}</div></div>`;
+    const readCheck = out ? `<span class="read-status ${window._readIds && window._readIds.has(m.id) ? 'read' : ''}">✓✓</span>` : '';
+return `${dateSep}<div class="msg ${out?'out':'in'}" id="msg-${m.id}">${replyPreview}${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${readCheck}${menuBtn}</div></div>`;
   }).join('');
 }
 
@@ -1693,6 +1864,1017 @@ function start2048(root){
   window.g2048New=init;
   init();
 }
+
+// ============ СТИКЕРЫ-КАРТИНКИ ============
+let stickerPacks = [];
+let currentStickerPack = null;
+
+async function loadStickerPacks() {
+  const { data } = await supabase.from('sticker_packs').select('*').order('id');
+  stickerPacks = data || [];
+  // Если пусто — создадим дефолтные
+  if (!stickerPacks.length) {
+    await supabase.from('sticker_packs').insert([
+      { name: 'Эмодзи', icon: '😀', created_by: null },
+      { name: 'Животные', icon: '🐶', created_by: null }
+    ]);
+    const { data: again } = await supabase.from('sticker_packs').select('*').order('id');
+    stickerPacks = again || [];
+  }
+}
+
+window.openStickerPanelImg = async () => {
+  closePopup();
+  await loadStickerPacks();
+  const p = document.createElement('div');
+  p.id = 'stickerPanelImg';
+  p.className = 'modal-bg show';
+  p.innerHTML = `
+    <div class="modal" style="max-width:420px">
+      <button class="close" onclick="closeStickerPanelImg()">×</button>
+      <h2>🎨 Стикеры</h2>
+      <div class="sticker-tabs" id="stickerTabs"></div>
+      <div class="sticker-grid-img" id="stickerGridImg"></div>
+    </div>
+  `;
+  p.onclick = ev => { if (ev.target === p) closeStickerPanelImg(); };
+  document.body.appendChild(p);
+  renderStickerTabs();
+};
+
+window.closeStickerPanelImg = () => {
+  const p = document.getElementById('stickerPanelImg');
+  if (p) p.remove();
+};
+
+function renderStickerTabs() {
+  const tabs = document.getElementById('stickerTabs');
+  if (!tabs) return;
+  tabs.innerHTML = stickerPacks.map(pack => 
+    `<button class="sticker-tab ${currentStickerPack === pack.id ? 'active' : ''}" onclick="selectStickerPack(${pack.id})">${pack.icon} ${escapeHtml(pack.name)}</button>`
+  ).join('') + `<button class="sticker-tab" onclick="uploadStickerPrompt()">+ Загрузить</button>`;
+  
+  if (!currentStickerPack && stickerPacks.length) {
+    currentStickerPack = stickerPacks[0].id;
+  }
+  renderStickerGrid();
+}
+
+window.selectStickerPack = async (packId) => {
+  currentStickerPack = packId;
+  renderStickerTabs();
+};
+
+async function renderStickerGrid() {
+  const grid = document.getElementById('stickerGridImg');
+  if (!grid || !currentStickerPack) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text2)">Загрузка...</div>';
+  
+  const { data } = await supabase.from('stickers').select('*').eq('pack_id', currentStickerPack).order('id');
+  const stickers = data || [];
+  
+  if (!stickers.length) {
+    grid.innerHTML = `
+      <button class="sticker-add-btn" onclick="uploadStickerPrompt()">➕</button>
+      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text2)">В этом паке пока нет стикеров.<br>Нажми ➕ чтобы загрузить</div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = stickers.map(s => 
+    `<button class="sticker-img-item" onclick="sendStickerImg('${s.id}', '${s.url}')">
+      <img src="${s.url}" alt="sticker">
+    </button>`
+  ).join('') + `<button class="sticker-add-btn" onclick="uploadStickerPrompt()">➕</button>`;
+}
+
+window.uploadStickerPrompt = () => {
+  if (!currentStickerPack) {
+    alert('Сначала выбери пак');
+    return;
+  }
+  document.getElementById('stickerInput').click();
+};
+
+window.handleStickerUpload = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 500 * 1024) { alert('Стикер слишком большой (макс 500 КБ)'); input.value = ''; return; }
+  
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.png`;
+  const filePath = `stickers/${fileName}`;
+  
+  const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+  if (uploadError) { alert('Ошибка загрузки: ' + uploadError.message); input.value = ''; return; }
+  
+  const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
+  const publicUrl = urlData.publicUrl;
+  
+  const { error: insertError } = await supabase.from('stickers').insert({
+    pack_id: currentStickerPack,
+    url: publicUrl
+  });
+  
+  input.value = '';
+  
+  if (insertError) { alert('Ошибка сохранения: ' + insertError.message); return; }
+  
+  vibrate(20);
+  showToast('✓ Стикер загружен');
+  renderStickerGrid();
+};
+
+window.sendStickerImg = async (stickerId, url) => {
+  closeStickerPanelImg();
+  vibrate(15);
+  await supabase.from('messages').insert({
+    chat_id: activeChat.id,
+    user_id: currentUser.id,
+    username: currentProfile.username,
+    type: 'sticker_img',
+    text: url
+  });
+  
+// ============ ОТПРАВКА СТИКЕР-КАРТИНОК В ЧАТ ============
+// Кнопка "Стикер-картинка" в панели вложений — заменяем openStickers на панель с табами
+window.openStickers = () => {
+  closePopup();
+  openStickerPanelImg();
+};
+
+// ============ ПРОСМОТР СТИКЕРА НА ВЕСЬ ЭКРАН ============
+window.viewStickerImg = (url) => {
+  const p = document.createElement('div');
+  p.className = 'modal-bg show';
+  p.id = 'reactionPicker';
+  p.style.background = 'rgba(0,0,0,.9)';
+  p.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;object-fit:contain" onclick="closePopup()">`;
+  p.onclick = closePopup;
+  document.body.appendChild(p);
+};
+
+// ============ ОБРАБОТКА sticker_img В ЛЕНТЕ ============
+// Эта функция вызывается внутри renderMessagesHTML (мы её переопределим)
+// Просто добавляем поддержку типа — рендер уже проверяет m.type, надо добавить ветку
+// (См. ниже — обновление renderMessagesHTML)
+
+};
+
+// ============ ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ ============
+window.openUserProfile = async (userId) => {
+  if (userId === currentUser.id) {
+    openSettings();
+    return;
+  }
+  const p = profiles[userId];
+  if (!p) { alert('Профиль не найден'); return; }
+
+  const box = document.getElementById('userProfileBox');
+  const modal = document.getElementById('userProfileModal');
+
+  const avatarHtml = p.avatar_url
+    ? `<div class="user-profile-avatar" style="background-image:url('${p.avatar_url}')"></div>`
+    : `<div class="user-profile-avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji || (p.name||'?')[0].toUpperCase()}</div>`;
+
+  const statusText = p.online ? '🟢 в сети' : (p.last_seen ? 'был(а) ' + formatMoscowDateTime(p.last_seen) : 'не в сети');
+  const bio = p.bio ? escapeHtml(p.bio) : 'Без описания';
+  const photos = Array.isArray(p.photos) ? p.photos : [];
+
+  box.innerHTML = `
+    <button class="close" onclick="closeUserProfile()">×</button>
+    <div class="user-profile-header">
+      ${avatarHtml}
+      <div class="user-profile-name">${escapeHtml(p.name || p.username)}</div>
+      <div class="user-profile-username">@${escapeHtml(p.username)}</div>
+      <div class="user-profile-status">${statusText}</div>
+    </div>
+    <div class="user-profile-bio">${bio}</div>
+    ${photos.length ? `
+      <div style="padding:0 16px 8px;font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-weight:600">Фото</div>
+      <div class="user-profile-photos">
+        ${photos.map(url => `<div class="user-profile-photo" style="background-image:url('${url}')" onclick="viewProfilePhoto('${url}')"></div>`).join('')}
+      </div>
+    ` : ''}
+    <div class="profile-btn-row">
+      <button onclick="startDirectFromProfile('${userId}')">✉️ Написать</button>
+    </div>
+  `;
+
+  modal.classList.add('show');
+};
+
+window.closeUserProfile = () => {
+  document.getElementById('userProfileModal').classList.remove('show');
+};
+
+window.startDirectFromProfile = (userId) => {
+  closeUserProfile();
+  startDirect(userId);
+};
+
+window.viewProfilePhoto = (url) => {
+  const p = document.createElement('div');
+  p.className = 'modal-bg show';
+  p.id = 'reactionPicker';
+  p.style.background = 'rgba(0,0,0,.9)';
+  p.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;object-fit:contain" onclick="closePopup()">`;
+  p.onclick = closePopup;
+  document.body.appendChild(p);
+};
+
+// ============ РЕДАКТИРОВАНИЕ СВОЕГО ПРОФИЛЯ ============
+window.editBio = async () => {
+  const v = prompt('О себе:', currentProfile.bio || '');
+  if (v === null) return;
+  await supabase.from('profiles').update({ bio: v.trim() }).eq('id', currentUser.id);
+  currentProfile.bio = v.trim();
+  await loadAllProfiles();
+  showToast('✓ Сохранено');
+  openSettings();
+};
+
+window.uploadProfilePhoto = () => {
+  document.getElementById('profilePhotoInput').click();
+};
+
+window.handleProfilePhotoUpload = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('Макс 2 МБ'); input.value = ''; return; }
+
+  input.value = '';
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = async () => {
+      const canvas = document.createElement('canvas');
+      const SIZE = 800;
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+      const ctx = canvas.getContext('2d');
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide) / 2;
+      const sy = (img.height - minSide) / 2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, SIZE, SIZE);
+
+      canvas.toBlob(async (blob) => {
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+        const filePath = `profile-photos/${currentUser.id}/${fileName}`;
+
+        const { error: upErr } = await supabase.storage.from('media').upload(filePath, blob, { contentType: 'image/jpeg' });
+        if (upErr) { alert('Ошибка загрузки: ' + upErr.message); return; }
+
+        const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
+        const publicUrl = urlData.publicUrl;
+
+        const currentPhotos = Array.isArray(currentProfile.photos) ? currentProfile.photos : [];
+        const newPhotos = [...currentPhotos, publicUrl];
+
+        await supabase.from('profiles').update({ photos: newPhotos }).eq('id', currentUser.id);
+        currentProfile.photos = newPhotos;
+        await loadAllProfiles();
+        vibrate(20);
+        showToast('✓ Фото загружено');
+        openSettings();
+      }, 'image/jpeg', 0.85);
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.removeProfilePhoto = async (index) => {
+  if (!confirm('Удалить это фото?')) return;
+  const currentPhotos = Array.isArray(currentProfile.photos) ? [...currentProfile.photos] : [];
+  if (index < 0 || index >= currentPhotos.length) return;
+  currentPhotos.splice(index, 1);
+  await supabase.from('profiles').update({ photos: currentPhotos }).eq('id', currentUser.id);
+  currentProfile.photos = currentPhotos;
+  await loadAllProfiles();
+  showToast('Удалено');
+  openSettings();
+};
+
+// ============ ДОБАВЛЕНИЕ БИО И ФОТО В НАСТРОЙКИ ============
+const _origOpenSettings = window.openSettings;
+window.openSettings = () => {
+  _origOpenSettings();
+  setTimeout(() => {
+    const modal = document.getElementById('modalBox');
+    if (!modal) return;
+    const firstSection = modal.querySelector('.settings-section');
+    if (!firstSection) return;
+
+    const bioBlock = document.createElement('div');
+    bioBlock.className = 'settings-section';
+
+    const photos = Array.isArray(currentProfile.photos) ? currentProfile.photos : [];
+    const bioText = currentProfile.bio ? escapeHtml(currentProfile.bio) : 'Нажми чтобы заполнить';
+
+    bioBlock.innerHTML = `
+      <div class="settings-title">О себе и фото</div>
+      <div class="settings-item" onclick="editBio()">
+        <div class="si-ico">📝</div>
+        <div class="si-body"><div class="si-title">О себе</div><div class="si-desc">${bioText}</div></div>
+        <div class="si-arrow">›</div>
+      </div>
+      <div class="settings-item" onclick="uploadProfilePhoto()">
+        <div class="si-ico">📸</div>
+        <div class="si-body"><div class="si-title">Добавить фото</div><div class="si-desc">В галерею профиля</div></div>
+        <div class="si-arrow">›</div>
+      </div>
+      ${photos.length ? `
+        <div style="padding:12px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          ${photos.map((url, i) => `
+            <div style="position:relative;aspect-ratio:1;border-radius:8px;background-image:url('${url}');background-size:cover;background-position:center" onclick="viewProfilePhoto('${url}')">
+              <button onclick="event.stopPropagation();removeProfilePhoto(${i})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px">×</button>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    `;
+
+    firstSection.parentNode.insertBefore(bioBlock, firstSection.nextSibling);
+  }, 30);
+};
+
+// ============ УПРАВЛЕНИЕ ГРУППОЙ ============
+window.openGroupInfo = async () => {
+  if (!activeChat || activeChat.type !== 'group') return;
+  
+  // Обновим данные группы (вдруг изменилось)
+  const { data: chatData } = await supabase.from('chats').select('*').eq('id', activeChat.id).single();
+  if (chatData) activeChat = chatData;
+  
+  const isCreator = activeChat.created_by === currentUser.id;
+  const admins = Array.isArray(activeChat.admins) ? activeChat.admins : [];
+  const isAdmin = isCreator || admins.includes(currentUser.id);
+  
+  const box = document.getElementById('groupInfoBox');
+  const modal = document.getElementById('groupInfoModal');
+  
+  const membersHtml = activeChat.members.map(mid => {
+    const p = profiles[mid] || {};
+    const isMe = mid === currentUser.id;
+    const isMemberCreator = activeChat.created_by === mid;
+    const isMemberAdmin = isMemberCreator || admins.includes(mid);
+    const name = p.name || p.username || 'Пользователь';
+    const initial = p.avatar_emoji || name[0].toUpperCase();
+    const color = p.color || '#3390ec';
+    
+    const avatarHtml = p.avatar_url
+      ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')"></div>`
+      : `<div class="avatar" style="background:${color}">${initial}</div>`;
+    
+    return `<div class="group-member-item" onclick="event.stopPropagation();openUserProfileFromGroup('${mid}')">
+      ${avatarHtml}
+      <div class="body">
+        <div class="name">${escapeHtml(name)}${isMe ? ' (вы)' : ''}${isMemberAdmin ? '<span class="admin-badge">админ</span>' : ''}</div>
+        <div style="font-size:12px;color:var(--text2)">@${escapeHtml(p.username||'')}</div>
+      </div>
+      ${isCreator && !isMe ? `<button class="kick-btn" onclick="event.stopPropagation();kickMember('${mid}','${escapeHtml(name)}')">Удалить</button>` : ''}
+    </div>`;
+  }).join('');
+  
+  const groupAvatarHtml = activeChat.avatar_url
+    ? `<div class="group-info-avatar" style="background-image:url('${activeChat.avatar_url}')" ${isCreator?'onclick="uploadGroupAvatar()"':''}></div>`
+    : `<div class="group-info-avatar" ${isCreator?'onclick="uploadGroupAvatar()"':''}>👥</div>`;
+  
+  box.innerHTML = `
+    <button class="close" onclick="closeGroupInfo()">×</button>
+    <div class="group-info-header">
+      ${groupAvatarHtml}
+      <div style="font-size:20px;font-weight:600;margin-bottom:4px">${escapeHtml(activeChat.name||'Группа')}</div>
+      <div style="color:var(--text2);font-size:13px">${activeChat.members.length} участников</div>
+    </div>
+    <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="game-btn" onclick="addMemberToGroup()">➕ Добавить</button>
+      ${isCreator ? `<button class="game-btn" onclick="renameGroup()" style="background:var(--bg3);color:var(--text)">✏️ Переименовать</button>` : ''}
+      <button class="game-btn" onclick="leaveGroup()" style="background:#e53935">🚪 Выйти</button>
+    </div>
+    <div class="settings-title">Участники</div>
+    <div style="max-height:400px;overflow-y:auto">
+      ${membersHtml}
+    </div>
+  `;
+  
+  modal.classList.add('show');
+};
+
+window.closeGroupInfo = () => {
+  document.getElementById('groupInfoModal').classList.remove('show');
+};
+
+window.openUserProfileFromGroup = (userId) => {
+  if (userId === currentUser.id) return;
+  closeGroupInfo();
+  setTimeout(() => openUserProfile(userId), 100);
+};
+
+window.addMemberToGroup = () => {
+  const available = Object.values(profiles).filter(p => 
+    p.id !== currentUser.id && !activeChat.members.includes(p.id)
+  );
+  if (!available.length) { alert('Все уже в группе'); return; }
+  
+  const box = document.getElementById('groupInfoBox');
+  const listHtml = available.map(p => {
+    const avatarHtml = p.avatar_url
+      ? `<div class="avatar" style="width:38px;height:38px;background-image:url('${p.avatar_url}')"></div>`
+      : `<div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div>`;
+    return `<div class="settings-item" onclick="doAddMember('${p.id}')">
+      ${avatarHtml}
+      <div class="si-body"><div class="si-title">${escapeHtml(p.name||p.username)}</div></div>
+      <div class="si-arrow">›</div>
+    </div>`;
+  }).join('');
+  
+  box.innerHTML = `
+    <button class="close" onclick="openGroupInfo()">←</button>
+    <h2>➕ Добавить участника</h2>
+    <div style="max-height:500px;overflow-y:auto">${listHtml}</div>
+  `;
+};
+
+window.doAddMember = async (userId) => {
+  const newMembers = [...activeChat.members, userId];
+  const { error } = await supabase.from('chats').update({ members: newMembers }).eq('id', activeChat.id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  activeChat.members = newMembers;
+  vibrate(20);
+  showToast('✓ Добавлен');
+  openGroupInfo();
+  renderMain();
+};
+
+window.kickMember = async (userId, name) => {
+  if (!confirm('Удалить ' + name + ' из группы?')) return;
+  const newMembers = activeChat.members.filter(m => m !== userId);
+  const newAdmins = (activeChat.admins || []).filter(a => a !== userId);
+  const { error } = await supabase.from('chats').update({ members: newMembers, admins: newAdmins }).eq('id', activeChat.id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  activeChat.members = newMembers;
+  activeChat.admins = newAdmins;
+  vibrate(20);
+  showToast('✓ Удалён');
+  openGroupInfo();
+  renderMain();
+};
+
+window.leaveGroup = async () => {
+  if (!confirm('Выйти из группы?')) return;
+  const newMembers = activeChat.members.filter(m => m !== currentUser.id);
+  if (newMembers.length === 0) {
+    await supabase.from('chats').delete().eq('id', activeChat.id);
+  } else {
+    const newAdmins = (activeChat.admins || []).filter(a => a !== currentUser.id);
+    await supabase.from('chats').update({ members: newMembers, admins: newAdmins }).eq('id', activeChat.id);
+  }
+  chats = chats.filter(c => c.id !== activeChat.id);
+  closeGroupInfo();
+  backToList();
+  renderList();
+  showToast('Вы вышли из группы');
+};
+
+window.renameGroup = async () => {
+  const name = prompt('Новое название группы:', activeChat.name || '');
+  if (!name || !name.trim()) return;
+  const { error } = await supabase.from('chats').update({ name: name.trim() }).eq('id', activeChat.id);
+  if (error) { alert('Ошибка: ' + error.message); return; }
+  activeChat.name = name.trim();
+  const idx = chats.findIndex(c => c.id === activeChat.id);
+  if (idx >= 0) chats[idx].name = name.trim();
+  vibrate(20);
+  showToast('✓ Переименовано');
+  openGroupInfo();
+  renderMain();
+  renderList();
+};
+
+window.uploadGroupAvatar = () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { alert('Макс 2 МБ'); return; }
+    
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const SIZE = 400;
+        canvas.width = SIZE;
+        canvas.height = SIZE;
+        const ctx = canvas.getContext('2d');
+        const minSide = Math.min(img.width, img.height);
+        const sx = (img.width - minSide) / 2;
+        const sy = (img.height - minSide) / 2;
+        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, SIZE, SIZE);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        
+        const { error } = await supabase.from('chats').update({ avatar_url: dataUrl }).eq('id', activeChat.id);
+        if (error) { alert('Ошибка: ' + error.message); return; }
+        activeChat.avatar_url = dataUrl;
+        vibrate(20);
+        showToast('✓ Аватар группы обновлён');
+        openGroupInfo();
+        renderMain();
+        renderList();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+};
+
+// ============ ИСТОРИИ ============
+let allStories = [];
+let currentStoryIndex = 0;
+let storyTimer = null;
+let storyGroups = [];
+
+window.loadStories = async () => {
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from('stories')
+    .select('*')
+    .gt('expires_at', now)
+    .order('created_at', { ascending: false });
+  allStories = data || [];
+  
+  // Группируем по user_id
+  storyGroups = [];
+  const map = {};
+  allStories.forEach(s => {
+    if (!map[s.user_id]) {
+      map[s.user_id] = { user_id: s.user_id, stories: [] };
+      storyGroups.push(map[s.user_id]);
+    }
+    map[s.user_id].stories.push(s);
+  });
+  
+  renderStoriesRow();
+};
+
+function renderStoriesRow() {
+  const chatList = document.getElementById('list');
+  if (!chatList) return;
+  
+  // Удаляем старый ряд если есть
+  const oldRow = document.getElementById('storiesRow');
+  if (oldRow) oldRow.remove();
+  
+  const row = document.createElement('div');
+  row.id = 'storiesRow';
+  row.className = 'stories-row';
+  
+  // Кнопка "Добавить" — только на вкладке "Чаты"
+  if (sideTab !== 'chats') return;
+  
+  // Кнопка "Добавить историю"
+  const myStory = storyGroups.find(g => g.user_id === currentUser.id);
+  const addHtml = `
+    <div class="story-bubble story-add-bubble" onclick="uploadStory()">
+      <div class="story-ring">
+        <div class="story-ring-inner" style="background:var(--accent);font-size:28px">➕</div>
+      </div>
+      <div class="story-username">Добавить</div>
+    </div>
+  `;
+  
+  // Группы историй (кроме своей)
+  const othersHtml = storyGroups
+    .filter(g => g.user_id !== currentUser.id)
+    .map(g => {
+      const p = profiles[g.user_id] || {};
+      const name = p.name || p.username || 'Пользователь';
+      const initial = p.avatar_emoji || name[0].toUpperCase();
+      const color = p.color || '#3390ec';
+      const avatarStyle = p.avatar_url
+        ? `background-image:url('${p.avatar_url}')`
+        : `background:${color}`;
+      const avatarText = p.avatar_url ? '' : initial;
+      
+      // Проверяем — просмотрены ли все истории
+      const allViewed = g.stories.every(s => 
+        (s.story_views || []).includes(currentUser.id)
+      );
+      
+      return `<div class="story-bubble" onclick="openStoryGroup('${g.user_id}')">
+        <div class="story-ring ${allViewed ? 'viewed' : ''}">
+          <div class="story-ring-inner" style="${avatarStyle}">${avatarText}</div>
+        </div>
+        <div class="story-username">${escapeHtml(name)}</div>
+      </div>`;
+    }).join('');
+  
+  row.innerHTML = addHtml + othersHtml;
+  chatList.parentNode.insertBefore(row, chatList);
+}
+
+window.uploadStory = () => {
+  document.getElementById('storyInput').click();
+};
+
+window.handleStoryUpload = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { alert('Макс 3 МБ'); input.value = ''; return; }
+  
+  input.value = '';
+  showToast('⏳ Загрузка...');
+  
+  const isVideo = file.type.startsWith('video/');
+  const ext = isVideo ? 'mp4' : 'jpg';
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const filePath = `stories/${currentUser.id}/${fileName}`;
+  
+  const { error: upErr } = await supabase.storage.from('media').upload(filePath, file);
+  if (upErr) { alert('Ошибка загрузки: ' + upErr.message); return; }
+  
+  const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
+  const publicUrl = urlData.publicUrl;
+  
+  const { error: insErr } = await supabase.from('stories').insert({
+    user_id: currentUser.id,
+    type: isVideo ? 'video' : 'image',
+    data: publicUrl
+  });
+  
+  if (insErr) { alert('Ошибка: ' + insErr.message); return; }
+  
+  vibrate(20);
+  showToast('✓ История добавлена');
+  await loadStories();
+};
+
+window.openStoryGroup = (userId) => {
+  const group = storyGroups.find(g => g.user_id === userId);
+  if (!group || !group.stories.length) return;
+  
+  const story = group.stories[0];
+  showStory(story, userId);
+};
+
+async function showStory(story, userId) {
+  const p = profiles[userId] || {};
+  const viewer = document.getElementById('storyViewer');
+  const content = document.getElementById('storyContent');
+  const progress = document.getElementById('storyProgress');
+  const authorName = document.getElementById('storyAuthorName');
+  const timeEl = document.getElementById('storyTime');
+  const avatarEl = document.getElementById('storyAuthorAvatar');
+  
+  authorName.textContent = p.name || p.username || 'Пользователь';
+  timeEl.textContent = formatMoscowTime(story.created_at);
+  if (p.avatar_url) {
+    avatarEl.style.backgroundImage = `url('${p.avatar_url}')`;
+    avatarEl.textContent = '';
+  } else {
+    avatarEl.style.backgroundImage = '';
+    avatarEl.style.background = p.color || '#666';
+    avatarEl.textContent = (p.name || '?')[0].toUpperCase();
+    avatarEl.style.display = 'flex';
+    avatarEl.style.alignItems = 'center';
+    avatarEl.style.justifyContent = 'center';
+    avatarEl.style.color = '#fff';
+    avatarEl.style.fontWeight = '600';
+  }
+  
+  if (story.type === 'video') {
+    content.innerHTML = `<video src="${story.data}" autoplay playsinline style="max-width:100%;max-height:80vh"></video>`;
+  } else {
+    content.innerHTML = `<img src="${story.data}" style="max-width:100%;max-height:80vh">`;
+  }
+  
+  progress.innerHTML = `<div class="story-progress-bar"><div class="story-progress-fill" style="width:0%;transition:width 5s linear"></div></div>`;
+  setTimeout(() => {
+    const fill = progress.querySelector('.story-progress-fill');
+    if (fill) fill.style.width = '100%';
+  }, 50);
+  
+  viewer.style.display = 'flex';
+  
+  // Отмечаем просмотренным
+  const views = Array.isArray(story.story_views) ? story.story_views : [];
+  if (!views.includes(currentUser.id)) {
+    const newViews = [...views, currentUser.id];
+    story.story_views = newViews;
+    await supabase.from('stories').update({ story_views: newViews }).eq('id', story.id);
+  }
+  
+  if (storyTimer) clearTimeout(storyTimer);
+  storyTimer = setTimeout(() => {
+    closeStoryViewer();
+  }, 5000);
+}
+
+window.closeStoryViewer = () => {
+  document.getElementById('storyViewer').style.display = 'none';
+  const content = document.getElementById('storyContent');
+  if (content) content.innerHTML = '';
+  if (storyTimer) clearTimeout(storyTimer);
+  loadStories(); // обновить "просмотрено"
+};
+
+window.nextStory = () => {
+  closeStoryViewer();
+};
+
+
+// ============ ПРОЧИТАНО (галочки) ============
+async function markChatRead(chatId) {
+  const msgs = chatMessages.filter(m => m.user_id !== currentUser.id);
+  if (!msgs.length) return;
+  
+  for (const m of msgs) {
+    try {
+      await supabase.from('message_read').insert({
+        message_id: m.id,
+        user_id: currentUser.id
+      });
+    } catch(e) { /* уже существует — норм */ }
+  }
+}
+
+async function getReadIds(chatId) {
+  const { data } = await supabase.from('message_read').select('message_id');
+  return new Set((data || []).map(r => r.message_id));
+}
+
+
+// ============ ПОИСК ============
+window.openSearchPanel = () => {
+  document.getElementById('searchPanel').style.display = 'flex';
+  setTimeout(() => document.getElementById('searchGlobalInput').focus(), 100);
+};
+
+window.closeSearchPanel = () => {
+  document.getElementById('searchPanel').style.display = 'none';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('searchGlobalInput').value = '';
+};
+
+window.runSearch = async (query) => {
+  const results = document.getElementById('searchResults');
+  if (!query || query.length < 2) {
+    results.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">Введи минимум 2 символа</div>';
+    return;
+  }
+  
+  const q = query.toLowerCase();
+  results.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">🔍 Поиск...</div>';
+  
+  // Ищем в сообщениях всех чатов, где мы участники
+  const chatIds = chats.map(c => c.id);
+  if (!chatIds.length) {
+    results.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">Нет чатов</div>';
+    return;
+  }
+  
+  const { data } = await supabase
+    .from('messages')
+    .select('*')
+    .in('chat_id', chatIds)
+    .ilike('text', `%${query}%`)
+    .order('created_at', { ascending: false })
+    .limit(50);
+  
+  const found = data || [];
+  
+  if (!found.length) {
+    results.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">Ничего не найдено</div>';
+    return;
+  }
+  
+  results.innerHTML = found.map(m => {
+    const chat = chats.find(c => c.id === m.chat_id);
+    let chatName = 'Чат';
+    if (chat) {
+      if (chat.type === 'direct') {
+        const otherId = chat.members.find(x => x !== currentUser.id);
+        chatName = profiles[otherId]?.name || 'Личный чат';
+      } else {
+        chatName = chat.name || 'Группа';
+      }
+    }
+    const text = m.text || '';
+    const highlighted = escapeHtml(text).replace(
+      new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'),
+      '<mark>$1</mark>'
+    );
+    const time = formatMoscowDateTime(m.created_at);
+    return `<div class="search-result-item" onclick="goToMessage(${m.chat_id}, ${m.id})">
+      <div class="sr-chat">${escapeHtml(chatName)} · ${time}</div>
+      <div class="sr-text">${highlighted}</div>
+    </div>`;
+  }).join('');
+};
+
+window.goToMessage = async (chatId, msgId) => {
+  closeSearchPanel();
+  await openChat(chatId);
+  setTimeout(() => {
+    scrollToMessage(msgId);
+  }, 500);
+};
+
+// ============ КАСТОМНЫЕ ТЕМЫ (акцентный цвет) ============
+const ACCENT_COLORS = ['#3390ec', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#f44336', '#8bc34a', '#ffc107', '#607d8b', '#795548', '#3f51b5'];
+
+window.openAccentPicker = () => {
+  const modal = document.getElementById('accentColorModal');
+  const picker = document.getElementById('accentPicker');
+  picker.innerHTML = ACCENT_COLORS.map(c => 
+    `<div class="accent-color ${settings.accentColor === c ? 'active' : ''}" style="background:${c}" onclick="setAccentColor('${c}')"></div>`
+  ).join('');
+  modal.classList.add('show');
+};
+
+window.closeAccentPicker = () => {
+  document.getElementById('accentColorModal').classList.remove('show');
+};
+
+window.setAccentColor = async (color) => {
+  settings.accentColor = color;
+  localStorage.setItem('tg_settings', JSON.stringify(settings));
+  applyAccentColor(color);
+  vibrate(15);
+  try {
+    await supabase.from('profiles').update({ accent_color: color }).eq('id', currentUser.id);
+    currentProfile.accent_color = color;
+  } catch(e) {}
+  closeAccentPicker();
+  showToast('✓ Цвет применён');
+};
+
+function applyAccentColor(color) {
+  if (!color) return;
+  document.documentElement.style.setProperty('--accent', color);
+}
+
+// Применяем при старте
+if (settings.accentColor) applyAccentColor(settings.accentColor);
+
+
+// ============ УВЕДОМЛЕНИЯ / PUSH ============
+window.acceptPush = async () => {
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      showToast('✓ Уведомления включены');
+      settings.notifications = true;
+      localStorage.setItem('tg_settings', JSON.stringify(settings));
+    } else {
+      showToast('Уведомления отклонены');
+    }
+  } catch(e) {
+    showToast('Ошибка: ' + e.message);
+  }
+  document.getElementById('pushBanner').style.display = 'none';
+};
+
+window.declinePush = () => {
+  document.getElementById('pushBanner').style.display = 'none';
+  localStorage.setItem('tg_push_declined', '1');
+};
+
+function checkPushBanner() {
+  if ('Notification' in window && Notification.permission === 'default' && !localStorage.getItem('tg_push_declined')) {
+    setTimeout(() => {
+      const b = document.getElementById('pushBanner');
+      if (b) b.style.display = 'flex';
+    }, 5000);
+  }
+}
+
+function showNotification(title, body) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  if (!settings.notifications) return;
+  try {
+    new Notification(title, {
+      body: body,
+      icon: 'icon-192.png',
+      badge: 'icon-192.png'
+    });
+  } catch(e) {}
+}
+
+
+// ============ ПЕРЕОПРЕДЕЛЕНИЕ subscribeRealtime (добавляем истории) ============
+const _origSubscribeRealtime = window.subscribeRealtime;
+window.subscribeRealtime = () => {
+  if (typeof _origSubscribeRealtime === 'function') _origSubscribeRealtime();
+  // Слушаем новые истории
+  if (channel) {
+    channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'stories' }, () => {
+      loadStories();
+    });
+  }
+};
+
+
+// ============ ПЕРЕОПРЕДЕЛЕНИЕ initApp (загружаем истории + темы) ============
+const _origInitApp = window.initApp;
+window.initApp = async () => {
+  if (typeof _origInitApp === 'function') await _origInitApp();
+  // Загружаем истории
+  try { await loadStories(); } catch(e) { console.log('stories load', e); }
+  // Применяем цвет акцента
+  if (currentProfile.accent_color) {
+    settings.accentColor = currentProfile.accent_color;
+    applyAccentColor(currentProfile.accent_color);
+  }
+  // Проверяем push
+  checkPushBanner();
+};
+
+
+// ============ ПЕРЕОПРЕДЕЛЕНИЕ renderList (добавляем истории) ============
+const _origRenderList = window.renderList;
+window.renderList = () => {
+  if (typeof _origRenderList === 'function') _origRenderList();
+  // Добавляем ряд историй если на вкладке чаты
+  if (sideTab === 'chats') {
+    setTimeout(() => {
+      try { renderStoriesRow(); } catch(e) {}
+    }, 50);
+  } else {
+    const oldRow = document.getElementById('storiesRow');
+    if (oldRow) oldRow.remove();
+  }
+};
+
+
+// ============ ПЕРЕОПРЕДЕЛЕНИЕ openSettings (добавляем язык + тему) ============
+const _origOpenSettings2 = window.openSettings;
+window.openSettings = () => {
+  _origOpenSettings2();
+  setTimeout(() => {
+    const modal = document.getElementById('modalBox');
+    if (!modal) return;
+    
+    const accentBlock = document.createElement('div');
+    accentBlock.className = 'settings-section';
+    accentBlock.innerHTML = `
+      <div class="settings-title">Тема и язык</div>
+      <div class="settings-item" onclick="openAccentPicker()">
+        <div class="si-ico">🎨</div>
+        <div class="si-body">
+          <div class="si-title">Цвет акцента</div>
+          <div class="si-desc">Текущий: <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${settings.accentColor||'#3390ec'};vertical-align:middle"></span></div>
+        </div>
+        <div class="si-arrow">›</div>
+      </div>
+      <div class="settings-item" onclick="switchLanguage()">
+        <div class="si-ico">🌍</div>
+        <div class="si-body">
+          <div class="si-title">Язык</div>
+          <div class="si-desc">${settings.language === 'en' ? 'English' : 'Русский'}</div>
+        </div>
+        <div class="si-arrow">›</div>
+      </div>
+    `;
+    
+    const firstSection = modal.querySelector('.settings-section');
+    if (firstSection) {
+      firstSection.parentNode.insertBefore(accentBlock, firstSection);
+    }
+  }, 30);
+};
+
+window.switchLanguage = () => {
+  settings.language = settings.language === 'en' ? 'ru' : 'en';
+  localStorage.setItem('tg_settings', JSON.stringify(settings));
+  vibrate(15);
+  showToast(settings.language === 'en' ? 'Language: English' : 'Язык: Русский');
+  // В будущем — перерисовка интерфейса
+  openSettings();
+};
+
+
+// ============ ФИНАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ ============
+window.addEventListener('load', () => {
+  console.log('Telegrand v4.6 loaded');
+  console.log('Features: stickers, profiles, groups, stories, read status, search, themes, push');
+});
+
+// Показываем подсказку о PWA (установке на главный экран) через 30 секунд
+setTimeout(() => {
+  if (window.matchMedia('(display-mode: browser)').matches && !localStorage.getItem('tg_pwa_hint')) {
+    if (confirm('💡 Совет: добавь Telegrand на главный экран как приложение!\n\nОткрыть инструкцию?')) {
+      alert('В Chrome: меню ⋮ → "Добавить на главный экран"\n\nВ Safari: кнопка "Поделиться" → "На экран Домой"');
+    }
+    localStorage.setItem('tg_pwa_hint', '1');
+  }
+}, 30000);
 </script>
 </body>
 </html>
