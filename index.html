@@ -7,27 +7,190 @@
 <meta name="theme-color" content="#3390ec">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Telegrand</title>
+<!-- Шрифт Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  font-family: var(--font-main);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 :root { 
-  --bg:#fff; --bg2:#f4f4f5; --bg3:#e9e9eb; --text:#000; --text2:#707579; --accent:#3390ec; 
-  --msg-out:#eeffde; --msg-in:#fff; --border:#e4e4e5; --font-size:15px; 
-  --chat-bg-image: radial-gradient(circle, rgba(0,0,0,.2) 1.5px, transparent 1.5px); 
-  --chat-bg-size: 14px 14px;
+  /* Основные цвета */
+  --bg: #ffffff;
+  --bg2: #f7f7f8;
+  --bg3: #efeff1;
+  --text: #0a0a0a;
+  --text2: #6e6e73;
+  --border: #e5e5ea;
+
+  /* Акцент — кислотный красный */
+  --accent: #ff4757;
+  --accent-hover: #ff3344;
+  --accent-light: rgba(255, 71, 87, 0.1);
+  --accent-shadow: rgba(255, 71, 87, 0.35);
+
+  /* Сообщения */
+  --msg-out: #ff4757;
+  --msg-out-text: #ffffff;
+  --msg-in: #ffffff;
+  --msg-in-text: #0a0a0a;
+
+  /* Общие */
+  --font-size: 15px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Тени — для глубины */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-accent: 0 4px 16px var(--accent-shadow);
+
+  /* Анимации */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --transition-fast: 0.15s var(--ease-smooth);
+  --transition-med: 0.25s var(--ease-smooth);
+  --transition-spring: 0.4s var(--ease-spring);
+
+  /* Обои чата */
+  --chat-bg-image: radial-gradient(circle, rgba(255, 71, 87, 0.08) 1px, transparent 1px);
+  --chat-bg-size: 20px 20px;
   --chat-bg-repeat: repeat;
+
+  /* Шрифт */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, 'SF Pro Display', sans-serif;
 }
 [data-theme="dark"] { 
-  --bg:#212121; --bg2:#181818; --bg3:#2b2b2b; --text:#fff; --text2:#aaa; --accent:#5288c1; 
-  --msg-out:#2b5278; --msg-in:#182533; --border:#303030;
-  --chat-bg-image: radial-gradient(circle, rgba(255,255,255,.2) 1.5px, transparent 1.5px);
+  /* Основные цвета — глубокий чёрный */
+  --bg: #0f0f10;
+  --bg2: #17171a;
+  --bg3: #232328;
+  --text: #ffffff;
+  --text2: #9a9aa0;
+  --border: #2e2e35;
+
+  /* Акцент — тот же кислотный красный */
+  --accent: #ff4757;
+  --accent-hover: #ff5a68;
+  --accent-light: rgba(255, 71, 87, 0.15);
+  --accent-shadow: rgba(255, 71, 87, 0.5);
+
+  /* Сообщения */
+  --msg-out: #ff4757;
+  --msg-out-text: #ffffff;
+  --msg-in: #232328;
+  --msg-in-text: #ffffff;
+
+  /* Тени — глубже в тёмной теме */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.6);
+  --shadow-accent: 0 4px 16px var(--accent-shadow);
+
+  /* Обои чата */
+  --chat-bg-image: radial-gradient(circle, rgba(255, 71, 87, 0.15) 1px, transparent 1px);
 }
 body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; }
 
+/* === Базовые === */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
 @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulse { 50% { opacity: .4; } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes menuUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUpIn { 
+  from { opacity: 0; transform: translateY(24px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes slideDownIn { 
+  from { opacity: 0; transform: translateY(-24px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes slideRightIn { 
+  from { opacity: 0; transform: translateX(-24px); } 
+  to { opacity: 1; transform: translateX(0); } 
+}
+
+/* === Spring-эффект === */
+@keyframes springIn {
+  0% { opacity: 0; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* === Scale === */
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.92); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+/* === Модалки === */
+@keyframes modalIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes backdropIn {
+  from { opacity: 0; backdrop-filter: blur(0); }
+  to { opacity: 1; backdrop-filter: blur(8px); }
+}
+
+/* === Меню (снизу вверх) === */
+@keyframes menuUp { 
+  from { opacity: 0; transform: translateY(20px) scale(0.95); } 
+  to { opacity: 1; transform: translateY(0) scale(1); } 
+}
+
+/* === Ripple === */
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.6; }
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* === Пульс === */
+@keyframes pulse { 
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.95); }
+}
+
+/* === Вращение === */
+@keyframes spin { 
+  from { transform: rotate(0deg); } 
+  to { transform: rotate(360deg); } 
+}
+
+/* === Typing (индикатор) === */
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* === Плавное появление сообщения === */
+@keyframes msgIn {
+  0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+  60% { opacity: 1; transform: translateY(0) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === Покачивание === */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
 
 #authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: linear-gradient(135deg, #3390ec, #6bb2f5); padding: 20px; }
 .auth-box { background: var(--bg); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn .3s ease; }
@@ -367,6 +530,71 @@ button { -webkit-tap-highlight-color: transparent; }
 [data-theme="dark"] .chat-header { box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .sidebar-tabs button { transition: color .2s, border-color .2s, background .15s; }
 .sidebar-tabs button:active { background: var(--bg3); }
+
+/* ============ ТИПОГРАФИКА v5.0 ============ */
+body {
+  font-family: var(--font-main);
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.btn-main, .game-btn, .send-btn {
+  font-family: var(--font-main);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.name {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.msg .text {
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+
+.msg .meta {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.sub {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* ============ RIPPLE EFFECT v5.0 ============ */
+button, .item, .settings-item, .game-card, .send-btn, .attach-btn, .icon-btn, .sticker-img-item {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  animation: ripple 0.6s var(--ease-out);
+  transform-origin: center;
+}
+
+[data-theme="dark"] .ripple-effect {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.msg .ripple-effect {
+  background: rgba(0, 0, 0, 0.15);
+}
 </style>
 </head>
 <body>
@@ -2859,6 +3087,53 @@ setTimeout(() => {
     localStorage.setItem('tg_pwa_hint', '1');
   }
 }, 30000);
+
+// ============ RIPPLE EFFECT v5.0 ============
+function createRipple(e) {
+  const target = e.currentTarget;
+  if (!target) return;
+
+  const rect = target.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  let clientX, clientY;
+  if (e.touches && e.touches[0]) {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  }
+
+  const x = clientX - rect.left - size / 2;
+  const y = clientY - rect.top - size / 2;
+
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple-effect';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+
+  target.appendChild(ripple);
+
+  setTimeout(() => ripple.remove(), 600);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('pointerdown', (e) => {
+    const btn = e.target.closest('button, .item, .settings-item, .game-card, .sticker-img-item');
+    if (btn && !btn.classList.contains('msg-menu-btn')) {
+      createRipple({ currentTarget: btn, clientX: e.clientX, clientY: e.clientY });
+    }
+  });
+});
+
+document.body.addEventListener('touchstart', (e) => {
+  const btn = e.target.closest('button, .item, .settings-item, .game-card, .sticker-img-item');
+  if (btn && !btn.classList.contains('msg-menu-btn')) {
+    createRipple({ currentTarget: btn, touches: e.touches });
+  }
+}, { passive: true });
 </script>
 </body>
 </html>
