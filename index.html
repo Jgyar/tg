@@ -1169,7 +1169,7 @@ function subscribeRealtime(){
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
       const msg=payload.new;
       if(activeChat&&msg.chat_id===activeChat.id){
-        if(!chatMessages.find(m=>m.id===msg.id)){chatMessages.push(msg);renderMessages();scrollBottom();}
+        if(!chatMessages.find(m=>m.id===msg.id)&&!(window._deletedIds&&window._deletedIds.has(msg.id))){chatMessages.push(msg);renderMessages();scrollBottom();}
       }
       if(chats.find(c=>c.id===msg.chat_id)){lastMessages[msg.chat_id]=msg;renderList();}
     })
@@ -1237,7 +1237,8 @@ function renderListInner(){
       return new Date(tb)-new Date(ta);
     });
     el.innerHTML=sorted.map(c=>{
-      const last=lastMessages[c.id];
+      let last=lastMessages[c.id];
+      if(last&&window._deletedIds&&window._deletedIds.has(last.id)) last=null;
       const time=last?formatMoscowTime(last.created_at):'';
       const active=activeChat&&activeChat.id===c.id?'active':'';
       let name,initial,color,isOnline=false,avatarUrl=null;
@@ -1348,6 +1349,13 @@ window.openChat = async chatId => {
   hasMoreMessages = fetched.length > MESSAGES_PER_PAGE;
   chatMessages = fetched.slice(0, MESSAGES_PER_PAGE).reverse();
 
+  // Пакет 2.1: подгружаем список «удалено у себя» и фильтруем
+  try{
+    const { data: delData } = await supabase.from('deleted_messages').select('message_id').eq('user_id', currentUser.id);
+    window._deletedIds = new Set((delData||[]).map(r => r.message_id));
+  }catch(e){ window._deletedIds = new Set(); }
+  chatMessages = chatMessages.filter(m => !window._deletedIds.has(m.id));
+
 window._readIds = await getReadIds(chatId);
 markChatRead(chatId);
   renderMain();
@@ -1378,7 +1386,7 @@ window.loadMoreMessages = async () => {
 
   const fetched = data || [];
   hasMoreMessages = fetched.length > MESSAGES_PER_PAGE;
-  const older = fetched.slice(0, MESSAGES_PER_PAGE).reverse();
+  const older = fetched.slice(0, MESSAGES_PER_PAGE).reverse().filter(m => !(window._deletedIds && window._deletedIds.has(m.id)));
 
   if (older.length) {
     chatMessages = [...older, ...chatMessages];
@@ -1457,7 +1465,7 @@ const avatarHtml = avatarUrl
       <button class="icon-btn" onclick="backToList()" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
       ${avatarHtml}
       <div class="info"><h3>${escapeHtml(name)}</h3><p id="chatSub">${escapeHtml(sub)}</p></div>
-      <button class="icon-btn" onclick="openChatMenu()" aria-label="Меню чата">${DOTS}</button>
+      <button class="icon-btn" onclick="openChatMenu()" aria-label="Меню чата"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
     </div>
     ${pinnedHtml}
     <div class="messages" id="messages" onscroll="handleMessagesScroll(event)">
@@ -1727,6 +1735,9 @@ window.doForward = async (msgId, chatId) => {
 window.deleteMsgForMe = (msgId) => {
   closeAllMenus();
   if (!confirm('Удалить это сообщение у себя?')) return;
+  // Пакет 2.1: запоминаем удаление в БД — не вернётся после перезахода
+  try{ supabase.from('deleted_messages').insert({ message_id: msgId, user_id: currentUser.id }); }catch(e){}
+  window._deletedIds.add(msgId);
   chatMessages = chatMessages.filter(m => m.id !== msgId);
   renderMessages();
   showToast('Удалено у вас');
@@ -1878,7 +1889,12 @@ window.deleteSelected = async (forAll) => {
     if(!confirm('Удалить у всех ' + ids.length + ' сообщ.?')) return;
     for(const id of ids) await supabase.from('messages').delete().eq('id', id);
   } else {
-    if(!confirm('Удалить у себя ' + ids.length + ' сообщ.? (скроются только у вас до перезахода)')) return;
+    if(!confirm('Удалить у себя ' + ids.length + ' сообщ.?')) return;
+    // Пакет 2.1: сохраняем в deleted_messages
+    try{
+      supabase.from('deleted_messages').insert(ids.map(id => ({ message_id: id, user_id: currentUser.id })));
+      ids.forEach(id => window._deletedIds.add(id));
+    }catch(e){}
   }
   chatMessages = chatMessages.filter(m => !selectedMsgIds.has(m.id));
   exitSelectionMode();
