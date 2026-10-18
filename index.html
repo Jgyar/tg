@@ -1104,10 +1104,29 @@ function updateMyAvatar(){
   }
 }
 
-async function loadAllProfiles(){
+function invalidateProfilesCache(){
+  try { localStorage.removeItem('tg_profiles_cache'); localStorage.removeItem('tg_profiles_cache_time'); } catch(e){}
+}
+
+async function loadAllProfiles(force=false){
+  // Кэшируем профили на 60 сек — меньше запросов к Supabase
+  if(!force){
+    try{
+      const cached = localStorage.getItem('tg_profiles_cache');
+      const t = +localStorage.getItem('tg_profiles_cache_time') || 0;
+      if(cached && Date.now()-t < 60000){
+        profiles = JSON.parse(cached);
+        if(Object.keys(profiles).length) return;
+      }
+    }catch(e){}
+  }
   const {data}=await supabase.from('profiles').select('*');
   profiles={};
   (data||[]).forEach(p=>profiles[p.id]=sanitizeProfile(p));
+  try{
+    localStorage.setItem('tg_profiles_cache', JSON.stringify(profiles));
+    localStorage.setItem('tg_profiles_cache_time', String(Date.now()));
+  }catch(e){}
 }
 
 async function loadMyChats(){
@@ -1148,7 +1167,7 @@ function subscribeRealtime(){
         renderMessages();
       }
     })
-    .on('postgres_changes',{event:'*',schema:'public',table:'profiles'},async()=>{await loadAllProfiles();renderList();if(activeChat)renderMain();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'profiles'},async()=>{invalidateProfilesCache();await loadAllProfiles();renderList();if(activeChat)renderMain();})
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'chats'},async()=>{await loadMyChats();renderList();})
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'chats'},payload=>{
       const updated=payload.new;
@@ -1444,8 +1463,8 @@ function renderMessagesHTML(){
 
     if(isEditing) content=`<input class="msg-edit-input" id="edit_${m.id}" value="${escapeHtml(m.text||'')}" onkeydown="if(event.key==='Enter')saveEdit(${m.id})">`;
     else if(m.type==='sticker') content=`<div class="msg-sticker">${escapeHtml(m.text||'')}</div>`;
-    else if(m.type==='sticker_img') content=`<img class="msg-sticker-img" src="${safeUrl(m.text)}" onclick="viewStickerImg(this.src)" alt="sticker">`;
-    else if(m.type==='image') content=`<img class="msg-img" src="${safeUrl(m.data)}" onclick="viewImage('${m.id}')" alt="фото">`;
+    else if(m.type==='sticker_img') content=`<img class="msg-sticker-img" loading="lazy" src="${safeUrl(m.text)}" onclick="viewStickerImg(this.src)" alt="sticker">`;
+    else if(m.type==='image') content=`<img class="msg-img" loading="lazy" src="${safeUrl(m.data)}" onclick="viewImage('${m.id}')" alt="фото">`;
     else if(m.type==='file') content=`<a class="msg-file" href="${safeUrl(m.data)}" download="${escapeHtml(m.file_name||'file')}"><div style="font-size:28px">📎</div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500">${escapeHtml(m.file_name||'Файл')}</div><div style="font-size:12px;color:var(--text2)">${formatSize(m.file_size||0)}</div></div></a>`;
     else if(m.type==='voice') content=`<div class="msg-voice"><button class="voice-play" onclick="playVoice('${m.id}')" id="play_${m.id}">▶</button><div class="voice-wave" id="wave_${m.id}">${Array(24).fill(0).map(()=>`<span style="height:${6+Math.random()*18}px"></span>`).join('')}</div><div style="font-size:12px;color:var(--text2)">${m.duration?Math.floor(m.duration/60)+':'+String(m.duration%60).padStart(2,'0'):'0:00'}</div></div>`;
     else if(m.type==='video') content=`<div style="text-align:center"><video class="msg-video-circle" src="${safeUrl(m.data)}" onclick="playVideoCircle(this)" playsinline muted></video></div>`;
@@ -2123,6 +2142,7 @@ window.removeAvatar = async () => {
   await supabase.from('profiles').update({ avatar_url: null }).eq('id', currentUser.id);
   currentProfile.avatar_url = null;
   updateMyAvatar();
+  invalidateProfilesCache();
   await loadAllProfiles();
   renderList();
   if (activeChat) renderMain();
@@ -2454,7 +2474,7 @@ async function renderStickerGrid() {
   
   grid.innerHTML = stickers.map(s => 
     `<button class="sticker-img-item" data-url="${safeUrl(s.url)}" onclick="sendStickerImg('${s.id}', this.dataset.url)">
-      <img src="${safeUrl(s.url)}" alt="sticker">
+      <img loading="lazy" src="${safeUrl(s.url)}" alt="sticker">
     </button>`
   ).join('') + `<button class="sticker-add-btn" onclick="uploadStickerPrompt()">➕</button>`;
 }
@@ -3126,7 +3146,14 @@ window.closeSearchPanel = () => {
   document.getElementById('searchGlobalInput').value = '';
 };
 
-window.runSearch = async (query) => {
+let _searchDebounceTimer = null;
+
+window.runSearch = (query) => {
+  clearTimeout(_searchDebounceTimer);
+  _searchDebounceTimer = setTimeout(() => _doSearch(query), 300);
+};
+
+async function _doSearch(query) {
   const results = document.getElementById('searchResults');
   if (!query || query.length < 2) {
     results.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">Введи минимум 2 символа</div>';
@@ -3343,6 +3370,20 @@ window.handleMessagesScroll = (e) => {
     loadMoreMessages();
   }
 };
+
+// ============ ГЛОБАЛЬНЫЕ КЛАВИШИ (Esc и др.) ============
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const sp = document.getElementById('searchPanel');
+  if (sp && sp.style.display !== 'none') { closeSearchPanel(); return; }
+  const sv = document.getElementById('storyViewer');
+  if (sv && sv.style.display !== 'none') { closeStoryViewer(); return; }
+  closeAllMenus();
+  closePopup();
+  const acm = document.getElementById('accentColorModal');
+  if (acm && acm.classList.contains('show')) { closeAccentPicker(); return; }
+  if (document.getElementById('modalBg')?.classList.contains('show')) closeModal();
+});
 
 // ============ RIPPLE EFFECT v5.0 ============
 function createRipple(e) {
