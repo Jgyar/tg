@@ -747,6 +747,12 @@ button:focus-visible, .item:focus-visible, .settings-item:focus-visible, .game-c
 .msg-select-check.on { background: var(--accent); border-color: var(--accent); }
 #chatSub { transition: opacity .2s; }
 
+/* ============ СКЕЛЕТОНЫ ЗАГРУЗКИ ============ */
+@keyframes shimmer { 0%{opacity:.35} 50%{opacity:.8} 100%{opacity:.35} }
+.skel-item { display:flex; gap:10px; padding:12px; margin:1px 8px; align-items:center; }
+.skel { background:var(--bg3); border-radius:8px; animation:shimmer 1.3s infinite; }
+.skel.avatar { width:44px; height:44px; border-radius:50%; flex-shrink:0; }
+
 /* ---------- Плавное появление модалок настроек ---------- */
 .settings-section { animation: slideUpIn .3s var(--ease-out) backwards; }
 .settings-section:nth-child(2) { animation-delay: .05s; }
@@ -1093,10 +1099,34 @@ async function loadProfile(){
 }
 
 // ============ APP ============
+function saveChatsCache(){
+  try{
+    localStorage.setItem('tg_chats_cache', JSON.stringify(chats));
+    localStorage.setItem('tg_chats_cache_time', String(Date.now()));
+  }catch(e){}
+}
+
 async function initApp(){
   updateMyAvatar();
-  await loadAllProfiles();
-  await loadMyChats();
+  // Мгновенный показ кэша списка (TTL 90 сек)
+  try{
+    const cachedChats = localStorage.getItem('tg_chats_cache');
+    const t = +localStorage.getItem('tg_chats_cache_time') || 0;
+    if(cachedChats && Date.now()-t < 90000){
+      chats = JSON.parse(cachedChats)||[];
+      const lm = localStorage.getItem('tg_lastmsg_cache');
+      if(lm) lastMessages = JSON.parse(lm)||{};
+      renderList();
+    } else {
+      document.getElementById('list').innerHTML = '<div class="skel-item"><div class="skel avatar"></div><div style="flex:1"><div class="skel" style="height:14px;width:40%;margin-bottom:8px"></div><div class="skel" style="height:11px;width:70%"></div></div></div>'.repeat(6);
+    }
+  }catch(e){}
+  // Параллельная загрузка вместо последовательной — старт в 3 раза быстрее
+  await Promise.all([
+    loadAllProfiles(),
+    loadMyChats(),
+    loadStories().catch(e=>console.log('stories load', e))
+  ]);
   subscribeRealtime();
   renderList();
   window.addEventListener('beforeunload',()=>{
@@ -1152,15 +1182,21 @@ async function loadAllProfiles(force=false){
 async function loadMyChats(){
   const {data}=await supabase.from('chats').select('*').contains('members',[currentUser.id]);
   chats=data||[];
+  saveChatsCache();
   await loadLastMessages();
 }
 
 async function loadLastMessages(){
   lastMessages={};
-  for(const chat of chats){
-    const {data}=await supabase.from('messages').select('*').eq('chat_id',chat.id).order('created_at',{ascending:false}).limit(1);
-    if(data&&data[0]) lastMessages[chat.id]=data[0];
-  }
+  // Все запросы параллельно вместо цикла ожидания
+  const results = await Promise.all(chats.map(c =>
+    supabase.from('messages').select('*').eq('chat_id',c.id)
+      .order('created_at',{ascending:false}).limit(1)
+      .then(r => (r.data && r.data[0]) || null)
+      .catch(() => null)
+  ));
+  chats.forEach((c,i)=>{ if(results[i]) lastMessages[c.id]=results[i]; });
+  try{ localStorage.setItem('tg_lastmsg_cache', JSON.stringify(lastMessages)); }catch(e){}
 }
 
 function subscribeRealtime(){
@@ -1349,14 +1385,15 @@ window.openChat = async chatId => {
   hasMoreMessages = fetched.length > MESSAGES_PER_PAGE;
   chatMessages = fetched.slice(0, MESSAGES_PER_PAGE).reverse();
 
-  // Пакет 2.1: подгружаем список «удалено у себя» и фильтруем
-  try{
-    const { data: delData } = await supabase.from('deleted_messages').select('message_id').eq('user_id', currentUser.id);
-    window._deletedIds = new Set((delData||[]).map(r => r.message_id));
-  }catch(e){ window._deletedIds = new Set(); }
+  // Параллельно: прочтения + «удалено у себя»
+  const [readIds, delRows] = await Promise.all([
+    getReadIds(chatId),
+    supabase.from('deleted_messages').select('message_id').eq('user_id', currentUser.id)
+      .then(r => r.data || []).catch(() => [])
+  ]);
+  window._readIds = readIds;
+  window._deletedIds = new Set(delRows.map(r => r.message_id));
   chatMessages = chatMessages.filter(m => !window._deletedIds.has(m.id));
-
-window._readIds = await getReadIds(chatId);
 markChatRead(chatId);
   renderMain();
   // Пакет 2: восстанавливаем черновик
