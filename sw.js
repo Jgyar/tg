@@ -1,102 +1,72 @@
-const CACHE_NAME = 'telegrand-v1';
-const RUNTIME_CACHE = 'telegrand-runtime';
+/* Telegrand Service Worker v2.0 — офлайн-кэш */
+const CACHE_NAME = 'telegrand-v2';
+const APP_SHELL = ['./index.html', './manifest.json', './icon-192.png'];
 
-// Файлы для кеша при установке
-const PRECACHE_URLS = [
-  '/tg/',
-  '/tg/index.html',
-  '/tg/manifest.json'
-];
-
-// Установка SW
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting())
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting())
   );
 });
 
-// Активация SW
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames
-          .filter(name => name !== CACHE_NAME && name !== RUNTIME_CACHE)
-          .map(name => caches.delete(name))
-      );
-    }).then(() => self.clients.claim())
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
 });
 
-// Стратегия: Network first, fallback к кешу
-self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
 
-  // Пропускаем запросы к Supabase (всегда в сеть)
+  // Supabase API: network-first, при офлайне — из кэша
   if (url.hostname.includes('supabase.co')) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
     return;
   }
 
-  // Только GET
-  if (request.method !== 'GET') return;
-
-  event.respondWith(
-    fetch(request)
-      .then(response => {
-        // Кешируем ответ
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then(cache => {
-            cache.put(request, responseClone);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        // Офлайн — берём из кеша
-        return caches.match(request).then(cached => {
-          if (cached) return cached;
-          // Если это HTML — вернуть index
-          if (request.headers.get('accept')?.includes('text/html')) {
-            return caches.match('/tg/index.html');
+  // Статика: cache-first с обновлением в фоне
+  if (e.request.method === 'GET') {
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        const network = fetch(e.request).then(res => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
           }
-        });
+          return res;
+        }).catch(() => cached);
+        return cached || network;
       })
-  );
+    );
+  }
 });
 
-// Push-уведомления
-self.addEventListener('push', event => {
-  const data = event.data ? event.data.json() : {};
-  const title = data.title || 'Telegrand';
-  const options = {
-    body: data.body || 'Новое сообщение',
-    icon: '/tg/icon-192.png',
-    badge: '/tg/icon-192.png',
-    vibrate: [200, 100, 200],
-    tag: data.tag || 'message',
-    data: data.url || '/tg/'
-  };
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-
-// Клик на уведомление
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  const url = event.notification.data || '/tg/';
-  event.waitUntil(
-    clients.matchAll({ type: 'window' }).then(windowClients => {
-      for (let client of windowClients) {
-        if (client.url.includes('/tg/') && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
+// Push-уведомления (заготовка)
+self.addEventListener('push', e => {
+  let data = {};
+  try { data = e.data.json(); } catch(_) { data = { title: 'Telegrand', body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(
+    self.registration.showNotification(data.title || 'Telegrand', {
+      body: data.body || 'Новое сообщение',
+      icon: 'icon-192.png',
+      badge: 'icon-192.png'
     })
   );
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window' }).then(cs => {
+    if (cs.length) return cs[0].focus();
+    return self.clients.openWindow('./index.html');
+  }));
 });
