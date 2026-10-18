@@ -881,7 +881,14 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = 'https://fxzubucqsfivmkoyiofi.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4enVidWNxc2Zpdm1rb3lpb2ZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODU3MDEsImV4cCI6MjEwNzU2MTcwMX0.4Vu_p9U5Z_tENDxvRjlaGRlKGjqSwJacC909J8playU';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,      // сессия хранится между визитами
+    autoRefreshToken: true,    // токен обновляется автоматически
+    storageKey: 'tg-auth-session',
+    detectSessionInUrl: false
+  }
+});
 
 // Регистрация Service Worker
 if ('serviceWorker' in navigator) {
@@ -1063,19 +1070,35 @@ window.logout = async () => {
   location.reload();
 };
 
+let _appStarted = false;
+
+async function restoreSession(session){
+  if(_appStarted || !session?.user) return;
+  _appStarted = true;
+  currentUser = session.user;
+  await loadProfile();
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  await initApp();
+}
+
 supabase.auth.onAuthStateChange(async (event,session)=>{
   if(session?.user){
-    currentUser=session.user;
-    await loadProfile();
-    document.getElementById('authScreen').style.display='none';
-    document.getElementById('app').style.display='block';
-    await initApp();
+    await restoreSession(session);
   } else {
     currentUser=null;
     document.getElementById('authScreen').style.display='flex';
     document.getElementById('app').style.display='none';
   }
 });
+
+// Страховка: если INITIAL_SESSION не пришёл — проверяем сохранённую сессию напрямую
+(async () => {
+  try{
+    const { data: { session } } = await supabase.auth.getSession();
+    if(session?.user && !_appStarted) await restoreSession(session);
+  }catch(e){ console.log('session restore', e); }
+})();
 
 async function loadProfile(){
   const {data}=await supabase.from('profiles').select('*').eq('id',currentUser.id).single();
