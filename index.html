@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3390ec">
+<meta name="theme-color" content="#ff4757">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Telegrand</title>
 <!-- Шрифт Inter -->
@@ -192,7 +192,7 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
   75% { transform: translateX(4px); }
 }
 
-#authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: linear-gradient(135deg, #3390ec, #6bb2f5); padding: 20px; }
+#authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; height: 100dvh; background: linear-gradient(135deg, #ff4757, #6bb2f5); padding: 20px; }
 .auth-box { background: var(--bg); border-radius: 16px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn .3s ease; }
 .auth-box h1 { text-align: center; margin-bottom: 8px; font-size: 26px; }
 .auth-box .logo { text-align: center; font-size: 54px; margin-bottom: 10px; }
@@ -371,7 +371,7 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 .sol-col { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 44px; }
 .card { width: 44px; height: 62px; border-radius: 5px; background: #fff; border: 1px solid #999; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 3px; cursor: pointer; font-weight: 700; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,.2); font-size: 11px; }
 .card.red { color: #e53935; } .card.black { color: #000; }
-.card.back { background: linear-gradient(45deg, #3390ec, #1a5fa8); }
+.card.back { background: linear-gradient(45deg, #ff4757, #1a5fa8); }
 .card.empty { background: rgba(255,255,255,.15); border: 2px dashed rgba(255,255,255,.4); box-shadow: none; cursor: default; }
 .card .corner { font-size: 10px; line-height: 1; }
 .card .corner.br { align-self: flex-end; transform: rotate(180deg); }
@@ -391,7 +391,7 @@ body { background: var(--bg2); color: var(--text); height: 100vh; height: 100dvh
 
 .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 320px; margin: 0 auto; }
 .ttt-cell { aspect-ratio: 1; background: var(--bg3); border: none; border-radius: 10px; font-size: 48px; font-weight: 700; cursor: pointer; color: var(--text); }
-.ttt-cell.x { color: #3390ec; } .ttt-cell.o { color: #e53935; }
+.ttt-cell.x { color: #ff4757; } .ttt-cell.o { color: #e53935; }
 
 .snake-canvas { background: #111; border-radius: 10px; display: block; margin: 0 auto; max-width: 100%; height: auto; touch-action: none; }
 .dpad-big { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; justify-content: center; margin: 12px auto 0; max-width: 280px; aspect-ratio: 1; }
@@ -595,6 +595,149 @@ button, .item, .settings-item, .game-card, .send-btn, .attach-btn, .icon-btn, .s
 .msg .ripple-effect {
   background: rgba(0, 0, 0, 0.15);
 }
+
+/* ============================================================
+   REDESIGN v6.0 — SVG-иконки, компоненты, глубина, анимации
+   ============================================================ */
+
+/* ---------- Иконки ---------- */
+.icon-btn, .send-btn, .attach-btn { display: flex; align-items: center; justify-content: center; }
+.sidebar-tabs button { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.sidebar-tabs svg, .icon-btn svg, .attach-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.send-btn svg { width: 18px; height: 18px; margin-left: 2px; }
+
+/* ---------- Кнопки: градиент + тень + пружина ---------- */
+.send-btn, .btn-main, .game-btn, .auth-tabs button.active, .sticker-tab.active, .reaction.mine {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  box-shadow: var(--shadow-accent);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity .2s;
+}
+@media (hover:hover) {
+  .send-btn:hover, .btn-main:hover, .game-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--accent-shadow); }
+}
+.send-btn:active, .btn-main:active, .game-btn:active { transform: scale(.94); box-shadow: 0 2px 8px var(--accent-shadow); }
+.btn-main:disabled { box-shadow: none; }
+.send-btn { border-radius: var(--radius-full); }
+
+.icon-btn, .attach-btn { border-radius: var(--radius-full); transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast); }
+@media (hover:hover) {
+  .icon-btn:hover, .attach-btn:hover { background: var(--accent-light); color: var(--accent); }
+  .icon-btn:hover svg, .attach-btn:hover svg { transform: scale(1.08); }
+}
+.icon-btn svg, .attach-btn svg { transition: transform var(--transition-fast); }
+
+/* ---------- Сообщения ---------- */
+.msg { border-radius: var(--radius-md); box-shadow: var(--shadow-sm); animation: msgIn .3s var(--ease-out); transition: box-shadow var(--transition-fast), transform var(--transition-fast); }
+.msg.out {
+  color: var(--msg-out-text);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  box-shadow: 0 2px 8px var(--accent-shadow);
+}
+.msg.out .meta { color: rgba(255,255,255,.75); }
+.msg.out .msg-menu-btn { color: rgba(255,255,255,.85); }
+.msg.out .read-status.read { color: rgba(255,255,255,.95); }
+.msg.out .msg-reply-preview { background: rgba(255,255,255,.15); border-left-color: rgba(255,255,255,.7); }
+.msg.out .msg-reply-preview .rp-text { color: rgba(255,255,255,.75); }
+.msg.out .msg-file { background: rgba(255,255,255,.15); }
+.msg.out .reaction-add { border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.85); }
+.msg.out .msg-edit-input { border-bottom-color: rgba(255,255,255,.8); }
+.msg.in { color: var(--msg-in-text); }
+@media (hover:hover) { .msg:hover { box-shadow: var(--shadow-md); } }
+
+/* ---------- Аватары и статус онлайн ---------- */
+.avatar { box-shadow: var(--shadow-sm), inset 0 0 0 2px rgba(255,255,255,.15); }
+.online-dot { border: none; box-shadow: 0 0 0 2px var(--bg); animation: onlinePulse 2.4s infinite; }
+@keyframes onlinePulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--bg); }
+  50% { box-shadow: 0 0 0 2px var(--bg), 0 0 0 6px rgba(76,175,80,.18); }
+}
+
+/* ---------- Список чатов ---------- */
+.item { border-radius: var(--radius-sm); margin: 1px 8px; padding: 10px; }
+.item.active { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%); box-shadow: var(--shadow-accent); }
+@media (hover:hover) {
+  .item:hover { background: var(--bg3); }
+  .item.active:hover { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); }
+}
+.list .item { animation: slideRightIn .25s var(--ease-out) backwards; }
+
+/* ---------- Карточки и элементы настроек ---------- */
+.game-card, .settings-item { border-radius: var(--radius-md); box-shadow: var(--shadow-sm); transition: transform var(--transition-fast), box-shadow var(--transition-fast); }
+@media (hover:hover) {
+  .game-card:hover, .settings-item:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .game-card:active, .settings-item:active { transform: scale(.985); }
+}
+
+/* ---------- Переключатели (spring) ---------- */
+.toggle { box-shadow: inset 0 1px 4px rgba(0,0,0,.18); border: 1px solid var(--border); }
+.toggle.on { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); border-color: transparent; box-shadow: var(--shadow-accent); }
+.toggle::after { transition: transform .28s var(--ease-spring); box-shadow: var(--shadow-sm); }
+.toggle.on::after { transform: translateX(18px); }
+
+/* ---------- Поля ввода: focus-ring ---------- */
+.field input, .sidebar-header .search, .search-header input, .input-bar textarea {
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+.field input:focus { box-shadow: 0 0 0 3px var(--accent-light); border-color: var(--accent); }
+.input-bar textarea:focus { box-shadow: 0 0 0 3px var(--accent-light); background: var(--bg2); }
+.sidebar-header .search:focus { box-shadow: 0 0 0 3px var(--accent-light); background: var(--bg); }
+.search-header input:focus { box-shadow: 0 0 0 3px var(--accent-light); }
+.input-bar textarea { border-radius: var(--radius-lg); }
+
+/* ---------- Модалки и контекстное меню ---------- */
+.modal-bg.show { animation: backdropIn .25s var(--ease-out) forwards; }
+.modal { animation: modalIn .32s var(--ease-spring); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.msg-context-menu { box-shadow: var(--shadow-lg); animation: menuUp .22s var(--ease-spring); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: var(--bg); }
+.msg-context-menu button { border-radius: var(--radius-sm); transition: background var(--transition-fast), transform var(--transition-fast); }
+@media (hover:hover) { .msg-context-menu button:hover { background: var(--bg3); } }
+
+/* ---------- Шапки и сайдбар ---------- */
+.chat-header { box-shadow: var(--shadow-sm); }
+.sidebar { box-shadow: var(--shadow-md); z-index: 5; }
+.pinned-bar { box-shadow: var(--shadow-sm); z-index: 2; }
+
+/* ---------- Скроллбары ---------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--border); }
+.list, .messages, .search-results, .modal { scrollbar-width: thin; scrollbar-color: var(--bg3) transparent; }
+
+/* ---------- Фокус и выделение ---------- */
+::selection { background: var(--accent); color: #fff; }
+button:focus-visible, .item:focus-visible, .settings-item:focus-visible, .game-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- Экран входа ---------- */
+#authScreen { background: linear-gradient(160deg, #ff4757 0%, #c0392b 55%, #6e1b25 100%); }
+.auth-box { animation: springIn .5s var(--ease-spring); border-radius: var(--radius-lg); }
+
+/* ---------- Игровые элементы под новый акцент ---------- */
+.card.back { background: linear-gradient(45deg, var(--accent), var(--accent-hover)); }
+.ttt-cell.x { color: var(--accent); }
+.voice-play { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); box-shadow: var(--shadow-accent); }
+.msg-video-circle { border-color: var(--accent); }
+
+/* ---------- Реакции ---------- */
+.reaction { transition: transform var(--transition-fast), box-shadow var(--transition-fast); }
+.reaction:active { transform: scale(1.15); }
+
+/* ---------- Истории ---------- */
+.story-ring { box-shadow: var(--shadow-sm); }
+.story-bubble { transition: transform var(--transition-fast); }
+.story-bubble:active { transform: scale(.94); }
+
+/* ---------- Панель вложений ---------- */
+.attach-panel button { border-radius: var(--radius-md); transition: transform var(--transition-fast), background var(--transition-fast); box-shadow: var(--shadow-sm); }
+@media (hover:hover) { .attach-panel button:hover { background: var(--border); } }
+
+/* ---------- Счётчики/бейджи ---------- */
+.admin-badge { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); box-shadow: var(--shadow-accent); }
+
+/* ---------- Плавное появление модалок настроек ---------- */
+.settings-section { animation: slideUpIn .3s var(--ease-out) backwards; }
+.settings-section:nth-child(2) { animation-delay: .05s; }
+.settings-section:nth-child(3) { animation-delay: .1s; }
+.settings-section:nth-child(4) { animation-delay: .15s; }
 </style>
 </head>
 <body>
@@ -627,10 +770,10 @@ button, .item, .settings-item, .game-card, .send-btn, .attach-btn, .icon-btn, .s
         <input class="search" id="searchInput" placeholder="Поиск..." oninput="renderList()">
       </div>
       <div class="sidebar-tabs">
-        <button id="tabChats" class="active" onclick="switchSide('chats')">💬 Чаты</button>
-        <button id="tabUsers" onclick="switchSide('users')">👥 Люди</button>
-        <button id="tabGames" onclick="switchSide('games')">🎮 Игры</button>
-        <button onclick="openSettings()">⚙️</button>
+        <button id="tabChats" class="active" onclick="switchSide('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-8.5 8.5 8.5 8.5 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 018.5-8.5 8.38 8.38 0 018.5 8.5z"/></svg><span>Чаты</span></button>
+        <button id="tabUsers" onclick="switchSide('users')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><span>Люди</span></button>
+        <button id="tabGames" onclick="switchSide('games')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6 12h4M8 10v4"/><path d="M15 11h.01M18 13h.01"/></svg><span>Игры</span></button>
+        <button onclick="openSettings()" aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h.01a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v.01a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
       </div>
       <div id="storiesRow" class="stories-row" style="display:none"></div>
       <div class="list" id="list"></div>
@@ -811,7 +954,7 @@ function safeUrl(u){
   if(!/^(https?:\/\/|data:([\w.+-]+\/[\w.+-]+)?(;[\w=.+-]+)*;base64,)/i.test(u)) return '';
   return u.replace(/['"()<>\\\s]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0'));
 }
-function safeColor(c){ return /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : '#3390ec'; }
+function safeColor(c){ return /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : '#ff4757'; }
 function sanitizeProfile(p){
   p.color = safeColor(p.color);
   p.avatar_url = safeUrl(p.avatar_url) || null;
@@ -831,7 +974,7 @@ function renderAvatarHTML(profile, size='42px', showOnline=false) {
   if (profile.avatar_url) {
     return `<div class="avatar" style="width:${size};height:${size};background-image:url('${profile.avatar_url}')">${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
   }
-  return `<div class="avatar" style="width:${size};height:${size};font-size:${fontSize};background:${profile.color||'#3390ec'}">${profile.avatar_emoji || initial}${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
+  return `<div class="avatar" style="width:${size};height:${size};font-size:${fontSize};background:${profile.color||'#ff4757'}">${profile.avatar_emoji || initial}${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
 }
 
 // ============ AUTH ============
@@ -951,7 +1094,7 @@ function updateMyAvatar(){
   } else {
     av.style.backgroundImage = '';
     av.textContent = currentProfile.avatar_emoji || currentProfile.name[0].toUpperCase();
-    av.style.background = currentProfile.color || '#3390ec';
+    av.style.background = currentProfile.color || '#ff4757';
   }
 }
 
@@ -1045,7 +1188,7 @@ function renderListInner(){
         const other=profiles[otherId]||{};
         name=other.name||'Пользователь';
         initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
-        color=other.color||'#3390ec';
+        color=other.color||'#ff4757';
         isOnline=!!other.online;
         avatarUrl=other.avatar_url;
       } else {name=c.name||'Группа';initial='👥';color='#7bc862';}
@@ -1063,7 +1206,7 @@ function renderListInner(){
     el.innerHTML=filtered.map(p=>{
       const avatarHtml = p.avatar_url
         ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')">${p.online?'<div class="online-dot"></div>':''}</div>`
-        : `<div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>`;
+        : `<div class="avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>`;
       return `<div class="item" onclick="startDirect('${p.id}')">${avatarHtml}<div class="body"><div class="name">${escapeHtml(p.name||p.username)}</div><div class="sub">@${escapeHtml(p.username)}${p.online?' · в сети':''}</div></div></div>`;
     }).join('');
   } else {
@@ -1106,7 +1249,7 @@ window.openCreateGroup = () => {
     <div class="field"><label>Название группы</label><input id="groupName" placeholder="Например: Друзья"></div>
     <div style="margin:12px 0;font-size:14px;color:var(--text2)">Выберите участников:</div>
     <div style="max-height:250px;overflow-y:auto;margin-bottom:12px">
-      ${others.map(p=>`<label style="display:flex;gap:10px;padding:10px;cursor:pointer;align-items:center;border-bottom:1px solid var(--border)"><input type="checkbox" value="${p.id}"><div class="avatar" style="width:32px;height:32px;font-size:14px;background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div><span>${escapeHtml(p.name||p.username)}</span></label>`).join('')||'<div style="text-align:center;color:var(--text2);padding:20px">Нет других людей</div>'}
+      ${others.map(p=>`<label style="display:flex;gap:10px;padding:10px;cursor:pointer;align-items:center;border-bottom:1px solid var(--border)"><input type="checkbox" value="${p.id}"><div class="avatar" style="width:32px;height:32px;font-size:14px;background:${p.color||'#ff4757'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div><span>${escapeHtml(p.name||p.username)}</span></label>`).join('')||'<div style="text-align:center;color:var(--text2);padding:20px">Нет других людей</div>'}
     </div>
     <button class="btn-main" onclick="createGroup()">Создать</button>
   `;
@@ -1156,7 +1299,7 @@ function renderMain(){
     const other=profiles[otherId]||{};
     name=other.name||'Пользователь';
     initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
-    color=other.color||'#3390ec';
+    color=other.color||'#ff4757';
     sub=other.online?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
     avatarUrl=other.avatar_url;
   } else {name=chat.name||'Группа';initial='👥';color='#7bc862';sub=chat.members.length+' участников';}
@@ -1197,7 +1340,7 @@ const avatarHtml = avatarUrl
 
   main.innerHTML=`
     <div class="chat-header">
-      <button class="icon-btn" onclick="backToList()">←</button>
+      <button class="icon-btn" onclick="backToList()" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
       ${avatarHtml}
       <div class="info"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(sub)}</p></div>
     </div>
@@ -1205,10 +1348,10 @@ const avatarHtml = avatarUrl
     <div class="messages" id="messages">${renderMessagesHTML()}</div>
     ${replyBarHtml}
     <div class="input-bar">
-      <button class="attach-btn" onclick="openAttachPanel()">📎</button>
+      <button class="attach-btn" onclick="openAttachPanel()" aria-label="Вложения"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
       <textarea id="msgInput" rows="1" placeholder="Сообщение..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-      <button class="attach-btn" id="micBtn" onclick="toggleVoiceRecord()">🎤</button>
-      <button class="send-btn" onclick="sendMessage()">➤</button>
+      <button class="attach-btn" id="micBtn" onclick="toggleVoiceRecord()" aria-label="Голосовое сообщение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
+      <button class="send-btn" onclick="sendMessage()" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
     </div>
   `;
   scrollBottom();
@@ -1424,7 +1567,7 @@ window.startForward = (msgId) => {
           const other = profiles[otherId] || {};
           name = other.name || 'Пользователь';
           initial = other.avatar_emoji || name[0]?.toUpperCase() || '?';
-          color = other.color || '#3390ec';
+          color = other.color || '#ff4757';
         }
         return `<div class="settings-item" onclick="doForward(${msgId}, ${c.id})">
           <div class="avatar" style="width:38px;height:38px;font-size:15px;background:${color}">${initial}</div>
@@ -1794,7 +1937,7 @@ window.openSettings = () => {
   const modal=document.getElementById('modalBox');
   const avatarHtml = currentProfile.avatar_url
     ? `<img src="${currentProfile.avatar_url}">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;background:${currentProfile.color||'#3390ec'}">${currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase()}</div>`;
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px;background:${currentProfile.color||'#ff4757'}">${currentProfile.avatar_emoji||currentProfile.name[0].toUpperCase()}</div>`;
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <h2>⚙️ Настройки</h2>
@@ -2291,7 +2434,7 @@ window.openUserProfile = async (userId) => {
 
   const avatarHtml = p.avatar_url
     ? `<div class="user-profile-avatar" style="background-image:url('${p.avatar_url}')"></div>`
-    : `<div class="user-profile-avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji || (p.name||'?')[0].toUpperCase()}</div>`;
+    : `<div class="user-profile-avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji || (p.name||'?')[0].toUpperCase()}</div>`;
 
   const statusText = p.online ? '🟢 в сети' : (p.last_seen ? 'был(а) ' + formatMoscowDateTime(p.last_seen) : 'не в сети');
   const bio = p.bio ? escapeHtml(p.bio) : 'Без описания';
@@ -2478,7 +2621,7 @@ window.openGroupInfo = async () => {
     const isMemberAdmin = isMemberCreator || admins.includes(mid);
     const name = p.name || p.username || 'Пользователь';
     const initial = p.avatar_emoji || name[0].toUpperCase();
-    const color = p.color || '#3390ec';
+    const color = p.color || '#ff4757';
     
     const avatarHtml = p.avatar_url
       ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')"></div>`
@@ -2539,7 +2682,7 @@ window.addMemberToGroup = () => {
   const listHtml = available.map(p => {
     const avatarHtml = p.avatar_url
       ? `<div class="avatar" style="width:38px;height:38px;background-image:url('${p.avatar_url}')"></div>`
-      : `<div class="avatar" style="background:${p.color||'#3390ec'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div>`;
+      : `<div class="avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}</div>`;
     return `<div class="settings-item" onclick="doAddMember('${p.id}')">
       ${avatarHtml}
       <div class="si-body"><div class="si-title">${escapeHtml(p.name||p.username)}</div></div>
@@ -2548,7 +2691,7 @@ window.addMemberToGroup = () => {
   }).join('');
   
   box.innerHTML = `
-    <button class="close" onclick="openGroupInfo()">←</button>
+    <button class="close" onclick="openGroupInfo()" aria-label="Назад" style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
     <h2>➕ Добавить участника</h2>
     <div style="max-height:500px;overflow-y:auto">${listHtml}</div>
   `;
@@ -2712,7 +2855,7 @@ function renderStoriesRow() {
       const p = profiles[g.user_id] || {};
       const name = p.name || p.username || 'Пользователь';
       const initial = p.avatar_emoji || name[0].toUpperCase();
-      const color = p.color || '#3390ec';
+      const color = p.color || '#ff4757';
       const avatarStyle = p.avatar_url
         ? `background-image:url('${p.avatar_url}')`
         : `background:${color}`;
@@ -2943,7 +3086,7 @@ window.goToMessage = async (chatId, msgId) => {
 };
 
 // ============ КАСТОМНЫЕ ТЕМЫ (акцентный цвет) ============
-const ACCENT_COLORS = ['#3390ec', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#f44336', '#8bc34a', '#ffc107', '#607d8b', '#795548', '#3f51b5'];
+const ACCENT_COLORS = ['#ff4757', '#e91e63', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4', '#f44336', '#8bc34a', '#ffc107', '#607d8b', '#795548', '#3f51b5'];
 
 window.openAccentPicker = () => {
   const modal = document.getElementById('accentColorModal');
@@ -3041,7 +3184,7 @@ window.openSettings = () => {
         <div class="si-ico">🎨</div>
         <div class="si-body">
           <div class="si-title">Цвет акцента</div>
-          <div class="si-desc">Текущий: <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${settings.accentColor||'#3390ec'};vertical-align:middle"></span></div>
+          <div class="si-desc">Текущий: <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${settings.accentColor||'#ff4757'};vertical-align:middle"></span></div>
         </div>
         <div class="si-arrow">›</div>
       </div>
