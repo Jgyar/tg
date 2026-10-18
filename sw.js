@@ -1,5 +1,5 @@
 /* Telegrand Service Worker v2.0 — офлайн-кэш */
-const CACHE_NAME = 'telegrand-v2';
+const CACHE_NAME = 'telegrand-v3';
 const APP_SHELL = ['./index.html', './manifest.json', './icon-192.png'];
 
 self.addEventListener('install', e => {
