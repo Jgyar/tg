@@ -1845,7 +1845,7 @@ async function processVideoBlob() {
   const duration = Math.round((Date.now() - videoRecordStart) / 1000);
   if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
   if (videoModalEl) { videoModalEl.remove(); videoModalEl = null; }
-  if (blob.size > 3*1024*1024) { alert('Кружок слишком большой (макс 3 МБ, ~40 сек).'); return; }
+  if (blob.size > 10*1024*1024) { alert('Кружок слишком большой (макс 10 МБ, ~1 мин).'); return; }
   if (blob.size < 1000) { alert('Слишком короткая запись'); return; }
   const reader = new FileReader();
   reader.onload = async ev => {
@@ -1865,8 +1865,9 @@ window.cancelVideoRecord = () => {
 window.handleFile = async (input,kind) => {
   const file=input.files[0];
   if(!file) return;
-  const maxSize=500*1024;
-  if(file.size>maxSize){alert('Макс 500 КБ');input.value='';return;}
+  const maxSize = kind === 'file' ? 15*1024*1024 : 10*1024*1024;
+  const maxLabel = kind === 'file' ? '15 МБ' : '10 МБ';
+  if(file.size>maxSize){alert('Макс '+maxLabel);input.value='';return;}
   const reader=new FileReader();
   reader.onload=async ev=>{
     const data=ev.target.result;
@@ -1927,7 +1928,7 @@ window.toggleVoiceRecord = async () => {
       stream.getTracks().forEach(t=>t.stop());
       const blob=new Blob(audioChunks,{type:mimeType || 'audio/webm'});
       const duration=Math.round((Date.now()-recordStartTime)/1000);
-      if(blob.size>800*1024){alert('Слишком длинное');restoreMicBtn();return;}
+      if(blob.size>5*1024*1024){alert('Слишком длинное (макс 5 МБ)');restoreMicBtn();return;}
       if(blob.size < 1000){alert('Слишком коротко');restoreMicBtn();return;}
       const reader=new FileReader();
       reader.onload=async ev=>{
@@ -2469,7 +2470,7 @@ window.uploadStickerPrompt = () => {
 window.handleStickerUpload = async (input) => {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 500 * 1024) { alert('Стикер слишком большой (макс 500 КБ)'); input.value = ''; return; }
+  if (file.size > 2 * 1024 * 1024) { alert('Стикер слишком большой (макс 2 МБ)'); input.value = ''; return; }
   
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.png`;
   const filePath = `stickers/${fileName}`;
@@ -2604,7 +2605,7 @@ window.uploadProfilePhoto = () => {
 window.handleProfilePhotoUpload = async (input) => {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 2 * 1024 * 1024) { alert('Макс 2 МБ'); input.value = ''; return; }
+  if (file.size > 5 * 1024 * 1024) { alert('Макс 5 МБ'); input.value = ''; return; }
 
   input.value = '';
 
@@ -2989,7 +2990,7 @@ window.uploadStory = () => {
 window.handleStoryUpload = async (input) => {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 3 * 1024 * 1024) { alert('Макс 3 МБ'); input.value = ''; return; }
+  if (file.size > 10 * 1024 * 1024) { alert('Макс 10 МБ'); input.value = ''; return; }
   
   input.value = '';
   showToast('⏳ Загрузка...');
