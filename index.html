@@ -1236,6 +1236,15 @@ function subscribeRealtime(){
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'stories'},()=>loadStories())
+    .on('broadcast',{event:'typing'},payload=>{
+      const p=payload.payload||{};
+      if(!activeChat||p.chat_id!==activeChat.id||p.user_id===currentUser.id) return;
+      showTypingIndicator(p.user_id);
+    })
+    .subscribe();
+
+  // Живые галочки — ОТДЕЛЬНЫЙ канал: если message_read недоступен, основной realtime не умрёт
+  supabase.channel('rt-read')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'message_read'},payload=>{
       const r=payload.new;
       if(r.user_id!==currentUser.id){
@@ -1243,11 +1252,6 @@ function subscribeRealtime(){
         const el=document.querySelector('#msg-'+r.message_id+' .read-status');
         if(el) el.classList.add('read');
       }
-    })
-    .on('broadcast',{event:'typing'},payload=>{
-      const p=payload.payload||{};
-      if(!activeChat||p.chat_id!==activeChat.id||p.user_id===currentUser.id) return;
-      showTypingIndicator(p.user_id);
     })
     .subscribe();
 }
@@ -2000,9 +2004,14 @@ window.sendMessage = async () => {
     payload.reply_to = replyingTo;
     replyingTo = null;
   }
-  const {error} = await supabase.from('messages').insert(payload);
+  const {data: inserted, error} = await supabase.from('messages').insert(payload).select();
   if (error) { alert('Ошибка: ' + error.message); return; }
-  if (replyingTo === null) renderMain();
+  // Мгновенный показ — не ждём realtime (защита от лагов канала)
+  if (inserted && inserted[0] && !chatMessages.find(m => m.id === inserted[0].id)) {
+    chatMessages.push(inserted[0]);
+    renderMessages();
+    scrollBottom();
+  }
 };
 
 window.editMsg = id => {
