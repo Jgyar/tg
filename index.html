@@ -873,6 +873,12 @@ let replyingTo=null;
 let pinnedMessageId=null;
 window._readIds = new Set();
 
+// Пагинация сообщений
+let chatMessagesOffset = 0;
+let hasMoreMessages = false;
+let loadingMoreMessages = false;
+const MESSAGES_PER_PAGE = 50;
+
 function formatMoscowTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
@@ -1268,18 +1274,67 @@ window.createGroup = async () => {
 };
 
 window.openChat = async chatId => {
-  const chat=chats.find(c=>c.id===chatId);
-  if(!chat) return;
-  activeChat=chat;
+  const chat = chats.find(c => c.id === chatId);
+  if (!chat) return;
+  activeChat = chat;
   pinnedMessageId = chat.pinned_message_id || null;
-  replyingTo=null;
+  replyingTo = null;
+  chatMessagesOffset = 0;
+  hasMoreMessages = false;
+  loadingMoreMessages = false;
   document.getElementById('sidebar').classList.add('hidden');
-  const {data}=await supabase.from('messages').select('*').eq('chat_id',chatId).order('created_at',{ascending:true});
-  chatMessages=data||[];
+
+  // Загружаем ТОЛЬКО последние 50 сообщений
+  const { data } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('chat_id', chatId)
+    .order('created_at', { ascending: false })
+    .limit(MESSAGES_PER_PAGE + 1);
+
+  const fetched = data || [];
+  hasMoreMessages = fetched.length > MESSAGES_PER_PAGE;
+  chatMessages = fetched.slice(0, MESSAGES_PER_PAGE).reverse();
+
 window._readIds = await getReadIds(chatId);
 markChatRead(chatId);
   renderMain();
   renderList();
+};
+
+// Подгрузка более старых сообщений
+window.loadMoreMessages = async () => {
+  if (loadingMoreMessages || !hasMoreMessages || !activeChat) return;
+  loadingMoreMessages = true;
+
+  const oldestMsg = chatMessages[0];
+  if (!oldestMsg) { loadingMoreMessages = false; return; }
+
+  const { data } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('chat_id', activeChat.id)
+    .lt('created_at', oldestMsg.created_at)
+    .order('created_at', { ascending: false })
+    .limit(MESSAGES_PER_PAGE + 1);
+
+  const fetched = data || [];
+  hasMoreMessages = fetched.length > MESSAGES_PER_PAGE;
+  const older = fetched.slice(0, MESSAGES_PER_PAGE).reverse();
+
+  if (older.length) {
+    chatMessages = [...older, ...chatMessages];
+    chatMessagesOffset += older.length;
+
+    // Сохраняем позицию скролла
+    const box = document.getElementById('messages');
+    const oldHeight = box.scrollHeight;
+    renderMessages();
+    const newHeight = box.scrollHeight;
+    box.scrollTop = newHeight - oldHeight;
+  }
+
+  loadingMoreMessages = false;
 };
 
 window.backToList = () => {
@@ -1345,7 +1400,10 @@ const avatarHtml = avatarUrl
       <div class="info"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(sub)}</p></div>
     </div>
     ${pinnedHtml}
-    <div class="messages" id="messages">${renderMessagesHTML()}</div>
+    <div class="messages" id="messages" onscroll="handleMessagesScroll(event)">
+      ${hasMoreMessages ? '<div id="loadMoreBtn" style="text-align:center;padding:8px"><button onclick="loadMoreMessages()" style="background:var(--bg3);border:none;padding:8px 16px;border-radius:20px;color:var(--text2);cursor:pointer;font-size:13px">Загрузить ещё</button></div>' : ''}
+      ${renderMessagesHTML()}
+    </div>
     ${replyBarHtml}
     <div class="input-bar">
       <button class="attach-btn" onclick="openAttachPanel()" aria-label="Вложения"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
@@ -1985,36 +2043,82 @@ window.handleAvatarUpload = async (input) => {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 2*1024*1024) { alert('Картинка слишком большая (макс 2 МБ).'); input.value=''; return; }
+  input.value = '';
+  showToast('⏳ Загрузка фото...');
+
   const reader = new FileReader();
   reader.onload = ev => {
     const img = new Image();
-    img.onload = async () => {
+    img.onload = () => {
       const canvas = document.createElement('canvas');
       const SIZE = 300;
-      canvas.width = SIZE; canvas.height = SIZE;
+      canvas.width = SIZE;
+      canvas.height = SIZE;
       const ctx = canvas.getContext('2d');
       const minSide = Math.min(img.width, img.height);
       const sx = (img.width - minSide) / 2;
       const sy = (img.height - minSide) / 2;
       ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, SIZE, SIZE);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      const { error } = await supabase.from('profiles').update({ avatar_url: dataUrl }).eq('id', currentUser.id);
-      if (error) { alert('Ошибка: ' + error.message); return; }
-      currentProfile.avatar_url = dataUrl;
-      updateMyAvatar();
-      await loadAllProfiles();
-      renderList();
-      if (activeChat) renderMain();
-      openSettings();
+
+      canvas.toBlob(async (blob) => {
+        try {
+          // Удаляем старый аватар из Storage (если был)
+          if (currentProfile.avatar_url && currentProfile.avatar_url.includes('/media/avatars/')) {
+            try {
+              const oldPath = currentProfile.avatar_url.split('/media/')[1];
+              await supabase.storage.from('media').remove([oldPath]);
+            } catch(e) { /* игнорируем */ }
+          }
+
+          // Загружаем новый в Storage
+          const fileName = `${Date.now()}.jpg`;
+          const filePath = `avatars/${currentUser.id}/${fileName}`;
+          const { error: upErr } = await supabase.storage
+            .from('media')
+            .upload(filePath, blob, { contentType: 'image/jpeg', upsert: false });
+
+          if (upErr) { alert('Ошибка загрузки: ' + upErr.message); return; }
+
+          // Получаем публичный URL
+          const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
+          const publicUrl = urlData.publicUrl;
+
+          // Сохраняем в БД только URL (50-100 байт вместо 30 КБ)
+          const { error } = await supabase
+            .from('profiles')
+            .update({ avatar_url: publicUrl })
+            .eq('id', currentUser.id);
+
+          if (error) { alert('Ошибка: ' + error.message); return; }
+
+          currentProfile.avatar_url = publicUrl;
+          updateMyAvatar();
+          await loadAllProfiles();
+          renderList();
+          if (activeChat) renderMain();
+          vibrate(20);
+          showToast('✓ Фото обновлено');
+          openSettings();
+        } catch(e) {
+          alert('Ошибка: ' + e.message);
+        }
+      }, 'image/jpeg', 0.82);
     };
     img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
-  input.value = '';
 };
 
 window.removeAvatar = async () => {
   if (!confirm('Удалить аватарку?')) return;
+  try {
+    // Удаляем файл из Storage
+    if (currentProfile.avatar_url && currentProfile.avatar_url.includes('/media/avatars/')) {
+      const oldPath = currentProfile.avatar_url.split('/media/')[1];
+      await supabase.storage.from('media').remove([oldPath]);
+    }
+  } catch(e) { /* игнорируем */ }
+
   await supabase.from('profiles').update({ avatar_url: null }).eq('id', currentUser.id);
   currentProfile.avatar_url = null;
   updateMyAvatar();
@@ -3230,6 +3334,14 @@ setTimeout(() => {
     localStorage.setItem('tg_pwa_hint', '1');
   }
 }, 30000);
+
+// ============ ПАГИНАЦИЯ — авто-подгрузка при скролле вверх ============
+window.handleMessagesScroll = (e) => {
+  const box = e.target;
+  if (box.scrollTop < 100 && hasMoreMessages && !loadingMoreMessages) {
+    loadMoreMessages();
+  }
+};
 
 // ============ RIPPLE EFFECT v5.0 ============
 function createRipple(e) {
