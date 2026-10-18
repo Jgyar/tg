@@ -920,6 +920,9 @@ function formatMoscowDateTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   return date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
 }
+// Онлайн = last_seen не старше 150 сек (самозалечивается при убийстве приложения)
+window.isUserOnline = p => !!(p && p.last_seen && (Date.now() - new Date(p.last_seen).getTime()) < 150000);
+
 function moscowDateKey(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   return date.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
@@ -1011,9 +1014,9 @@ function renderAvatarHTML(profile, size='42px', showOnline=false) {
   const fontSize = size === '42px' ? '16px' : size === '80px' ? '32px' : '14px';
   const initial = (profile.name || '?')[0].toUpperCase();
   if (profile.avatar_url) {
-    return `<div class="avatar" style="width:${size};height:${size};background-image:url('${profile.avatar_url}')">${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
+    return `<div class="avatar" style="width:${size};height:${size};background-image:url('${profile.avatar_url}')">${showOnline && window.isUserOnline(profile) ? '<div class="online-dot"></div>' : ''}</div>`;
   }
-  return `<div class="avatar" style="width:${size};height:${size};font-size:${fontSize};background:${profile.color||'#ff4757'}">${profile.avatar_emoji || initial}${showOnline && profile.online ? '<div class="online-dot"></div>' : ''}</div>`;
+  return `<div class="avatar" style="width:${size};height:${size};font-size:${fontSize};background:${profile.color||'#ff4757'}">${profile.avatar_emoji || initial}${showOnline && window.isUserOnline(profile) ? '<div class="online-dot"></div>' : ''}</div>`;
 }
 
 // ============ AUTH ============
@@ -1071,6 +1074,14 @@ window.logout = async () => {
 };
 
 let _appStarted = false;
+
+// При закрытии вкладки — best-effort пометка офлайн (не всегда успевает, хелпер всё равно подстрахует)
+window.addEventListener('pagehide', () => {
+  if(!currentUser) return;
+  try{
+    supabase.from('profiles').update({ online:false, last_seen:new Date().toISOString() }).eq('id', currentUser.id).then(()=>{});
+  }catch(e){}
+});
 
 async function restoreSession(session){
   if(_appStarted || !session?.user) return;
@@ -1311,7 +1322,7 @@ function renderListInner(){
         name=other.name||'Пользователь';
         initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
         color=other.color||'#ff4757';
-        isOnline=!!other.online;
+        isOnline=window.isUserOnline(other);
         avatarUrl=other.avatar_url;
       } else {name=c.name||'Группа';initial='👥';color='#7bc862';}
       if(q&&!name.toLowerCase().includes(q)) return '';
@@ -1327,8 +1338,8 @@ function renderListInner(){
     const filtered=others.filter(p=>!q||(p.name||'').toLowerCase().includes(q)||(p.username||'').toLowerCase().includes(q));
     el.innerHTML=filtered.map(p=>{
       const avatarHtml = p.avatar_url
-        ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')">${p.online?'<div class="online-dot"></div>':''}</div>`
-        : `<div class="avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${p.online?'<div class="online-dot"></div>':''}</div>`;
+        ? `<div class="avatar" style="width:42px;height:42px;background-image:url('${p.avatar_url}')">${window.isUserOnline(p)?'<div class="online-dot"></div>':''}</div>`
+        : `<div class="avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji||(p.name||'?')[0].toUpperCase()}${window.isUserOnline(p)?'<div class="online-dot"></div>':''}</div>`;
       return `<div class="item" onclick="startDirect('${p.id}')">${avatarHtml}<div class="body"><div class="name">${escapeHtml(p.name||p.username)}</div><div class="sub">@${escapeHtml(p.username)}${p.online?' · в сети':''}</div></div></div>`;
     }).join('');
   } else {
@@ -1485,7 +1496,7 @@ function renderMain(){
     name=other.name||'Пользователь';
     initial=other.avatar_emoji||name[0]?.toUpperCase()||'?';
     color=other.color||'#ff4757';
-    sub=other.online?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
+    sub=window.isUserOnline(other)?'в сети':(other.last_seen?'был(а) '+formatMoscowDateTime(other.last_seen):'не в сети');
     avatarUrl=other.avatar_url;
   } else {name=chat.name||'Группа';initial='👥';color='#7bc862';sub=chat.members.length+' участников';}
   const otherUserId = chat.type === 'direct' ? chat.members.find(m => m !== currentUser.id) : null;
@@ -2857,7 +2868,7 @@ window.openUserProfile = async (userId) => {
     ? `<div class="user-profile-avatar" style="background-image:url('${p.avatar_url}')"></div>`
     : `<div class="user-profile-avatar" style="background:${p.color||'#ff4757'}">${p.avatar_emoji || (p.name||'?')[0].toUpperCase()}</div>`;
 
-  const statusText = p.online ? '🟢 в сети' : (p.last_seen ? 'был(а) ' + formatMoscowDateTime(p.last_seen) : 'не в сети');
+  const statusText = window.isUserOnline(p) ? '🟢 в сети' : (p.last_seen ? 'был(а) ' + formatMoscowDateTime(p.last_seen) : 'не в сети');
   const bio = p.bio ? escapeHtml(p.bio) : 'Без описания';
   const photos = Array.isArray(p.photos) ? p.photos : [];
 
