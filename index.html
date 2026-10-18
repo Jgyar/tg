@@ -733,6 +733,20 @@ button:focus-visible, .item:focus-visible, .settings-item:focus-visible, .game-c
 /* ---------- Счётчики/бейджи ---------- */
 .admin-badge { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); box-shadow: var(--shadow-accent); }
 
+/* ============ ПАКЕТ 2: выбор сообщений / индикаторы ============ */
+.msg.selecting { cursor: pointer; user-select: none; }
+.msg.selected { box-shadow: 0 0 0 2px var(--accent), var(--shadow-md); }
+.msg-select-check {
+  position: absolute; top: -6px; left: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; z-index: 3;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.msg-select-check.on { background: var(--accent); border-color: var(--accent); }
+#chatSub { transition: opacity .2s; }
+
 /* ---------- Плавное появление модалок настроек ---------- */
 .settings-section { animation: slideUpIn .3s var(--ease-out) backwards; }
 .settings-section:nth-child(2) { animation-delay: .05s; }
@@ -878,6 +892,12 @@ let chatMessagesOffset = 0;
 let hasMoreMessages = false;
 let loadingMoreMessages = false;
 const MESSAGES_PER_PAGE = 50;
+
+// Пакет 2: мульти-выбор сообщений
+let selectionMode = false;
+let selectedMsgIds = new Set();
+let _typingSentAt = 0;
+let _typingTimer = null;
 
 function formatMoscowTime(dateInput) {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
@@ -1145,7 +1165,7 @@ async function loadLastMessages(){
 
 function subscribeRealtime(){
   if(channel) supabase.removeChannel(channel);
-  channel=supabase.channel('rt')
+  channel=supabase.channel('rt', { config: { broadcast: { receive: true } } })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
       const msg=payload.new;
       if(activeChat&&msg.chat_id===activeChat.id){
@@ -1180,6 +1200,19 @@ function subscribeRealtime(){
       }
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'stories'},()=>loadStories())
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'message_read'},payload=>{
+      const r=payload.new;
+      if(r.user_id!==currentUser.id){
+        window._readIds.add(r.message_id);
+        const el=document.querySelector('#msg-'+r.message_id+' .read-status');
+        if(el) el.classList.add('read');
+      }
+    })
+    .on('broadcast',{event:'typing'},payload=>{
+      const p=payload.payload||{};
+      if(!activeChat||p.chat_id!==activeChat.id||p.user_id===currentUser.id) return;
+      showTypingIndicator(p.user_id);
+    })
     .subscribe();
 }
 
@@ -1318,6 +1351,12 @@ window.openChat = async chatId => {
 window._readIds = await getReadIds(chatId);
 markChatRead(chatId);
   renderMain();
+  // Пакет 2: восстанавливаем черновик
+  try{
+    const _draft = localStorage.getItem('tg_draft_'+chatId);
+    const _inp = document.getElementById('msgInput');
+    if(_draft && _inp){ _inp.value = _draft; autoResize(_inp); }
+  }catch(e){}
   renderList();
 };
 
@@ -1412,11 +1451,13 @@ const avatarHtml = avatarUrl
     }
   }
 
+  window._chatSubText = sub;
   main.innerHTML=`
     <div class="chat-header">
       <button class="icon-btn" onclick="backToList()" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
       ${avatarHtml}
-      <div class="info"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(sub)}</p></div>
+      <div class="info"><h3>${escapeHtml(name)}</h3><p id="chatSub">${escapeHtml(sub)}</p></div>
+      <button class="icon-btn" onclick="openChatMenu()" aria-label="Меню чата">${DOTS}</button>
     </div>
     ${pinnedHtml}
     <div class="messages" id="messages" onscroll="handleMessagesScroll(event)">
@@ -1426,7 +1467,7 @@ const avatarHtml = avatarUrl
     ${replyBarHtml}
     <div class="input-bar">
       <button class="attach-btn" onclick="openAttachPanel()" aria-label="Вложения"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
-      <textarea id="msgInput" rows="1" placeholder="Сообщение..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <textarea id="msgInput" rows="1" placeholder="Сообщение..." onkeydown="handleKey(event)" oninput="autoResize(this);saveDraft(this)"></textarea>
       <button class="attach-btn" id="micBtn" onclick="toggleVoiceRecord()" aria-label="Голосовое сообщение"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></button>
       <button class="send-btn" onclick="sendMessage()" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
     </div>
@@ -1472,9 +1513,11 @@ function renderMessagesHTML(){
 
     const reacts=m.reactions||{};
     const reactsHtml=renderReactionsHTML(m,reacts);
-    const menuBtn = isEditing ? '' : `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event,${m.id})">⋯</button>`;
+    const menuBtn = (isEditing || selectionMode) ? '' : `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event,${m.id})">⋯</button>`;
+    const selCheck = selectionMode ? `<div class="msg-select-check ${selectedMsgIds.has(m.id)?'on':''}">${selectedMsgIds.has(m.id)?'✓':''}</div>` : '';
+    const selClick = selectionMode ? ` onclick="toggleSelectMsg(${m.id})"` : '';
     const readCheck = out ? `<span class="read-status ${window._readIds && window._readIds.has(m.id) ? 'read' : ''}">✓✓</span>` : '';
-return `${dateSep}<div class="msg ${out?'out':'in'}" id="msg-${m.id}">${replyPreview}${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${readCheck}${menuBtn}</div></div>`;
+return `${dateSep}<div class="msg ${out?'out':'in'}${selectionMode?' selecting':''}${selectionMode&&selectedMsgIds.has(m.id)?' selected':''}" id="msg-${m.id}"${selClick}>${selCheck}${replyPreview}${author}${content}${reactsHtml}<div class="meta">${time}${m.edited?' (изм.)':''}${readCheck}${menuBtn}</div></div>`;
   }).join('');
 }
 
@@ -1513,6 +1556,7 @@ window.openMsgMenu = (e, msgId) => {
   const items = [];
   // Копировать (если есть текст)
   if (m.text) items.push({ico:'📋', label:'Копировать', action:`copyMsg(${msgId})`});
+  items.push({ico:'☑️', label:'Выбрать сообщения', action:`enableSelectionMode(${msgId})`});
   // Ответить (если чат, а не бот-новость)
   items.push({ico:'↩️', label:'Ответить', action:`startReply(${msgId})`});
   // Реакция
@@ -1706,6 +1750,172 @@ function showToast(text) {
   setTimeout(() => t.remove(), 1500);
 }
 
+// ============ ПАКЕТ 2: печатает / черновики / мульти-выбор ============
+function notifyTyping(){
+  if(!activeChat||!channel) return;
+  const now = Date.now();
+  if(now - _typingSentAt < 3000) return;
+  _typingSentAt = now;
+  channel.send({ type:'broadcast', event:'typing', payload:{ chat_id:activeChat.id, user_id:currentUser.id } });
+}
+
+function showTypingIndicator(userId){
+  const el = document.getElementById('chatSub');
+  if(!el || !window._chatSubText) return;
+  const name = (profiles[userId] && profiles[userId].name) || 'Собеседник';
+  el.textContent = name + ' печатает…';
+  clearTimeout(_typingTimer);
+  _typingTimer = setTimeout(() => {
+    const e2 = document.getElementById('chatSub');
+    if(e2) e2.textContent = window._chatSubText;
+  }, 3000);
+}
+
+function saveDraft(el){
+  if(!activeChat) return;
+  try{
+    if(el.value.trim()) localStorage.setItem('tg_draft_'+activeChat.id, el.value);
+    else localStorage.removeItem('tg_draft_'+activeChat.id);
+  }catch(e){}
+  notifyTyping();
+}
+
+window.enableSelectionMode = (msgId) => {
+  closeAllMenus();
+  selectionMode = true;
+  selectedMsgIds = new Set(msgId ? [msgId] : []);
+  renderMessages();
+  renderSelectionBar();
+};
+
+window.exitSelectionMode = () => {
+  selectionMode = false;
+  selectedMsgIds = new Set();
+  const bar = document.getElementById('selectionBar');
+  if(bar) bar.remove();
+  renderMessages();
+};
+
+window.toggleSelectMsg = (id) => {
+  if(selectedMsgIds.has(id)) selectedMsgIds.delete(id); else selectedMsgIds.add(id);
+  renderMessages();
+  updateSelectionBar();
+};
+
+function renderSelectionBar(){
+  let bar = document.getElementById('selectionBar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'selectionBar';
+    bar.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:350;display:flex;gap:8px;background:var(--bg);padding:8px 12px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);align-items:center;animation:slideUpIn .25s var(--ease-spring);';
+    document.body.appendChild(bar);
+  }
+  updateSelectionBar();
+}
+
+function updateSelectionBar(){
+  const bar = document.getElementById('selectionBar');
+  if(!bar) return;
+  const n = selectedMsgIds.size;
+  bar.innerHTML = `
+    <span style="font-size:13px;color:var(--text2);padding:0 6px;white-space:nowrap">Выбрано: ${n}</span>
+    <button onclick="forwardSelected()" style="border:none;background:var(--accent);color:#fff;padding:8px 14px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer">Переслать</button>
+    <button onclick="deleteSelected(false)" style="border:none;background:var(--bg3);color:var(--text);padding:8px 14px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer">У себя</button>
+    <button onclick="deleteSelected(true)" style="border:none;background:#e53935;color:#fff;padding:8px 14px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer">У всех</button>
+    <button onclick="exitSelectionMode()" style="border:none;background:transparent;color:var(--text2);padding:8px 10px;border-radius:16px;font-size:16px;cursor:pointer">✕</button>`;
+}
+
+window.forwardSelected = () => {
+  if(!selectedMsgIds.size || !activeChat) return;
+  const modal = document.getElementById('modalBox');
+  modal.innerHTML = `
+    <button class="close" onclick="closeModal()">×</button>
+    <h2>Переслать ${selectedMsgIds.size} сообщ.</h2>
+    <div style="max-height:400px;overflow-y:auto">
+      ${chats.map(c => {
+        let name = c.name, initial = '👥', color = '#7bc862';
+        if(c.type === 'direct'){
+          const otherId = c.members.find(x => x !== currentUser.id);
+          const other = profiles[otherId] || {};
+          name = other.name || 'Пользователь';
+          initial = other.avatar_emoji || (name[0] || '?').toUpperCase();
+          color = other.color || '#ff4757';
+        }
+        return `<div class="settings-item" onclick="doForwardSelected(${c.id})">
+          <div class="avatar" style="width:38px;height:38px;font-size:15px;background:${color}">${initial}</div>
+          <div class="si-body"><div class="si-title">${escapeHtml(name)}</div></div>
+          <div class="si-arrow">›</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  document.getElementById('modalBg').classList.add('show');
+};
+
+window.doForwardSelected = async (chatId) => {
+  closeModal();
+  let ok = 0;
+  for(const id of selectedMsgIds){
+    const m = chatMessages.find(x => x.id === id);
+    if(!m) continue;
+    const { error } = await supabase.from('messages').insert({
+      chat_id: chatId, user_id: currentUser.id, username: currentProfile.username,
+      text: m.text, type: m.type, data: m.data, file_name: m.file_name,
+      file_size: m.file_size, duration: m.duration,
+      forwarded_from: m.user_id,
+      forwarded_from_name: (profiles[m.user_id] && profiles[m.user_id].name) || m.username || 'Пользователь'
+    });
+    if(!error) ok++;
+  }
+  exitSelectionMode();
+  vibrate(20);
+  showToast('Переслано: ' + ok);
+};
+
+window.deleteSelected = async (forAll) => {
+  const ids = [...selectedMsgIds];
+  if(!ids.length) return;
+  if(forAll){
+    if(!confirm('Удалить у всех ' + ids.length + ' сообщ.?')) return;
+    for(const id of ids) await supabase.from('messages').delete().eq('id', id);
+  } else {
+    if(!confirm('Удалить у себя ' + ids.length + ' сообщ.? (скроются только у вас до перезахода)')) return;
+  }
+  chatMessages = chatMessages.filter(m => !selectedMsgIds.has(m.id));
+  exitSelectionMode();
+  renderMessages();
+  showToast('Готово');
+};
+
+// ============ МЕНЮ ЧАТА ============
+window.openChatMenu = () => {
+  if(!activeChat) return;
+  const box = document.getElementById('chatMenuContent');
+  const isGroup = activeChat.type === 'group';
+  const otherId = isGroup ? null : activeChat.members.find(m => m !== currentUser.id);
+  box.innerHTML = `
+    <div class="settings-item" onclick="closeChatMenu();openSearchPanel()"><div class="si-ico">🔍</div><div class="si-body"><div class="si-title">Поиск по чатам</div></div><div class="si-arrow">›</div></div>
+    <div class="settings-item" onclick="closeChatMenu();${isGroup ? 'openGroupInfo()' : `openUserProfile('${otherId}')`}"><div class="si-ico">${isGroup ? '👥' : '👤'}</div><div class="si-body"><div class="si-title">${isGroup ? 'Информация о группе' : 'Профиль собеседника'}</div></div><div class="si-arrow">›</div></div>
+    <div class="settings-item" onclick="clearChatHistory()"><div class="si-ico">🧹</div><div class="si-body"><div class="si-title" style="color:#e53935">Очистить историю у всех</div></div></div>`;
+  document.getElementById('chatMenuModal').classList.add('show');
+};
+
+window.closeChatMenu = () => {
+  document.getElementById('chatMenuModal').classList.remove('show');
+};
+
+window.clearChatHistory = async () => {
+  if(!activeChat) return;
+  if(!confirm('Очистить ВСЮ историю чата у всех участников?')) return;
+  if(!confirm('Точно? Это действие необратимо.')) return;
+  closeChatMenu();
+  const { error } = await supabase.from('messages').delete().eq('chat_id', activeChat.id);
+  if(error){ alert('Ошибка: ' + error.message); return; }
+  chatMessages = [];
+  renderMessages();
+  vibrate(30);
+  showToast('История очищена');
+};
+
 window.playVideoCircle = video => {
   vibrate(10);
   if (video.paused) {
@@ -1724,6 +1934,7 @@ window.sendMessage = async () => {
   const text=inp.value.trim();
   if(!text||!activeChat) return;
   inp.value='';
+  try{ localStorage.removeItem('tg_draft_'+activeChat.id); }catch(e){}
   vibrate(10);
   const payload = {
     chat_id: activeChat.id,
@@ -3378,6 +3589,7 @@ document.addEventListener('keydown', e => {
   if (sp && sp.style.display !== 'none') { closeSearchPanel(); return; }
   const sv = document.getElementById('storyViewer');
   if (sv && sv.style.display !== 'none') { closeStoryViewer(); return; }
+  if(selectionMode){ exitSelectionMode(); return; }
   closeAllMenus();
   closePopup();
   const acm = document.getElementById('accentColorModal');
