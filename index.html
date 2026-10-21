@@ -2080,7 +2080,7 @@ window.toggleReaction = async (msgId,emoji) => {
   const idx=arr.indexOf(currentUser.id);
   if(idx>=0) arr.splice(idx,1); else arr.push(currentUser.id);
   if(arr.length) reacts[emoji]=arr; else delete reacts[emoji];
-  await supabase.from('messages').update({reactions:reacts}).eq('id',msgId);
+  await supabase.rpc('toggle_reaction', { msg_id: msgId, emoji });
   m.reactions=reacts;
   renderMessages();
 };
